@@ -1,0 +1,4 @@
+argparse==1.2.1
+requests==1.2.3
+trees==0.0.2
+wsgiref==0.1.2
