@@ -1,4 +1,23 @@
-registrar-sdk-python
-====================
+Penn Course API Client for Python
+=====
 
-A Python wrapper for the Penn registrar API
+This module is a thin Python wrapper for the Penn registrar API that provides basic convenience
+functions for consuming all three API endpoints.
+
+Full API documentation [here](https://esb.isc-seo.upenn.edu/8091/documentation/).
+
+Pull requests welcome!
+
+Running Tests
+-----
+
+To run the tests, you first must obtain an API username and password (see the [main documentation](https://esb.isc-seo.upenn.edu/8091/documentation/)).
+
+Once you have these, create a `tests/credentials.py` file with them as constants:
+
+```
+USERNAME = 'MY_USERNAME'
+PASSWORD = 'MY_PASSWORD'
+```
+
+Then run `python tests/registrar_tests.py`.
