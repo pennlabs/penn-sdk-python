@@ -1,6 +1,5 @@
 import unittest
-import nose
-import registrar
+from penn import registrar
 
 # Abuse of globals
 username = None
