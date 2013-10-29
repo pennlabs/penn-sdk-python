@@ -11,10 +11,15 @@ ENDPOINTS = {
 }
 
 class Registrar(object):
-    """The client for the Registrar API
-       Properties:
-          bearer: The user code for the API
-          token: The password code for the API
+    """The client for the Registrar. Used to make requests to the API.
+
+    :param bearer: The user code for the API
+    :param token: The password code for the API
+
+    Usage::
+
+      >>> from penn.registrar import Registrar
+      >>> r = Registrar('MY_USERNAME_TOKEN', 'MY_PASSWORD_TOKEN')
     """
     def __init__(self, bearer, token):
         self.bearer = bearer
@@ -58,20 +63,31 @@ class Registrar(object):
             params['page_number'] += 1
 
     def search(self, params):
-        """Return an iterable of section objects for the given search params"""
+        """Return a generator of section objects for the given search params.
+
+        >>> cis100s = r.search({'course_id': 'cis', 'course_level_at_or_below': '200'})
+        """
         return self._iter_response(ENDPOINTS['SEARCH'], params)
 
     def course(self, dept, course_number):
-        """Return a course-info object"""
-        return self._request(path.join(ENDPOINTS['CATALOG'], dept, course_number))['result_data'][0]
+        """Return an object of semester-independent course info. All arguments should be strings.
+
+        >>> cis120 = r.course('cis', '120')
+        """
+        response = self._request(path.join(ENDPOINTS['CATALOG'], dept, course_number))
+        return resposne['result_data'][0]
 
     def department(self, dept):
-        """Return an iterable of all course-info objects in a department, in no
-        particular order"""
+        """Return an iterator of all course-info objects in a department, in no particular order.
+        """
         return self._iter_response(path.join(ENDPOINTS['CATALOG'], dept))
 
     def section(self, dept, course_number, sect_number):
-        """Return a single section object for the given section"""
+        """Return a single section object for the given section. All arguments should be
+        strings. Throws a `ValueError` if the section is not found.
+
+        >>> lgst101_bfs = r.course('lgst', '101', '301')
+        """
         section_id = dept + course_number + sect_number
         sections = self.search({'course_id': section_id})
         try:
@@ -80,6 +96,7 @@ class Registrar(object):
             raise ValueError('Section %s not found' % section_id)
 
     def search_params(self):
-        """Return a map of possible search params to a map from their possible values to
-        their descriptions."""
+        """Return a dictionary of possible search parameters and their  possible values and
+        descriptions.
+        """
         return self._request(ENDPOINTS['SEARCH_PARAMS'])['result_data'][0]
