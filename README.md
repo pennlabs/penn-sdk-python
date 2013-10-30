@@ -15,7 +15,7 @@ Documentation
 ----
 
 The full API documentation can be found [here](https://esb.isc-seo.upenn.edu/8091/documentation/).
-Documentation for the wrapper can be found at TODO.
+Documentation for the wrapper can be found at http://penn-sdk.readthedocs.org/
 
 Running Tests
 ----
