@@ -34,9 +34,13 @@ class Registrar(object):
         }
 
     def _request(self, url, params=None):
-        """Make a signed request to the API, raise any API errors, and returning a tuple
-        of (data, metadata)"""
-        response = requests.get(url, params=params, headers=self.headers).json()
+        """Make a signed request to the API, raise any API errors, and returning the data
+        object."""
+        response = requests.get(url, params=params, headers=self.headers)
+        if response.status_code != 200:
+            raise ValueError('Request to %s returned %d' % (response.url, response.status_code))
+
+        response = response.json()
 
         if response['service_meta']['error_text']:
             raise ValueError(response['service_meta']['error_text'])
@@ -44,7 +48,7 @@ class Registrar(object):
         return response
 
     def _iter_response(self, url, params=None):
-        """Return an enumerable that iterates through a multi-page API request"""
+        """Return an iterator that iterates through a multi-page API request."""
         if params is None:
             params = {}
         params['page_number'] = 1
