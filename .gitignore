@@ -3,3 +3,4 @@ venv
 tests/credentials.py
 dist/
 MANIFEST
+docs/_build
