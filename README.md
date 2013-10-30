@@ -9,7 +9,7 @@ Getting an API key
 ----
 
 To use this library, you must first obtain an API token and password, which can be done
-[here](https://secure.www.upenn.edu/computing/da/webloginportal/eforms).
+[here](https://secure.www.upenn.edu/computing/da/webloginportal/eforms/index.html?content=kew/EDocLite?edlName=registrarApiAccessForm&userAction=initiate).
 
 Documentation
 ----
