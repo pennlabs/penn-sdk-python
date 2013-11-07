@@ -75,7 +75,7 @@ class Registrar(object):
         >>> cis120 = r.course('cis', '120')
         """
         response = self._request(path.join(ENDPOINTS['CATALOG'], dept, course_number))
-        return resposne['result_data'][0]
+        return response['result_data'][0]
 
     def department(self, dept):
         """Return an iterator of all course-info objects in a department, in no particular order.
