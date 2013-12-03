@@ -10,7 +10,7 @@ setup(
     version=penn.__version__,
     packages=['penn'],
     license='MIT',
-    long_description=open('README.md').read(),
+    long_description=open('README.rst').read(),
     install_requires=[
         'requests==1.2.3'
     ]
