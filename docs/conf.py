@@ -50,7 +50,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Penn SDK'
-copyright = u'2013, PennApps Labs'
+copyright = u'2014, Penn Labs'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -203,7 +203,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
   ('index', 'PennSDK.tex', u'Penn SDK Documentation',
-   u'PennApps Labs', 'manual'),
+   u'Penn Labs', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

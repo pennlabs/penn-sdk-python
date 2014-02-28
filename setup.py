@@ -5,7 +5,7 @@ setup(
     name='PennSDK',
     description='Python tools for building Penn-related applications',
     url='https://github.com/pennappslabs/penn-sdk-python',
-    author='PennApps Labs',
+    author='Penn Labs',
     author_email='pennappslabs@gmail.com',
     version=penn.__version__,
     packages=['penn'],
