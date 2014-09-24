@@ -95,6 +95,8 @@ class Registrar(object):
         except StopIteration:
             raise ValueError('Section %s not found' % section_id)
 
+
+
     def search_params(self):
         """Return a dictionary of possible search parameters and their  possible values and
         descriptions.

@@ -16,4 +16,6 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   api
+  registrar
+  dining
+  directory

@@ -37,9 +37,9 @@ class TestRegistrar(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    from credentials import USERNAME, PASSWORD
-    username = USERNAME
-    password = PASSWORD
+    from credentials import REG_USERNAME, REG_PASSWORD
+    username = REG_USERNAME
+    password = REG_PASSWORD
 
     if username is None or password is None:
         print "You must provide a valid API username and password to run these tests"

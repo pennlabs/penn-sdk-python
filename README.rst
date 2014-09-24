@@ -8,15 +8,15 @@ PennSDK: Penn Course API Client
 .. image:: https://pypip.in/d/PennSDK/badge.png
         :target: https://crate.io/packages/PennSDK/
 
-PennSDK is a thin Python wrapper for the Penn registrar API that provides basic convenience
-functions for consuming all three API endpoints.
+PennSDK is a thin Python wrapper for multiple Penn APIs that provides basic convenience functions for consuming each API's respective endpoints
 
 
 Getting an API key
 ------------------
 
-To use this library, you must first obtain an API token and password, which can be done
-here_.
+To use these libraries, you must first obtain an API token and password, which can be done
+here_. There are seperate API tokens for each.
+
 
 Documentation
 -------------
@@ -29,14 +29,32 @@ Running Tests
 -------------
 
 Once you have an API token and password, you can run the tests by creating a ``tests/credentials.py``
-file with them as constants:
+file with them as constants. Include:
 
 .. code-block:: python
 
-    USERNAME = 'MY_USERNAME'
-    PASSWORD = 'MY_PASSWORD'
+    REG_USERNAME = 'MY_REGISTAR_USERNAME'
+    REG_PASSWORD = 'MY_REGISTAR_PASSWORD'
 
-Then run ``python tests/registrar_tests.py``.
+to run ``python tests/registrar_test.py``.
+
+For dining, include:
+
+.. code-block:: python
+
+    DIN_USERNAME = 'MY_DINING_USERNAME'
+    DIN_PASSWORD = 'MY_DINING_PASSWORD'
+
+and run ``python tests/dining_test.py``.
+
+For the directory API, include:
+
+.. code-block:: python
+
+    DIR_USERNAME = 'MY_DIRECTORY_USERNAME'
+    DIR_PASSWORD = 'MY_DIRECTORY_PASSWORD'
+
+and run ``python tests/directory_test.py``.
 
 Contributing & Bug Reporting
 ----------------------------
@@ -46,4 +64,4 @@ If you find a bug, please submit it through the `GitHub issues page`_.
 Pull requests are welcome!
 
 .. _`GitHub issues page`: https://github.com/pennappslabs/penn-sdk-python/issues
-.. _`here`: https://secure.www.upenn.edu/computing/da/webloginportal/eforms/index.html?content=kew/EDocLite?edlName=registrarApiAccessForm&userAction=initiate
+.. _`here`: https://secure.www.upenn.edu/computing/da/webloginportal/eforms/index.html?content=kew/EDocLite?edlName=openDataRequestForm&userAction=initiate
