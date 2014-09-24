@@ -48,6 +48,7 @@ class Directory(object):
         >>> people = d.search({'first_name': 'tobias', 'last_name': 'funke'})
         """
         self._request(ENDPOINTS['SEARCH'], params)
+
     def detail_search(self, params):
         """Return a detailed list of person objects for the given search params, by performing
         a regular search, and then requesting details for each result.
@@ -59,7 +60,7 @@ class Directory(object):
         result_data = []
         for person in response['result_data']:
             try:
-                detail = self.person(person['person_id'])
+                detail = self.person_details(person['person_id'])
                 result_data.append(detail)
             except ValueError:
                 pass

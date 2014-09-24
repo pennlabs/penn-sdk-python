@@ -15,9 +15,8 @@ class TestRegistrar(unittest.TestCase):
         venues = self.din.venues()['result_data']['document']['venue']
         venues = venues[0]
         self.assertTrue(len(venues) > 0)
-
         id = str(venues["id"])
-        data = self.din.menu_daily(id)
+        data = self.din.menu_weekly(id)
         self.assertEquals(len(data["result_data"]["Document"]["tblMenu"]), 7)
 
 

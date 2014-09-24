@@ -56,6 +56,7 @@ For the directory API, include:
 
 and run ``python tests/directory_test.py``.
 
+You can also type ``make test`` to run all tests.
 Contributing & Bug Reporting
 ----------------------------
 
