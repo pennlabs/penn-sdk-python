@@ -1,6 +1,7 @@
 """A module for consuming the Penn Registrar API"""
 from os import path
 import requests
+from base import WrapperBase
 
 
 BASE_URL = "https://esb.isc-seo.upenn.edu/8091/open_data/dining/"
@@ -9,7 +10,7 @@ ENDPOINTS = {
     'VENUES': BASE_URL + 'venues',
 }
 
-class Dining(object):
+class Dining(WrapperBase):
     """The client for the Registrar. Used to make requests to the API.
 
     :param bearer: The user code for the API
@@ -33,8 +34,8 @@ class Dining(object):
         }
 
     def _request(self, url, params=None):
-        """Make a signed request to the API, raise any API errors, and returning a tuple
-        of (data, metadata)"""
+        """Make a signed request to the API, raise any API errors, and returning
+        a tuple of (data, metadata)"""
         response = requests.get(url, params=params, headers=self.headers).json()
 
         if response['service_meta']['error_text']:
@@ -43,26 +44,33 @@ class Dining(object):
         return response
 
     def venues(self):
-        """Return a list of all venue objects.
+        """Get a list of all venue objects.
 
-        >>> venue = din.venues()
+          >>> venues = din.venues()
         """
 
         response = self._request(ENDPOINTS['VENUES'])
-        return response;
+        return response
 
     def menu_daily(self, building_id):
-        """Return a menu object corresponding to the daily menu for the
-        venue with venue_id. Argument should be a string.
+        """Get a menu object corresponding to the daily menu for the
+        venue with building_id.
+
+        :param building_id: The id of the building. Should be a string.
+
 
         >>> commons_today = din.menu_daily("593")
         """
-        response = self._request(path.join(ENDPOINTS['MENUS'], 'daily', str(building_id)))
+        response = self._request(
+            path.join(ENDPOINTS['MENUS'], 'daily', str(building_id))
+        )
         return response
 
     def menu_weekly(self, building_id):
-        """Return an array of menu objects corresponding to the weekly menu for the
-        venue with venue_id. Argument should be a string.
+        """Get an array of menu objects corresponding to the weekly menu for the
+        venue with building_id.
+
+        :param building_id: The id of the building. Should be a string.
 
         >>> commons_week = din.menu_weekly("593")
         """

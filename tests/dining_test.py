@@ -2,6 +2,7 @@ import unittest
 import json
 from penn import dining
 
+
 # Abuse of globals
 username = None
 password = None
@@ -9,6 +10,7 @@ password = None
 class TestRegistrar(unittest.TestCase):
 
     def setUp(self):
+        self.assertFalse(username is None or password is None)
         self.din = dining.Dining(username, password)
 
     def test_dining(self):
@@ -27,7 +29,4 @@ if __name__ == '__main__':
     username = DIN_USERNAME
     password = DIN_PASSWORD
 
-    if username is None or password is None:
-        print "You must provide a valid API username and password to run these tests"
-    else:
-        unittest.main()
+    unittest.main()

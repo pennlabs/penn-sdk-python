@@ -8,6 +8,7 @@ password = None
 class TestRegistrar(unittest.TestCase):
 
     def setUp(self):
+        self.assertFalse(username is None or password is None)
         self.dir = directory.Directory(username, password)
 
     def test_lastname_search(self):
@@ -22,7 +23,4 @@ if __name__ == '__main__':
     username = DIR_USERNAME
     password = DIR_PASSWORD
 
-    if username is None or password is None:
-        print "You must provide a valid API username and password to run these tests"
-    else:
-        unittest.main()
+    unittest.main()

@@ -8,6 +8,7 @@ password = None
 class TestRegistrar(unittest.TestCase):
 
     def setUp(self):
+        self.assertFalse(username is None or password is None)
         self.reg = registrar.Registrar(username, password)
 
     def test_section(self):
@@ -41,7 +42,4 @@ if __name__ == '__main__':
     username = REG_USERNAME
     password = REG_PASSWORD
 
-    if username is None or password is None:
-        print "You must provide a valid API username and password to run these tests"
-    else:
-        unittest.main()
+    unittest.main()

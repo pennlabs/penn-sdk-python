@@ -1,6 +1,6 @@
-"""A module for consuming the Penn Registrar API"""
 from os import path
 import requests
+from base import WrapperBase
 
 
 BASE_URL = "https://esb.isc-seo.upenn.edu/8091/open_data/"
@@ -9,7 +9,7 @@ ENDPOINTS = {
     'DETAILS': BASE_URL + 'directory_person_details',
 }
 
-class Directory(object):
+class Directory(WrapperBase):
     """The client for the Directory. Used to make requests to the API.
 
     :param bearer: The user code for the API
@@ -20,38 +20,22 @@ class Directory(object):
       >>> from penn.directory import Directory
       >>> d = Directory('MY_USERNAME_TOKEN', 'MY_PASSWORD_TOKEN')
     """
-    def __init__(self, bearer, token):
-        self.bearer = bearer
-        self.token = token
-
-    @property
-    def headers(self):
-        """The HTTP headers needed for signed requests"""
-        return {
-            "Authorization-Bearer": self.bearer,
-            "Authorization-Token": self.token,
-        }
-
-    def _request(self, url, params=None):
-        """Make a signed request to the API, raise any API errors, and returning a tuple
-        of (data, metadata)"""
-        response = requests.get(url, params=params, headers=self.headers).json()
-
-        if response['service_meta']['error_text']:
-            raise ValueError(response['service_meta']['error_text'])
-
-        return response
 
     def search(self, params):
-        """Return a list of person objects for the given search params.
+        """Get a list of person objects for the given search params.
+
+        :param params: Dictionary specifying the query parameters
 
         >>> people = d.search({'first_name': 'tobias', 'last_name': 'funke'})
         """
         self._request(ENDPOINTS['SEARCH'], params)
 
     def detail_search(self, params):
-        """Return a detailed list of person objects for the given search params, by performing
-        a regular search, and then requesting details for each result.
+        """Get a detailed list of person objects for the given search params
+        by performing  a regular search, and then requesting details
+        for each result.
+
+        :param params: Dictionary specifying the query parameters
 
         >>> people_detailed = d.detail_search({'first_name': 'tobias', 'last_name': 'funke'})
         """
@@ -68,7 +52,9 @@ class Directory(object):
         return response;
 
     def person_details(self, person_id):
-        """Return a detailed person object corresponding to the id. ID should be a string.
+        """Get a detailed person object
+
+        :param person_id: String corresponding to the person's id.
 
         >>> instructor = d.person('jhs878sfd03b38b0d463b16320b5e438')
         """
