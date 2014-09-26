@@ -5,7 +5,7 @@ from penn import directory
 username = None
 password = None
 
-class TestRegistrar(unittest.TestCase):
+class TestDirectory(unittest.TestCase):
 
     def setUp(self):
         self.assertFalse(username is None or password is None)

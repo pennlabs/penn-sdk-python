@@ -7,7 +7,7 @@ from penn import dining
 username = None
 password = None
 
-class TestRegistrar(unittest.TestCase):
+class TestDining(unittest.TestCase):
 
     def setUp(self):
         self.assertFalse(username is None or password is None)

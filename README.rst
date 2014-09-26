@@ -8,8 +8,9 @@ PennSDK: Wrapper for Mulitple Penn APIs
 .. image:: https://pypip.in/d/PennSDK/badge.png
         :target: https://crate.io/packages/PennSDK/
 
-PennSDK is a thin Python wrapper for multiple Penn APIs that provides
-basic convenience functions for consuming the endpoints of each API.
+Penn SDK is the Python library for writing code that interfaces with University of Pennsylvania
+data. It consists of wrappers for the Registrar, Dining, and
+Directory API's
 
 
 Getting an API key

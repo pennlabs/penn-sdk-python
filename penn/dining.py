@@ -21,28 +21,6 @@ class Dining(WrapperBase):
       >>> from penn.dining import Dining
       >>> din = Dining('MY_USERNAME_TOKEN', 'MY_PASSWORD_TOKEN')
     """
-    def __init__(self, bearer, token):
-        self.bearer = bearer
-        self.token = token
-
-    @property
-    def headers(self):
-        """The HTTP headers needed for signed requests"""
-        return {
-            "Authorization-Bearer": self.bearer,
-            "Authorization-Token": self.token,
-        }
-
-    def _request(self, url, params=None):
-        """Make a signed request to the API, raise any API errors, and returning
-        a tuple of (data, metadata)"""
-        response = requests.get(url, params=params, headers=self.headers).json()
-
-        if response['service_meta']['error_text']:
-            raise ValueError(response['service_meta']['error_text'])
-
-        return response
-
     def venues(self):
         """Get a list of all venue objects.
 
@@ -56,7 +34,8 @@ class Dining(WrapperBase):
         """Get a menu object corresponding to the daily menu for the
         venue with building_id.
 
-        :param building_id: The id of the building. Should be a string.
+        :param building_id:
+          A string representing the id of a building, e.g. "abc".
 
 
         >>> commons_today = din.menu_daily("593")
@@ -70,7 +49,8 @@ class Dining(WrapperBase):
         """Get an array of menu objects corresponding to the weekly menu for the
         venue with building_id.
 
-        :param building_id: The id of the building. Should be a string.
+        :param building_id:
+            A string representing the id of a building, e.g. "abc".
 
         >>> commons_week = din.menu_weekly("593")
         """
