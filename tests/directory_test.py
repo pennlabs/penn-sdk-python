@@ -14,7 +14,8 @@ class TestDirectory(unittest.TestCase):
     def test_lastname_search(self):
         person = self.dir.detail_search({'last_name':'Wissmann'})['result_data']
         self.assertEquals(len(person), 1)
-        self.assertEquals(person[0]['detail_name'], "ALEXANDER R WISSMANN")
+        print person
+        self.assertEquals(person[0]['result_data'][0]['detail_name'], "ALEXANDER R WISSMANN")
 
 
 

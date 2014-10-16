@@ -50,7 +50,7 @@ class Directory(WrapperBase):
                 result_data.append(detail)
 
         response['result_data'] = result_data
-        return response;
+        return response
 
     def person_details(self, person_id):
         """Get a detailed person object
