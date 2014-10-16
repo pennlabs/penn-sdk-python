@@ -1,6 +1,6 @@
-"""A module for consuming the Penn Registrar API"""
 from os import path
 import requests
+from base import WrapperBase
 
 
 BASE_URL = "https://esb.isc-seo.upenn.edu/8091/open_data/"
@@ -10,7 +10,7 @@ ENDPOINTS = {
     'SEARCH_PARAMS': BASE_URL + 'course_section_search_parameters'
 }
 
-class Registrar(object):
+class Registrar(WrapperBase):
     """The client for the Registrar. Used to make requests to the API.
 
     :param bearer: The user code for the API
@@ -21,28 +21,6 @@ class Registrar(object):
       >>> from penn.registrar import Registrar
       >>> r = Registrar('MY_USERNAME_TOKEN', 'MY_PASSWORD_TOKEN')
     """
-    def __init__(self, bearer, token):
-        self.bearer = bearer
-        self.token = token
-
-    @property
-    def headers(self):
-        """The HTTP headers needed for signed requests"""
-        return {
-            "Authorization-Bearer": self.bearer,
-            "Authorization-Token": self.token,
-        }
-
-    def _request(self, url, params=None):
-        """Make a signed request to the API, raise any API errors, and returning a tuple
-        of (data, metadata)"""
-        response = requests.get(url, params=params, headers=self.headers).json()
-
-        if response['service_meta']['error_text']:
-            raise ValueError(response['service_meta']['error_text'])
-
-        return response
-
     def _iter_response(self, url, params=None):
         """Return an enumerable that iterates through a multi-page API request"""
         if params is None:
@@ -94,6 +72,8 @@ class Registrar(object):
             return next(sections)
         except StopIteration:
             raise ValueError('Section %s not found' % section_id)
+
+
 
     def search_params(self):
         """Return a dictionary of possible search parameters and their  possible values and
