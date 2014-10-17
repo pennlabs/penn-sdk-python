@@ -38,7 +38,6 @@ class Transit(object):
     def _request(self, url, params=None):
         """Make a signed request to the API, raise any API errors, and returning a tuple
         of (data, metadata)"""
-        print params
         response = requests.get(url, params=params, headers=self.headers).json()
 
         if response['service_meta']['error_text']:
