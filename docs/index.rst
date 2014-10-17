@@ -9,7 +9,8 @@ The Penn SDK
 Release v\ |version|.
 
 Penn SDK is the Python library for writing code that interfaces with University of Pennsylvania
-data. As of now, it consists entirely of the Registrar API wrapper.
+data. It consists of wrappers for the Registrar, Dining, and
+Directory API's
 
 Contents:
 

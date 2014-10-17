@@ -1,6 +1,6 @@
-===============================
-PennSDK: Penn Course API Client
-===============================
+=======================================
+PennSDK: Wrapper for Mulitple Penn APIs
+=======================================
 
 .. image:: https://badge.fury.io/py/PennSDK.png
     :target: http://badge.fury.io/py/PennSDK
@@ -8,28 +8,31 @@ PennSDK: Penn Course API Client
 .. image:: https://pypip.in/d/PennSDK/badge.png
         :target: https://crate.io/packages/PennSDK/
 
-PennSDK is a thin Python wrapper for multiple Penn APIs that provides basic convenience functions for consuming each API's respective endpoints
+Penn SDK is the Python library for writing code that interfaces with University of Pennsylvania
+data. It consists of wrappers for the Registrar, Dining, and
+Directory API's
 
 
 Getting an API key
 ------------------
 
-To use these libraries, you must first obtain an API token and password, which can be done
-here_. There are seperate API tokens for each.
+To use these libraries, you must first obtain an API token and password,
+which can be done here_. There are separate API tokens for each.
 
 
 Documentation
 -------------
 
-The full API documentation can be found at https://esb.isc-seo.upenn.edu/8091/documentation/.
+The full API documentation can be found at
+https://esb.isc-seo.upenn.edu/8091/documentation/.
 
 Documentation for the wrapper can be found at http://penn-sdk.readthedocs.org/
 
 Running Tests
 -------------
 
-Once you have an API token and password, you can run the tests by creating a ``tests/credentials.py``
-file with them as constants. Include:
+Once you have an API token and password, you can run the tests by creating a
+``tests/credentials.py`` file with them as constants. Include:
 
 .. code-block:: python
 
@@ -55,6 +58,8 @@ For the directory API, include:
     DIR_PASSWORD = 'MY_DIRECTORY_PASSWORD'
 
 and run ``python tests/directory_test.py``.
+
+You can also type ``make test`` to run all tests.
 
 Contributing & Bug Reporting
 ----------------------------
