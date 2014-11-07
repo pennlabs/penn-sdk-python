@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 import penn
 
 setup(
@@ -10,7 +10,11 @@ setup(
     version=penn.__version__,
     packages=['penn'],
     license='MIT',
-    long_description=open('README.rst').read(),
+    package_data = {
+        # If any package contains *.txt or *.rst files, include them:
+        '': ['*.txt', '*.rst'],
+    },
+    long_description=open('./README.rst').read(),
     install_requires=[
         'requests==1.2.3'
     ]

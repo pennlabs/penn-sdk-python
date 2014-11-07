@@ -57,3 +57,5 @@ target/
 
 # Misc
 MANIFEST
+docs/_build
+.pypirc
