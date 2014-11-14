@@ -19,7 +19,6 @@ import os
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('..'))
-from penn import registrar
 from penn import __version__
 
 # -- General configuration ------------------------------------------------
@@ -50,7 +49,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Penn SDK'
-copyright = u'2013, PennApps Labs'
+copyright = u'2014, Penn Labs'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -203,7 +202,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
   ('index', 'PennSDK.tex', u'Penn SDK Documentation',
-   u'PennApps Labs', 'manual'),
+   u'Penn Labs', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -233,7 +232,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'pennsdk', u'Penn SDK Documentation',
-     [u'PennApps Labs'], 1)
+     [u'Penn Labs'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -247,7 +246,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'PennSDK', u'Penn SDK Documentation',
-   u'PennApps Labs', 'PennSDK', 'One line description of project.',
+   u'Penn Labs', 'PennSDK', 'One line description of project.',
    'Miscellaneous'),
 ]
 

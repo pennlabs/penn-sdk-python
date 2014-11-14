@@ -1,13 +1,13 @@
 import unittest
 from penn import registrar
 
-# Abuse of globals
-username = None
-password = None
 
 class TestRegistrar(unittest.TestCase):
 
     def setUp(self):
+        from credentials import REG_USERNAME, REG_PASSWORD
+        username = REG_USERNAME
+        password = REG_PASSWORD
         self.assertFalse(username is None or password is None)
         self.reg = registrar.Registrar(username, password)
 
@@ -35,11 +35,3 @@ class TestRegistrar(unittest.TestCase):
     def test_search_params(self):
         params = self.reg.search_params()
         self.assertTrue('activity_map' in params)
-
-
-if __name__ == '__main__':
-    from credentials import REG_USERNAME, REG_PASSWORD
-    username = REG_USERNAME
-    password = REG_PASSWORD
-
-    unittest.main()
