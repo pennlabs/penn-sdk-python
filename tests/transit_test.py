@@ -8,6 +8,9 @@ password = None
 class TestRegistrar(unittest.TestCase):
 
     def setUp(self):
+        from credentials import TRA_USERNAME, TRA_PASSWORD
+        username = TRA_USERNAME
+        password = TRA_PASSWORD
         self.transit = transit.Transit(username, password)
 
     def test_apc(self):
@@ -43,15 +46,3 @@ class TestRegistrar(unittest.TestCase):
         self.assertEquals(data['result_data'][0]['BusStopId'], 29184)
         self.assertEquals(data['result_data'][0]['BusStopName'], 'Pottruck Center, 3701 Walnut St')
 
-
-
-
-if __name__ == '__main__':
-    from credentials import TRA_USERNAME, TRA_PASSWORD
-    username = TRA_USERNAME
-    password = TRA_PASSWORD
-
-    if username is None or password is None:
-        print "You must provide a valid API username and password to run these tests"
-    else:
-        unittest.main()
