@@ -1,5 +1,5 @@
 =======================================
-PennSDK: Wrapper for Mulitple Penn APIs
+PennSDK: Wrapper for Multiple Penn APIs
 =======================================
 
 .. image:: https://badge.fury.io/py/PennSDK.png
