@@ -35,34 +35,25 @@ Running Tests
 -------------
 
 Once you have an API token and password, you can run the tests by creating a
-``tests/credentials.py`` file with them as constants. Include:
+``tests/credentials.py`` file with them as constants. Depending on what you
+want to test, include the following variables. They will be retrieved from your
+environment variables by default.
 
 .. code-block:: python
 
     REG_USERNAME = 'MY_REGISTAR_USERNAME'
     REG_PASSWORD = 'MY_REGISTAR_PASSWORD'
 
-to run ``python tests/registrar_test.py``.
-
-For dining, include:
-
-.. code-block:: python
-
     DIN_USERNAME = 'MY_DINING_USERNAME'
     DIN_PASSWORD = 'MY_DINING_PASSWORD'
-
-and run ``python tests/dining_test.py``.
-
-For the directory API, include:
-
-.. code-block:: python
 
     DIR_USERNAME = 'MY_DIRECTORY_USERNAME'
     DIR_PASSWORD = 'MY_DIRECTORY_PASSWORD'
 
-and run ``python tests/directory_test.py``.
+    TRANSIT_USERNAME = 'MY_DIRECTORY_USERNAME'
+    TRANSIT_PASSWORD = 'MY_DIRECTORY_PASSWORD'
 
-You can also type ``make test`` to run all tests.
+Then run ``make test`` to run all tests in your shell.
 
 Contributing & Bug Reporting
 ----------------------------

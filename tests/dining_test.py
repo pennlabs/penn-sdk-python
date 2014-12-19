@@ -17,4 +17,4 @@ class TestDining(unittest.TestCase):
         self.assertTrue(len(venues) > 0)
         id = str(venues["id"])
         data = self.din.menu_weekly(id)
-        self.assertEquals(len(data["result_data"]["Document"]["tblMenu"]), 7)
+        self.assertTrue(len(data["result_data"]["Document"]["tblMenu"]) > 4)
