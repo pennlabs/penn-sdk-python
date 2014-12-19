@@ -16,5 +16,11 @@ class TestDining(unittest.TestCase):
         venues = venues[0]
         self.assertTrue(len(venues) > 0)
         id = str(venues["id"])
-        data = self.din.menu_weekly(id)
-        self.assertTrue(len(data["result_data"]["Document"]["tblMenu"]) > 4)
+        data = self.din.menu_daily(id)
+        self.assertTrue(
+                len(data["result_data"]["Document"]["tblMenu"]["tblDayPart"][0]) >= 2)
+
+    def test_dining_normalization(self):
+        data = self.din.menu_daily("593")
+        self.assertTrue(isinstance(
+            data["result_data"]["Document"]["tblMenu"]["tblDayPart"], list))

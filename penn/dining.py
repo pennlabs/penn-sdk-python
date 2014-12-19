@@ -43,6 +43,14 @@ class Dining(WrapperBase):
         response = self._request(
             path.join(ENDPOINTS['MENUS'], 'daily', str(building_id))
         )
+        # Normalize `tblDayPart` and `tblItem` to array
+        meals = response["result_data"]["Document"]["tblMenu"]["tblDayPart"]
+        if isinstance(meals, dict):
+            response["result_data"]["Document"]["tblMenu"]["tblDayPart"] = [meals]
+        for meal in response["result_data"]["Document"]["tblMenu"]["tblDayPart"]:
+            for station in meal["tblStation"]:
+                if isinstance(station["tblItem"], dict):
+                    station["tblItem"] = [station["tblItem"]]
         return response
 
     def menu_weekly(self, building_id):
