@@ -24,3 +24,8 @@ class TestDining(unittest.TestCase):
         data = self.din.menu_daily("593")
         self.assertTrue(isinstance(
             data["result_data"]["Document"]["tblMenu"]["tblDayPart"], list))
+
+    def test_dining_venue_normalization(self):
+        data = self.din.venues()
+        self.assertTrue(isinstance(
+            data["result_data"]["document"]["venue"][0]["dateHours"], list))
