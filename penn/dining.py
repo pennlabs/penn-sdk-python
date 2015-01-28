@@ -10,6 +10,20 @@ ENDPOINTS = {
     'VENUES': BASE_URL + 'venues',
 }
 
+# Normalization for dining menu data
+def normalize_weekly(data):
+    for day in data["result_data"]["Document"]["tblMenu"]:
+        for meal in day["tblDayPart"]:
+            if isinstance(meal["tblStation"], dict):
+                meal["tblStation"] = [meal["tblStation"]]
+            for station in meal["tblStation"]:
+                if isinstance(station["tblItem"], dict):
+                    station["tblItem"] = [station["tblItem"]]
+    return data
+
+
+
+
 class Dining(WrapperBase):
     """The client for the Registrar. Used to make requests to the API.
 
@@ -26,8 +40,11 @@ class Dining(WrapperBase):
 
           >>> venues = din.venues()
         """
-
         response = self._request(ENDPOINTS['VENUES'])
+        # Normalize `dateHours` to array
+        for venue in response["result_data"]["document"]["venue"]:
+            if isinstance(venue.get("dateHours"), dict):
+                venue["dateHours"] = [venue["dateHours"]]
         return response
 
     def menu_daily(self, building_id):
@@ -43,6 +60,14 @@ class Dining(WrapperBase):
         response = self._request(
             path.join(ENDPOINTS['MENUS'], 'daily', str(building_id))
         )
+        # Normalize `tblDayPart` and `tblItem` to array
+        meals = response["result_data"]["Document"]["tblMenu"]["tblDayPart"]
+        if isinstance(meals, dict):
+            response["result_data"]["Document"]["tblMenu"]["tblDayPart"] = [meals]
+        for meal in response["result_data"]["Document"]["tblMenu"]["tblDayPart"]:
+            for station in meal["tblStation"]:
+                if isinstance(station["tblItem"], dict):
+                    station["tblItem"] = [station["tblItem"]]
         return response
 
     def menu_weekly(self, building_id):
@@ -55,5 +80,5 @@ class Dining(WrapperBase):
         >>> commons_week = din.menu_weekly("593")
         """
         response = self._request(path.join(ENDPOINTS['MENUS'], 'weekly', str(building_id)))
-        return response
+        return normalize_weekly(response)
 
