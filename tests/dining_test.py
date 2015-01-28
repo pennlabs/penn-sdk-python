@@ -1,5 +1,6 @@
 import unittest
 from penn import dining
+import json
 
 
 class TestDining(unittest.TestCase):
@@ -29,3 +30,21 @@ class TestDining(unittest.TestCase):
         data = self.din.venues()
         self.assertTrue(isinstance(
             data["result_data"]["document"]["venue"][0]["dateHours"], list))
+
+    def test_weekly_normalization_unit(self):
+        json_data = open("tests/menu_data.json").read()
+        data = json.loads(json_data)
+
+        self.assertTrue(isinstance(
+            data["result_data"]["Document"]["tblMenu"][0]["tblDayPart"][0]["tblStation"][6]["tblItem"], dict))
+
+        self.assertTrue(isinstance(
+            data["result_data"]["Document"]["tblMenu"][5]["tblDayPart"][2]["tblStation"], dict))
+
+        new_data = dining.normalize_weekly(data)
+
+        self.assertTrue(isinstance(
+            new_data["result_data"]["Document"]["tblMenu"][0]["tblDayPart"][0]["tblStation"][6]["tblItem"], list))
+
+        self.assertTrue(isinstance(
+            new_data["result_data"]["Document"]["tblMenu"][5]["tblDayPart"][2]["tblStation"], list))
