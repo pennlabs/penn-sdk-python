@@ -2,6 +2,7 @@
 from os import path
 import requests
 from base import WrapperBase
+import json
 
 
 BASE_URL = "https://esb.isc-seo.upenn.edu/8091/open_data/dining/"
@@ -12,7 +13,11 @@ ENDPOINTS = {
 
 # Normalization for dining menu data
 def normalize_weekly(data):
+    if isinstance(data["result_data"]["Document"]["tblMenu"], dict):
+        data["result_data"]["Document"]["tblMenu"] = [data["result_data"]["Document"]["tblMenu"]]
     for day in data["result_data"]["Document"]["tblMenu"]:
+        if isinstance(day["tblDayPart"], dict):
+            day["tblDayPart"] = [day["tblDayPart"]]
         for meal in day["tblDayPart"]:
             if isinstance(meal["tblStation"], dict):
                 meal["tblStation"] = [meal["tblStation"]]
