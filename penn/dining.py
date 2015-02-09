@@ -13,7 +13,7 @@ ENDPOINTS = {
 
 # Normalization for dining menu data
 def normalize_weekly(data):
-    if not data["result_data"]["Document"].has_key("tblMenu"):
+    if not "tblMenu" in data["result_data"]["Document"]:
         data["result_data"]["Document"]["tblMenu"] = []
     if isinstance(data["result_data"]["Document"]["tblMenu"], dict):
         data["result_data"]["Document"]["tblMenu"] = [data["result_data"]["Document"]["tblMenu"]]
