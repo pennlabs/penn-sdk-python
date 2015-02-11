@@ -3,7 +3,7 @@ from penn import News, Map
 import json
 
 
-class TestDining(unittest.TestCase):
+class TestNEM(unittest.TestCase):
 
     def setUp(self):
         from credentials import NEM_USERNAME, NEM_PASSWORD
