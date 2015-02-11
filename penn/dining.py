@@ -1,4 +1,4 @@
-"""A module for consuming the Penn Registrar API"""
+"""A module for consuming the Penn Dining API"""
 from os import path
 import requests
 from base import WrapperBase
@@ -81,4 +81,3 @@ class Dining(WrapperBase):
         """
         response = self._request(path.join(ENDPOINTS['MENUS'], 'weekly', str(building_id)))
         return normalize_weekly(response)
-

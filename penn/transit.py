@@ -1,4 +1,4 @@
-"""A module for consuming the Penn Registrar API"""
+"""A module for consuming the Penn Transit API"""
 from os import path
 import requests
 from base import WrapperBase
