@@ -43,6 +43,6 @@ class TestRegistrar(unittest.TestCase):
         now = datetime.datetime(2014, 9, 16, 22, 24, 52, 91243)
         yesterday = datetime.datetime(2014, 9, 15, 22, 24, 52, 91243)
         data = self.transit.stopinventory(yesterday, now)
-        self.assertEquals(data['result_data'][0]['BusStopId'], 29184)
-        self.assertEquals(data['result_data'][0]['BusStopName'], 'Pottruck Center, 3701 Walnut St')
+        self.assertEquals(type(data['result_data'][0]['BusStopId']), int)
+        self.assertEquals(type(data['result_data'][0]['BusStopName']), unicode)
 
