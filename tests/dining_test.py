@@ -36,7 +36,7 @@ class TestDining(unittest.TestCase):
         data = json.loads(json_data)
 
         self.assertTrue(isinstance(
-            data["result_data"]["Document"]["tblMenu"][0]["tblDayPart"][0]["tblStation"][6]["tblItem"], dict))
+            data["result_data"]["Document"]["tblMenu"][0]["tblDayPart"]["tblStation"][6]["tblItem"], dict))
 
         self.assertTrue(isinstance(
             data["result_data"]["Document"]["tblMenu"][5]["tblDayPart"][2]["tblStation"], dict))
@@ -48,3 +48,6 @@ class TestDining(unittest.TestCase):
 
         self.assertTrue(isinstance(
             new_data["result_data"]["Document"]["tblMenu"][5]["tblDayPart"][2]["tblStation"], list))
+
+        self.assertTrue(isinstance(
+            new_data["result_data"]["Document"]["tblMenu"][0]["tblDayPart"], list))
