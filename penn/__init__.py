@@ -5,5 +5,4 @@ from directory import Directory
 from dining import Dining
 from transit import Transit
 from news import News
-from events import Events
 from map import Map
