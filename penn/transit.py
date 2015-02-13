@@ -9,7 +9,9 @@ ENDPOINTS = {
     'MDT': BASE_URL + 'mdt',
     'TRANSAPC': BASE_URL + 'transapc',
     'STOPINVENTORY': BASE_URL + 'stopinventory',
-    'STOPTIMES': BASE_URL + 'stoptimes'
+    'STOPTIMES': BASE_URL + 'stoptimes',
+    'PREDICTION': BASE_URL + '511/Prediction',
+    'CONFIGURATION': BASE_URL + '511/Configuration'
 }
 
 class Transit(WrapperBase):
@@ -39,7 +41,7 @@ class Transit(WrapperBase):
             'end': self.formatDate(end_date)
         }
         response = self._request(ENDPOINTS['APC'], params)
-        return response;
+        return response
 
     def mdt(self, start_date, end_date):
         """Return a list of venue objects.
@@ -52,7 +54,7 @@ class Transit(WrapperBase):
             'end': self.formatDate(end_date)
         }
         response = self._request(ENDPOINTS['MDT'], params)
-        return response;
+        return response
 
     def transapc(self, start_date, end_date):
         """Return a list of venue objects.
@@ -65,20 +67,35 @@ class Transit(WrapperBase):
             'end': self.formatDate(end_date)
         }
         response = self._request(ENDPOINTS['TRANSAPC'], params)
-        return response;
+        return response
 
-    def stopinventory(self, start_date, end_date):
+    def stopinventory(self):
         """Return a list of venue objects.
 
 
         >>> venues = din.venues()
         """
-        params = {
-            'start': self.formatDate(start_date),
-            'end': self.formatDate(end_date)
-        }
-        response = self._request(ENDPOINTS['STOPINVENTORY'], params)
-        return response;
+        response = self._request(ENDPOINTS['STOPINVENTORY'], None)
+        return response
+
+    def prediction(self):
+        """Return a list of venue objects.
+
+
+        >>> venues = din.venues()
+        """
+        response = self._request(ENDPOINTS['PREDICTION'], None)
+        return response
+
+    def configuration(self):
+        """Return a list of venue objects.
+
+
+        >>> venues = din.venues()
+        """
+        response = self._request(ENDPOINTS['CONFIGURATION'], None)
+        return response
+
 
     def stoptimes(self, start_date, end_date):
         """Return a list of venue objects.
@@ -91,4 +108,4 @@ class Transit(WrapperBase):
             'end': self.formatDate(end_date)
         }
         response = self._request(ENDPOINTS['STOPTIMES'], params)
-        return response;
+        return response
