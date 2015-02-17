@@ -9,7 +9,9 @@ ENDPOINTS = {
     'MDT': BASE_URL + 'mdt',
     'TRANSAPC': BASE_URL + 'transapc',
     'STOPINVENTORY': BASE_URL + 'stopinventory',
-    'STOPTIMES': BASE_URL + 'stoptimes'
+    'STOPTIMES': BASE_URL + 'stoptimes',
+    'PREDICTION': BASE_URL + '511/Prediction',
+    'CONFIGURATION': BASE_URL + '511/Configuration'
 }
 
 class Transit(WrapperBase):
@@ -29,66 +31,60 @@ class Transit(WrapperBase):
         return date.strftime("%m/%d/%Y")+ " " + date.strftime("%H:%M:%S")
 
     def apc(self, start_date, end_date):
-        """Return a list of venue objects.
-
-
-        >>> venues = din.venues()
+        """APC data for transit
         """
         params = {
             'start': self.formatDate(start_date),
             'end': self.formatDate(end_date)
         }
         response = self._request(ENDPOINTS['APC'], params)
-        return response;
+        return response
 
     def mdt(self, start_date, end_date):
-        """Return a list of venue objects.
-
-
-        >>> venues = din.venues()
+        """MDT data for transit
         """
         params = {
             'start': self.formatDate(start_date),
             'end': self.formatDate(end_date)
         }
         response = self._request(ENDPOINTS['MDT'], params)
-        return response;
+        return response
 
     def transapc(self, start_date, end_date):
-        """Return a list of venue objects.
-
-
-        >>> venues = din.venues()
+        """TransAPC API
         """
         params = {
             'start': self.formatDate(start_date),
             'end': self.formatDate(end_date)
         }
         response = self._request(ENDPOINTS['TRANSAPC'], params)
-        return response;
+        return response
 
-    def stopinventory(self, start_date, end_date):
-        """Return a list of venue objects.
-
-
-        >>> venues = din.venues()
+    def stopinventory(self):
+        """Return a list all transit stops.
         """
-        params = {
-            'start': self.formatDate(start_date),
-            'end': self.formatDate(end_date)
-        }
-        response = self._request(ENDPOINTS['STOPINVENTORY'], params)
-        return response;
+        response = self._request(ENDPOINTS['STOPINVENTORY'])
+        return response
+
+    def prediction(self):
+        """Return route data and time predictions
+        """
+        response = self._request(ENDPOINTS['PREDICTION'])
+        return response
+
+    def configuration(self):
+        """Return route config info
+        """
+        response = self._request(ENDPOINTS['CONFIGURATION'])
+        return response
+
 
     def stoptimes(self, start_date, end_date):
-        """Return a list of venue objects.
-
-
-        >>> venues = din.venues()
+        """Return the stop times between start_date and end_date
         """
         params = {
             'start': self.formatDate(start_date),
             'end': self.formatDate(end_date)
         }
         response = self._request(ENDPOINTS['STOPTIMES'], params)
-        return response;
+        return response
