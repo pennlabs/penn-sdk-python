@@ -31,10 +31,7 @@ class Transit(WrapperBase):
         return date.strftime("%m/%d/%Y")+ " " + date.strftime("%H:%M:%S")
 
     def apc(self, start_date, end_date):
-        """Return a list of venue objects.
-
-
-        >>> venues = din.venues()
+        """APC data for transit
         """
         params = {
             'start': self.formatDate(start_date),
@@ -44,10 +41,7 @@ class Transit(WrapperBase):
         return response
 
     def mdt(self, start_date, end_date):
-        """Return a list of venue objects.
-
-
-        >>> venues = din.venues()
+        """MDT data for transit
         """
         params = {
             'start': self.formatDate(start_date),
@@ -57,10 +51,7 @@ class Transit(WrapperBase):
         return response
 
     def transapc(self, start_date, end_date):
-        """Return a list of venue objects.
-
-
-        >>> venues = din.venues()
+        """TransAPC API
         """
         params = {
             'start': self.formatDate(start_date),
@@ -70,38 +61,26 @@ class Transit(WrapperBase):
         return response
 
     def stopinventory(self):
-        """Return a list of venue objects.
-
-
-        >>> venues = din.venues()
+        """Return a list all transit stops.
         """
-        response = self._request(ENDPOINTS['STOPINVENTORY'], None)
+        response = self._request(ENDPOINTS['STOPINVENTORY'])
         return response
 
     def prediction(self):
-        """Return a list of venue objects.
-
-
-        >>> venues = din.venues()
+        """Return route data and time predictions
         """
-        response = self._request(ENDPOINTS['PREDICTION'], None)
+        response = self._request(ENDPOINTS['PREDICTION'])
         return response
 
     def configuration(self):
-        """Return a list of venue objects.
-
-
-        >>> venues = din.venues()
+        """Return route config info
         """
-        response = self._request(ENDPOINTS['CONFIGURATION'], None)
+        response = self._request(ENDPOINTS['CONFIGURATION'])
         return response
 
 
     def stoptimes(self, start_date, end_date):
-        """Return a list of venue objects.
-
-
-        >>> venues = din.venues()
+        """Return the stop times between start_date and end_date
         """
         params = {
             'start': self.formatDate(start_date),
