@@ -27,12 +27,10 @@ class Transit(WrapperBase):
     """
 
     def formatDate(self, date):
-        #print date.strftime("%d/%m/%Y")+ "%20" + date.strftime("%H24:%M:%S")
         return date.strftime("%m/%d/%Y")+ " " + date.strftime("%H:%M:%S")
 
     def apc(self, start_date, end_date):
-        """APC data for transit
-        """
+        """APC data for transit."""
         params = {
             'start': self.formatDate(start_date),
             'end': self.formatDate(end_date)
@@ -41,8 +39,7 @@ class Transit(WrapperBase):
         return response
 
     def mdt(self, start_date, end_date):
-        """MDT data for transit
-        """
+        """MDT data for transit."""
         params = {
             'start': self.formatDate(start_date),
             'end': self.formatDate(end_date)
@@ -51,8 +48,7 @@ class Transit(WrapperBase):
         return response
 
     def transapc(self, start_date, end_date):
-        """TransAPC API
-        """
+        """TransAPC API."""
         params = {
             'start': self.formatDate(start_date),
             'end': self.formatDate(end_date)
@@ -61,27 +57,23 @@ class Transit(WrapperBase):
         return response
 
     def stopinventory(self):
-        """Return a list all transit stops.
-        """
+        """Return a list all transit stops."""
         response = self._request(ENDPOINTS['STOPINVENTORY'])
         return response
 
     def prediction(self):
-        """Return route data and time predictions
-        """
+        """Return route data and time predictions."""
         response = self._request(ENDPOINTS['PREDICTION'])
         return response
 
     def configuration(self):
-        """Return route config info
-        """
+        """Return route config info."""
         response = self._request(ENDPOINTS['CONFIGURATION'])
         return response
 
 
     def stoptimes(self, start_date, end_date):
-        """Return the stop times between start_date and end_date
-        """
+        """Return the stop times between start_date and end_date."""
         params = {
             'start': self.formatDate(start_date),
             'end': self.formatDate(end_date)
