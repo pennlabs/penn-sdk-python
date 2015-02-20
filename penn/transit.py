@@ -48,7 +48,9 @@ class Transit(WrapperBase):
         return response
 
     def transapc(self, start_date, end_date):
-        """TransAPC API."""
+        """Return detail of boardings, alightings, by vehicle and stop,
+        including the passenger load leaving the stop.
+        """
         params = {
             'start': self.formatDate(start_date),
             'end': self.formatDate(end_date)
