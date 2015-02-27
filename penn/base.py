@@ -22,10 +22,7 @@ class WrapperBase(object):
         if response.status_code != 200:
             raise ValueError('Request to {} returned {}'.format(response.url, response.status_code))
 
-        # ISC is giving us non utf-8 json :(
-        text = response.text.encode('utf-8')
-
-        response = json.loads(text)
+        response = response.json()
 
         if response['service_meta']['error_text']:
             raise ValueError(response['service_meta']['error_text'])

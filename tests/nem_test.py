@@ -19,5 +19,5 @@ class TestNEM(unittest.TestCase):
 
 
     def test_map(self):
-        data = self.map.search("pennsylvania")
+        data = self.map.search("Towne")
         self.assertEquals(data['result_data'][0]['content_type'], 'map')
