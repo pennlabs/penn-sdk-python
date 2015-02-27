@@ -20,3 +20,4 @@ Contents:
   registrar
   dining
   directory
+  transit
