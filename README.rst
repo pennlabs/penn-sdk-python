@@ -20,7 +20,9 @@ Getting an API key
 ------------------
 
 To use these libraries, you must first obtain an API token and password,
-which can be done here_. There are separate API tokens for each.
+which can be done here_. There are separate API tokens and password for each of dining, registrar, news/events/maps, transit, and directory.
+
+There is also a Laundry API, which doesn't need a key.
 
 
 Documentation
@@ -30,6 +32,27 @@ The full API documentation can be found at
 https://esb.isc-seo.upenn.edu/8091/documentation/.
 
 Documentation for the wrapper can be found at http://penn-sdk.readthedocs.org/
+
+Getting Started
+---------------
+Once you have an API token and Password, you can use the wrapper as follows.
+
+.. code-block:: python
+
+    from penn import Registrar
+
+    REG_USERNAME = 'MY_REGISTAR_USERNAME'
+    REG_PASSWORD = 'MY_REGISTRAR_PASSWORD'
+
+    r = Registrar(REG_USERNAME, REG_PASSWORD)
+
+    cis120 = r.course('cis', '120')
+
+    # cis120 is a dictionary parsed from the API json
+    my_data = cis120['result_data']
+
+All of the different services follow this same basic format, save the Laundry API, which doesn't need a username and password passed in at initialization. Refer to the wrapper documentation at http://penn-sdk.readthedocs.org/ for more info.
+
 
 Running Tests
 -------------
