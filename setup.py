@@ -1,5 +1,5 @@
 from setuptools import setup
-import penn
+
 
 setup(
     name='PennSDK',
@@ -7,7 +7,7 @@ setup(
     url='https://github.com/pennappslabs/penn-sdk-python',
     author='Penn Labs',
     author_email='pennappslabs@gmail.com',
-    version=penn.__version__,
+    version='1.1',
     packages=['penn'],
     license='MIT',
     package_data = {
