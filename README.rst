@@ -33,6 +33,21 @@ https://esb.isc-seo.upenn.edu/8091/documentation/.
 
 Documentation for the wrapper can be found at http://penn-sdk.readthedocs.org/
 
+Installation
+------------
+
+You can install PennSDK easily using pip
+
+.. code-block::
+
+   $ sudo pip install PennSDK
+
+easy_install also works
+
+.. code-block::
+
+   # sudo easy_install PennSDK
+
 Getting Started
 ---------------
 Once you have an API token and Password, you can use the wrapper as follows.
