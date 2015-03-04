@@ -17,7 +17,7 @@ class Directory(WrapperBase):
 
     Usage::
 
-      >>> from penn.directory import Directory
+      >>> from penn import Directory
       >>> d = Directory('MY_USERNAME_TOKEN', 'MY_PASSWORD_TOKEN')
     """
 

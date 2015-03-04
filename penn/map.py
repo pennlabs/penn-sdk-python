@@ -21,6 +21,13 @@ class Map(WrapperBase):
     """
 
     def search(self, keyword):
+        """Return all buildings related to the provided query.
+
+        :param keyword:
+            The keyword for your map search
+
+        >>> results = n.search('Harrison')
+        """
         params = {
             "source": "map",
             "description": keyword

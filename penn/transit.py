@@ -22,7 +22,7 @@ class Transit(WrapperBase):
 
     Usage::
 
-      >>> from penn.transit import Transit
+      >>> from penn import Transit
       >>> trans = Transit('MY_USERNAME_TOKEN', 'MY_PASSWORD_TOKEN')
     """
 
@@ -30,7 +30,16 @@ class Transit(WrapperBase):
         return date.strftime("%m/%d/%Y")+ " " + date.strftime("%H:%M:%S")
 
     def apc(self, start_date, end_date):
-        """APC data for transit."""
+        """Return all APC data packets in date range
+
+        :param start_date:
+            The starting date for the query.
+        :param end_date:
+            The end date for the query.
+        >>> import datetime
+        >>> today = datetime.date.today()
+        >>> trans.apc(today - datetime.timedelta(days=1), today))
+        """
         params = {
             'start': self.formatDate(start_date),
             'end': self.formatDate(end_date)
@@ -39,7 +48,17 @@ class Transit(WrapperBase):
         return response
 
     def mdt(self, start_date, end_date):
-        """MDT data for transit."""
+        """Return all MDT data packets in date range
+
+        :param start_date:
+            The starting date for the query.
+        :param end_date:
+            The end date for the query.
+        >>> import datetime
+        >>> today = datetime.date.today()
+        >>> trans.mdt(today - datetime.timedelta(days=1), today))
+        """
+
         params = {
             'start': self.formatDate(start_date),
             'end': self.formatDate(end_date)
@@ -48,8 +67,16 @@ class Transit(WrapperBase):
         return response
 
     def transapc(self, start_date, end_date):
-        """Return detail of boardings, alightings, by vehicle and stop,
-        including the passenger load leaving the stop.
+
+        """Return detail of boardings, alightings, by vehicle and stop, including the passenger load leaving the stop (this is only for vehicles equipped with APC hardware)
+        :param start_date:
+            The starting date for the query.
+        :param end_date:
+            The end date for the query.
+        >>> import datetime
+        >>> today = datetime.date.today()
+        >>> trans.transapc(today - datetime.timedelta(days=1), today))
+
         """
         params = {
             'start': self.formatDate(start_date),
@@ -59,23 +86,41 @@ class Transit(WrapperBase):
         return response
 
     def stopinventory(self):
-        """Return a list all transit stops."""
+        """Return a list all transit stops.
+
+        >>> stops = trans.stopinventory()
+        """
         response = self._request(ENDPOINTS['STOPINVENTORY'])
         return response
 
     def prediction(self):
-        """Return route data and time predictions."""
+        """Return route data and time predictions
+
+        >>> predictions = trans.prediction()
+        """
         response = self._request(ENDPOINTS['PREDICTION'])
         return response
 
     def configuration(self):
-        """Return route config info."""
+        """Return route configuration info
+
+        >>> route_config = trans.configuration()
+        """
         response = self._request(ENDPOINTS['CONFIGURATION'])
         return response
 
 
     def stoptimes(self, start_date, end_date):
-        """Return the stop times between start_date and end_date."""
+        """Return all stop times in the date range
+
+        :param start_date:
+            The starting date for the query.
+        :param end_date:
+            The end date for the query.
+        >>> import datetime
+        >>> today = datetime.date.today()
+        >>> trans.stoptimes(today - datetime.timedelta(days=1), today))
+        """
         params = {
             'start': self.formatDate(start_date),
             'end': self.formatDate(end_date)

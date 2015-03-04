@@ -21,6 +21,13 @@ class News(WrapperBase):
     """
 
     def search(self, keyword):
+        """Return all news related to the provided query.
+
+        :param keyword:
+            The keyword for your news search
+
+        >>> results = n.search('interview')
+        """
         params = {
             "source": "news",
             "description": keyword

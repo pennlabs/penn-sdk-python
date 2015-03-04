@@ -1,5 +1,5 @@
 from setuptools import setup
-import penn
+
 
 setup(
     name='PennSDK',
@@ -7,7 +7,7 @@ setup(
     url='https://github.com/pennappslabs/penn-sdk-python',
     author='Penn Labs',
     author_email='pennappslabs@gmail.com',
-    version=penn.__version__,
+    version='1.1',
     packages=['penn'],
     license='MIT',
     package_data = {
@@ -16,6 +16,8 @@ setup(
     },
     long_description=open('./README.rst').read(),
     install_requires=[
-        'requests==1.2.3'
+        'requests==2.4.3',
+        'beautifulsoup4==4.3.2',
+        'html5lib==0.999'
     ]
 )
