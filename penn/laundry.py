@@ -4,12 +4,22 @@ import re
 import html5lib
 
 class Laundry(object):
+  """The client for Laundry. Used to make requests to the API.
 
+    Usage::
+
+      >>> from penn import Laundry
+      >>> l = Laundry()
+  """
 
   def __init__(self):
     pass
 
   def all_status(self):
+    """Return names, hall numbers, and the washers/dryers available for all rooms in the system
+
+    >>> all_laundry = l.all_status()
+    """
     r = requests.get('https://www.laundryalert.com/cgi-bin/penn6389/LMPage?Login=True')
     print r.status_code
     if r.status_code == 200:
@@ -18,14 +28,20 @@ class Laundry(object):
 
       hall_dict = dict()
 
-      # Get hall number info
+      # This bit of code generates a dict of hallname->hall number by
+      # parsing the link href of each room
       for link in info_table.find_all('a', class_='buttlink'):
         def get_hall_no(href):
           return int(re.search(r"Halls=(\d+)", href).group(1))
         hall_dict[link.get_text().strip()] = get_hall_no(link.get('href'))
+
+      # Parse the table into the relevant data
       data = [filter(lambda x: len(x) > 0, [val.get_text().strip() for val in row.find_all('td')]) for row in info_table.find_all('tr')]
+
+      # Remove the header row and all empty rows
       data_improved = (filter(lambda x: len(x) > 0, data))[1:]
 
+      # Construct the final JSON
       laundry_dict = dict()
       for row in data_improved[1:]:
         room_dict = dict()
@@ -39,6 +55,13 @@ class Laundry(object):
 
 
   def hall_status(self, hall_no):
+    """Return the status of each specific washer/dryer in a particular laundry room.
+
+    :param hall_no:
+       integer corresponding to the id number for the hall. Thus number is returned as part of the all_status call.
+
+    >>> english_house = l.hall_status(2)
+    """
     try:
       num = int(hall_no)
     except ValueError:
@@ -66,4 +89,3 @@ class Laundry(object):
       return {'machines': map(toDict, data_improved), 'hall_name': hall_name}
     else:
       return {'error': 'The laundry api is currently unavailable.'}
-

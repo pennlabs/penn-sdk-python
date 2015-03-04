@@ -39,7 +39,7 @@ class Dining(WrapperBase):
 
     Usage::
 
-      >>> from penn.dining import Dining
+      >>> from penn import Dining
       >>> din = Dining('MY_USERNAME_TOKEN', 'MY_PASSWORD_TOKEN')
     """
     def venues(self):

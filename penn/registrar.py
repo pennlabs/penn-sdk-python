@@ -18,7 +18,7 @@ class Registrar(WrapperBase):
 
     Usage::
 
-      >>> from penn.registrar import Registrar
+      >>> from penn import Registrar
       >>> r = Registrar('MY_USERNAME_TOKEN', 'MY_PASSWORD_TOKEN')
     """
     def _iter_response(self, url, params=None):
