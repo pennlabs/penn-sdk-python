@@ -38,6 +38,7 @@ Getting Started
 Once you have an API token and Password, you can use the wrapper as follows.
 
 .. code-block:: python
+
     from penn import Registrar
 
     REG_USERNAME = 'MY_REGISTAR_USERNAME'
