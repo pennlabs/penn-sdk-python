@@ -20,7 +20,6 @@ class Laundry(object):
     >>> all_laundry = l.all_status()
     """
     r = requests.get('https://www.laundryalert.com/cgi-bin/penn6389/LMPage?Login=True')
-    print r.status_code
     if r.status_code == 200:
       parsed = BeautifulSoup(r.text)
       info_table = parsed.find_all('table')[2]
