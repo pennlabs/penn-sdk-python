@@ -1,8 +1,6 @@
 """A module for consuming the Penn Dining API"""
 from os import path
-import requests
 from base import WrapperBase
-import json
 
 
 BASE_URL = "https://esb.isc-seo.upenn.edu/8091/open_data/dining/"

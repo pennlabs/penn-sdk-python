@@ -1,5 +1,3 @@
-from os import path
-import requests
 from base import WrapperBase
 
 

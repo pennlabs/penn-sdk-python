@@ -51,7 +51,7 @@ Once you have an API token and Password, you can use the wrapper as follows.
     # cis120 is a dictionary parsed from the API json
     my_data = cis120['result_data']
 
-All of the different services follow this same basic format, save the Laundry API, which doesn't need a username and password passed in at initialization. Refer to the wrapper documentation at http://penn-sdk.readthedocs.org/ for more info.
+All of other services (Dining, Directory, Transit, News, Map) follow this same basic format, except for the Laundry API, which doesn't need a username and password passed in at initialization. Refer to the wrapper documentation at http://penn-sdk.readthedocs.org/ for more info.
 
 
 Running Tests

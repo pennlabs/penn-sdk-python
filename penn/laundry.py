@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
 import re
-import html5lib
 
 class Laundry(object):
   """The client for Laundry. Used to make requests to the API.
