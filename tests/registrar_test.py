@@ -35,3 +35,15 @@ class TestRegistrar(unittest.TestCase):
     def test_search_params(self):
         params = self.reg.search_params()
         self.assertTrue('activity_map' in params)
+
+    def test_search_validation_bad_param(self):
+        results = self.reg.search({'foo':'bar'}, validate=True)
+        self.assertEquals('This is not a valid parameter', results['Errors']['foo'])
+
+    def test_search_validation_bad_value(self):
+        results = self.reg.search({'activity':'foo'}, validate=True)
+        self.assertEquals('Invalid value for this parameter', results['Errors']['activity'])
+
+    def test_search_validation_all_good(self):
+        cis_search = self.reg.search({'course_id': 'cis'})
+        self.assertTrue(type(cis_search) != dict)
