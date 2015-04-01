@@ -1,5 +1,4 @@
 from os import path
-import requests
 from base import WrapperBase
 
 
@@ -21,6 +20,10 @@ class Registrar(WrapperBase):
       >>> from penn import Registrar
       >>> r = Registrar('MY_USERNAME_TOKEN', 'MY_PASSWORD_TOKEN')
     """
+    def __init__(self, bearer, token):
+        WrapperBase.__init__(self, bearer, token)
+        self.val_info = None
+
     def _iter_response(self, url, params=None):
         """Return an enumerable that iterates through a multi-page API request"""
         if params is None:
@@ -40,12 +43,23 @@ class Registrar(WrapperBase):
 
             params['page_number'] += 1
 
-    def search(self, params):
+    def search(self, params, validate=False):
         """Return a generator of section objects for the given search params.
+
+        :param params: Dictionary of course search parameters.
+        :param validate: Optional. Set to true to enable request validation.
 
         >>> cis100s = r.search({'course_id': 'cis', 'course_level_at_or_below': '200'})
         """
-        return self._iter_response(ENDPOINTS['SEARCH'], params)
+        if self.val_info is None:
+            self.val_info = self.search_params()
+
+        if validate:
+            errors = self.validate(self.val_info, params)
+        if not validate or len(errors) == 0 :
+            return self._iter_response(ENDPOINTS['SEARCH'], params)
+        else:
+            return {'Errors': errors}
 
     def course(self, dept, course_number):
         """Return an object of semester-independent course info. All arguments should be strings.
