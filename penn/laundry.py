@@ -40,7 +40,7 @@ class Laundry(object):
       data_improved = (filter(lambda x: len(x) > 0, data))[1:]
 
       # Construct the final JSON
-      laundry_dict = dict()
+      laundry_rooms = []
       for row in data_improved[1:]:
         room_dict = dict()
         room_dict['washers_available'] = int(row[1])
@@ -48,8 +48,9 @@ class Laundry(object):
         room_dict['washers_in_use'] = int(row[3])
         room_dict['dryers_in_use'] = int(row[4])
         room_dict['hall_no'] = hall_dict[row[0]]
-        laundry_dict[row[0]] = room_dict
-      return laundry_dict
+        room_dict['name'] = row[0]
+        laundry_rooms.append(room_dict)
+      return laundry_rooms
 
 
   def hall_status(self, hall_no):
