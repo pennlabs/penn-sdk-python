@@ -1,5 +1,4 @@
 import unittest
-import penn
 from penn import Laundry
 
 
@@ -10,7 +9,8 @@ class TestLaundry(unittest.TestCase):
 
     def test_all(self):
         data = self.laundry.all_status()
-        self.assertEquals(data['Harrison-6th FL']['hall_no'], 17)
+        self.assertEquals('DuBois House', data[0]['name'])
+        self.assertEquals(54, len(data))
 
 
     def test_map(self):
