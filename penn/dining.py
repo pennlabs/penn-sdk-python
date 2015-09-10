@@ -74,6 +74,8 @@ class Dining(WrapperBase):
         if isinstance(meals, dict):
             response["result_data"]["Document"]["tblMenu"]["tblDayPart"] = [meals]
         for meal in response["result_data"]["Document"]["tblMenu"]["tblDayPart"]:
+            if isinstance(meal["tblStation"], dict):
+                meal["tblStation"] = [meal["tblStation"]]
             for station in meal["tblStation"]:
                 if isinstance(station["tblItem"], dict):
                     station["tblItem"] = [station["tblItem"]]
