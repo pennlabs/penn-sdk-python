@@ -18,7 +18,7 @@ class WrapperBase(object):
     def _request(self, url, params=None):
         """Make a signed request to the API, raise any API errors, and returning a tuple
         of (data, metadata)"""
-        response = get(url, params=params, headers=self.headers)
+        response = get(url, params=params, headers=self.headers, timeout=10)
         if response.status_code != 200:
             raise ValueError('Request to {} returned {}'.format(response.url, response.status_code))
 
