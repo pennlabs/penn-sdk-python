@@ -1,10 +1,10 @@
 from .base import WrapperBase
 
-
 BASE_URL = "https://esb.isc-seo.upenn.edu/8091/open_data/"
 ENDPOINTS = {
     'SEARCH': BASE_URL + 'news_events_maps'
 }
+
 
 class Map(WrapperBase):
     """The client for the Map Search API.

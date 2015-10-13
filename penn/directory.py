@@ -8,6 +8,7 @@ ENDPOINTS = {
     'DETAILS': BASE_URL + 'directory_person_details',
 }
 
+
 class Directory(WrapperBase):
     """The client for the Directory. Used to make requests to the API.
 

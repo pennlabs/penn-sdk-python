@@ -6,6 +6,7 @@ ENDPOINTS = {
     'SEARCH': BASE_URL + 'news_events_maps'
 }
 
+
 class News(WrapperBase):
     """The client for the News Search API.
 
