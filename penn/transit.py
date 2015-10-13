@@ -1,5 +1,5 @@
 """A module for consuming the Penn Transit API"""
-from base import WrapperBase
+from .base import WrapperBase
 
 BASE_URL = "https://esb.isc-seo.upenn.edu/8091/open_data/transit/"
 ENDPOINTS = {

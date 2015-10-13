@@ -14,7 +14,7 @@ class TestLaundry(unittest.TestCase):
 
 
     def test_single_hall(self):
-        for i in xrange(5):
+        for i in range(5):
             data = self.laundry.hall_status(i)
             self.assertEquals(data['machines'][0]['number'], '1')
 

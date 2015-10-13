@@ -1,4 +1,4 @@
-from base import WrapperBase
+from .base import WrapperBase
 
 
 BASE_URL = "https://esb.isc-seo.upenn.edu/8091/open_data/"
@@ -33,4 +33,4 @@ class News(WrapperBase):
 
         data = self._request(ENDPOINTS['SEARCH'], params)
         data['result_data'] = filter(lambda x: type(x) == dict, data['result_data'])
-        return data
+        return list(data)

@@ -34,10 +34,10 @@ class Laundry(object):
         hall_dict[link.get_text().strip()] = get_hall_no(link.get('href'))
 
       # Parse the table into the relevant data
-      data = [filter(lambda x: len(x) > 0, [val.get_text().strip() for val in row.find_all('td')]) for row in info_table.find_all('tr')]
+      data = [list(filter(lambda x: len(x) > 0, [val.get_text().strip() for val in row.find_all('td')])) for row in info_table.find_all('tr')]
 
       # Remove the header row and all empty rows
-      data_improved = (filter(lambda x: len(x) > 0, data))[1:]
+      data_improved = list(filter(lambda x: len(list(x)) > 0, data))[1:]
 
       # Construct the final JSON
       laundry_rooms = []
@@ -72,8 +72,8 @@ class Laundry(object):
       tables = parsed.find_all('table')
       hall_name = tables[2].get_text().strip()
       info_table = tables[4]
-      data = [filter(lambda x: len(x) > 0, [val.get_text().strip() for val in row.find_all('td')]) for row in info_table.find_all('tr')]
-      data_improved = (filter(lambda x: len(x) > 0, data))[1:]
+      data = [list(filter(lambda x: len(x) > 0, [val.get_text().strip() for val in row.find_all('td')])) for row in info_table.find_all('tr')]
+      data_improved = list(filter(lambda x: len(x) > 0, data))[1:]
       def toDict(data_row):
         d = dict()
         d['number'] = data_row[0]
@@ -85,6 +85,6 @@ class Laundry(object):
           d['time_left'] = None
         return d
 
-      return {'machines': map(toDict, data_improved), 'hall_name': hall_name}
+      return {'machines': list(map(toDict, data_improved)), 'hall_name': hall_name}
     else:
       return {'error': 'The laundry api is currently unavailable.'}
