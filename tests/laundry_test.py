@@ -9,8 +9,8 @@ class TestLaundry(unittest.TestCase):
 
     def test_all(self):
         data = self.laundry.all_status()
-        self.assertEquals('DuBois House', data[0]['name'])
-        self.assertEquals(54, len(data))
+        self.assertEquals('Class of 1925 House', data[0]['name'])
+        self.assertEquals(55, len(data))
 
 
     def test_single_hall(self):
