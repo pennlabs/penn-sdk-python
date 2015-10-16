@@ -1,6 +1,6 @@
 """A module for consuming the Penn Dining API"""
 from os import path
-from base import WrapperBase
+from .base import WrapperBase
 
 
 BASE_URL = "https://esb.isc-seo.upenn.edu/8091/open_data/dining/"
@@ -9,9 +9,10 @@ ENDPOINTS = {
     'VENUES': BASE_URL + 'venues',
 }
 
+
 # Normalization for dining menu data
 def normalize_weekly(data):
-    if not "tblMenu" in data["result_data"]["Document"]:
+    if "tblMenu" not in data["result_data"]["Document"]:
         data["result_data"]["Document"]["tblMenu"] = []
     if isinstance(data["result_data"]["Document"]["tblMenu"], dict):
         data["result_data"]["Document"]["tblMenu"] = [data["result_data"]["Document"]["tblMenu"]]
@@ -25,8 +26,6 @@ def normalize_weekly(data):
                 if isinstance(station["tblItem"], dict):
                     station["tblItem"] = [station["tblItem"]]
     return data
-
-
 
 
 class Dining(WrapperBase):

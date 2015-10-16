@@ -1,5 +1,5 @@
 """A module for consuming the Penn Transit API"""
-from base import WrapperBase
+from .base import WrapperBase
 
 BASE_URL = "https://esb.isc-seo.upenn.edu/8091/open_data/transit/"
 ENDPOINTS = {
@@ -11,6 +11,7 @@ ENDPOINTS = {
     'PREDICTION': BASE_URL + '511/Prediction',
     'CONFIGURATION': BASE_URL + '511/Configuration'
 }
+
 
 class Transit(WrapperBase):
     """The client for Transit. Used to make requests to the API.
@@ -25,7 +26,7 @@ class Transit(WrapperBase):
     """
 
     def formatDate(self, date):
-        return date.strftime("%m/%d/%Y")+ " " + date.strftime("%H:%M:%S")
+        return date.strftime("%m/%d/%Y") + " " + date.strftime("%H:%M:%S")
 
     def apc(self, start_date, end_date):
         """Return all APC data packets in date range
@@ -66,7 +67,10 @@ class Transit(WrapperBase):
 
     def transapc(self, start_date, end_date):
 
-        """Return detail of boardings, alightings, by vehicle and stop, including the passenger load leaving the stop (this is only for vehicles equipped with APC hardware)
+        """Return detail of boardings, alightings, by vehicle and stop,
+        including the passenger load leaving the stop (this is only for
+        vehicles equipped with APC hardware)
+
         :param start_date:
             The starting date for the query.
         :param end_date:
@@ -106,7 +110,6 @@ class Transit(WrapperBase):
         """
         response = self._request(ENDPOINTS['CONFIGURATION'])
         return response
-
 
     def stoptimes(self, start_date, end_date):
         """Return all stop times in the date range
