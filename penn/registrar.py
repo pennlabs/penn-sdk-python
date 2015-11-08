@@ -1,5 +1,5 @@
 from os import path
-from base import WrapperBase
+from .base import WrapperBase
 
 
 BASE_URL = "https://esb.isc-seo.upenn.edu/8091/open_data/"
@@ -8,6 +8,7 @@ ENDPOINTS = {
     'SEARCH': BASE_URL + 'course_section_search',
     'SEARCH_PARAMS': BASE_URL + 'course_section_search_parameters'
 }
+
 
 class Registrar(WrapperBase):
     """The client for the Registrar. Used to make requests to the API.
@@ -56,13 +57,14 @@ class Registrar(WrapperBase):
 
         if validate:
             errors = self.validate(self.val_info, params)
-        if not validate or len(errors) == 0 :
+        if not validate or len(errors) == 0:
             return self._iter_response(ENDPOINTS['SEARCH'], params)
         else:
             return {'Errors': errors}
 
     def course(self, dept, course_number):
-        """Return an object of semester-independent course info. All arguments should be strings.
+        """Return an object of semester-independent course info. All arguments
+        should be strings.
 
         >>> cis120 = r.course('cis', '120')
         """
@@ -70,13 +72,14 @@ class Registrar(WrapperBase):
         return response['result_data'][0]
 
     def department(self, dept):
-        """Return an iterator of all course-info objects in a department, in no particular order.
+        """Return an iterator of all course-info objects in a department, in no
+        particular order.
         """
         return self._iter_response(path.join(ENDPOINTS['CATALOG'], dept))
 
     def section(self, dept, course_number, sect_number):
-        """Return a single section object for the given section. All arguments should be
-        strings. Throws a `ValueError` if the section is not found.
+        """Return a single section object for the given section. All arguments
+        should be strings. Throws a `ValueError` if the section is not found.
 
         >>> lgst101_bfs = r.course('lgst', '101', '301')
         """
@@ -87,10 +90,8 @@ class Registrar(WrapperBase):
         except StopIteration:
             raise ValueError('Section %s not found' % section_id)
 
-
-
     def search_params(self):
-        """Return a dictionary of possible search parameters and their  possible values and
-        descriptions.
+        """Return a dictionary of possible search parameters and their possible
+        values and descriptions.
         """
         return self._request(ENDPOINTS['SEARCH_PARAMS'])['result_data'][0]

@@ -5,7 +5,14 @@ import datetime
 username = None
 password = None
 
-class TestRegistrar(unittest.TestCase):
+# Python 3 string types
+try:
+    basestring
+except NameError:
+    basestring = str
+
+
+class TestTransit(unittest.TestCase):
 
     def setUp(self):
         from credentials import TRA_USERNAME, TRA_PASSWORD
@@ -40,9 +47,6 @@ class TestRegistrar(unittest.TestCase):
         self.assertEquals(data['result_data'][0]['Dep'], '9/15/2014 10:25:54 PM')
 
     def test_stopinventory(self):
-        now = datetime.datetime(2014, 9, 16, 22, 24, 52, 91243)
-        yesterday = datetime.datetime(2014, 9, 15, 22, 24, 52, 91243)
         data = self.transit.stopinventory()
         self.assertEquals(type(data['result_data'][0]['BusStopId']), int)
-        self.assertEquals(type(data['result_data'][0]['BusStopName']), unicode)
-
+        self.assertTrue(isinstance(data['result_data'][0]['BusStopName'], basestring))

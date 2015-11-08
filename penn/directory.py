@@ -1,5 +1,5 @@
 from os import path
-from base import WrapperBase
+from .base import WrapperBase
 
 
 BASE_URL = "https://esb.isc-seo.upenn.edu/8091/open_data/"
@@ -7,6 +7,7 @@ ENDPOINTS = {
     'SEARCH': BASE_URL + 'directory',
     'DETAILS': BASE_URL + 'directory_person_details',
 }
+
 
 class Directory(WrapperBase):
     """The client for the Directory. Used to make requests to the API.
