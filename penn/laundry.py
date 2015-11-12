@@ -29,8 +29,7 @@ class Laundry(object):
         >>> all_laundry = l.all_status()
         """
         r = requests.get(ALL_URL)
-        if not r.status_code == 200:
-            return {'error': 'The laundry api is currently unavailable.'}
+        r.raise_for_status()
 
         parsed = BeautifulSoup(r.text)
         info_table = parsed.find_all('table')[2]
@@ -81,8 +80,7 @@ class Laundry(object):
             raise ValueError("Room Number must be integer")
 
         r = requests.get(HALL_BASE_URL + str(num))
-        if not r.status_code == 200:
-            return {'error': 'The laundry api is currently unavailable.'}
+        r.raise_for_status()
 
         parsed = BeautifulSoup(r.text, 'html5lib')
         tables = parsed.find_all('table')
