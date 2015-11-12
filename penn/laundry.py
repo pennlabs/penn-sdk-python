@@ -49,12 +49,12 @@ class Laundry(object):
             clean_row = [val for val in row_data if len(val) > 0]
             data.append(clean_row)
 
-        # Remove the header row and all empty rows
-        data_improved = [row for row in data if len(row) > 0][1:]
+        # Remove the header row, service row, and all empty rows
+        data_improved = [row for row in data if len(row) > 0][2:]
 
         # Construct the final JSON
         laundry_rooms = []
-        for row in data_improved[1:]:
+        for row in data_improved:
             room_dict = dict()
             room_dict['washers_available'] = int(row[1])
             room_dict['dryers_available'] = int(row[2])
