@@ -6,11 +6,6 @@ class APIError(ValueError):
     pass
 
 
-API_ERRORS = {
-    'The application is refreshing data, usage is not currently allowed, please try again shortly.': APIError
-}
-
-
 class WrapperBase(object):
 
     def __init__(self, bearer, token):
@@ -38,10 +33,7 @@ class WrapperBase(object):
 
         error_text = response['service_meta']['error_text']
         if error_text:
-            if error_text in API_ERRORS:
-                raise APIError(error_text)
-            else:
-                raise ValueError(error_text)
+            raise APIError(error_text)
 
         return response
 
