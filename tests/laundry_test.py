@@ -9,7 +9,7 @@ class TestLaundry():
 
     def test_all(self):
         data = self.laundry.all_status()
-        eq_(55, len(data))
+        ok_(len(data) > 50)
         eq_('Class of 1925 House', data[0]['name'])
         # Check all halls have appropriate data points
         for i, hall in enumerate(data):
