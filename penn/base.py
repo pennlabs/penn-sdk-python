@@ -31,7 +31,8 @@ class WrapperBase(object):
         """
         response = get(url, params=params, headers=self.headers, timeout=10)
         if response.status_code != 200:
-            raise ValueError('Request to {} returned {}'.format(response.url, response.status_code))
+            raise ValueError('Request to {} returned {}'
+                             .format(response.url, response.status_code))
 
         response = response.json()
 
@@ -51,8 +52,9 @@ class WrapperBase(object):
             if param not in params_map:
                 errors[param] = 'This is not a valid parameter'
             else:
-                m = re.match(r"Use one of the values from the map (\w+)", params_map[param], flags=re.IGNORECASE)
-                if m is not None:
+                m = re.match(r"Use one of the values from the map (\w+)",
+                             params_map[param], flags=re.IGNORECASE)
+                if m:
                     map_name = m.group(1)
                     d = validation_dict[map_name]
                     if params[param] not in d and params[param].upper() not in d:
