@@ -49,7 +49,7 @@ class Laundry(object):
             data.append(clean_row)
 
         # Remove the header row, service row, and all empty rows
-        data_improved = [row for row in data if len(row) > 0][2:]
+        data_improved = [row for row in data if len(row) > 0][1:]
 
         # Construct the final JSON
         laundry_rooms = []
