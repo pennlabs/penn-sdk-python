@@ -17,6 +17,8 @@ def normalize_weekly(data):
     if isinstance(data["result_data"]["Document"]["tblMenu"], dict):
         data["result_data"]["Document"]["tblMenu"] = [data["result_data"]["Document"]["tblMenu"]]
     for day in data["result_data"]["Document"]["tblMenu"]:
+        if "tblDayPart" not in day:
+            continue
         if isinstance(day["tblDayPart"], dict):
             day["tblDayPart"] = [day["tblDayPart"]]
         for meal in day["tblDayPart"]:
