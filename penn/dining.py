@@ -4,9 +4,18 @@ from .base import WrapperBase
 
 
 BASE_URL = "https://esb.isc-seo.upenn.edu/8091/open_data/dining/"
+V2_BASE_URL = "https://esb.isc-seo.upenn.edu/8091/open_data/dining/v2/?service="
+
 ENDPOINTS = {
     'MENUS': BASE_URL + 'menus',
     'VENUES': BASE_URL + 'venues',
+}
+
+V2_ENDPOINTS = {
+    'VENUES': V2_BASE_URL + 'venues',
+    'HOURS': V2_BASE_URL + 'cafes&cafe=',
+    'MENUS': V2_BASE_URL + 'menus&cafe=',
+    'ITEMS': V2_BASE_URL + 'items&item='
 }
 
 
@@ -29,6 +38,66 @@ def normalize_weekly(data):
                     station["tblItem"] = [station["tblItem"]]
     return data
 
+
+class DiningV2(WrapperBase):
+    """The client for the Registrar. Used to make requests to the API.
+
+    :param bearer: The user code for the API
+    :param token: The password code for the API
+
+    Usage::
+
+      >>> from penn import DiningV2
+      >>> din = DiningV2('MY_USERNAME_TOKEN', 'MY_PASSWORD_TOKEN')
+    """
+    def venues(self):
+        """Get a list of all venue objects.
+
+          >>> venues = din.venues()
+        """
+        response = self._request(V2_ENDPOINTS['VENUES'])
+        return response
+
+    def hours(self, venue_id):
+        """Get the list of hours for the venue corresponding to
+        venue_id.
+
+        :param venue_id:
+          A string representing the id of a venue, e.g. "abc".
+
+
+        >>> commons_hours = din.hours("593")
+        """
+        response = self._request(V2_ENDPOINTS['HOURS'] + venue_id)
+        return response
+
+    def menu(self, venue_id, date):
+        """Get the menu for the venue corresponding to venue_id,
+        on date.
+
+        :param venue_id:
+          A string representing the id of a venue, e.g. "abc".
+        :param date:
+          A string representing the date of a venue's menu, e.g. "2015-09-20".
+
+
+        >>> commons_menu = din.menu("593", "2015-09-20")
+        """
+        query = "&date=" + date
+        response = self._request(V2_ENDPOINTS['MENUS'] + venue_id + query)
+        return response
+
+    def item(self, item_id):
+        """Get a description of the food item corresponding to item_id.
+
+        :param item_id:
+          A string representing the id of an item, e.g. "3899220".
+
+
+        >>> tomato_sauce = din.item("3899220")
+        """
+        response = self._request(V2_ENDPOINTS['ITEMS'] + item_id)
+        return response
 
 class Dining(WrapperBase):
     """The client for the Registrar. Used to make requests to the API.
