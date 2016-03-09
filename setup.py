@@ -7,10 +7,10 @@ setup(
     url='https://github.com/pennappslabs/penn-sdk-python',
     author='Penn Labs',
     author_email='pennappslabs@gmail.com',
-    version='1.1',
+    version='1.2',
     packages=['penn'],
     license='MIT',
-    package_data = {
+    package_data={
         # If any package contains *.txt or *.rst files, include them:
         '': ['*.txt', '*.rst'],
     },
