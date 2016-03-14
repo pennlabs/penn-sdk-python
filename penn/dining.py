@@ -1,6 +1,7 @@
 """A module for consuming the Penn Dining API"""
 from os import path
 from .base import WrapperBase
+import datetime
 
 
 BASE_URL = "https://esb.isc-seo.upenn.edu/8091/open_data/dining/"
@@ -38,6 +39,40 @@ def normalize_weekly(data):
                     station["tblItem"] = [station["tblItem"]]
     return data
 
+
+def get_meals(v2_response, building_id):
+    result_data = v2_response["result_data"]
+    meals = []
+    day_parts = result_data["days"][0]["cafes"][building_id]["dayparts"][0]
+    for meal in day_parts:
+        stations = []
+        for station in day_parts[0]["stations"]:
+            items = []
+            for item_id in station["items"]:
+                item = result_data["items"][item_id]
+                new_item = {}
+                new_item["txtTitle"] = item["label"]
+                new_item["txtPrice"] = ""
+                new_item["txtNutritionInfo"] = ""
+                new_item["txtDescription"] = item["description"]
+                new_item["tblSide"] = ""
+                new_item["tblFarmToFork"] = ""
+                attrs = [{"description": item["cor_icon"][attr]} for attr in item["cor_icon"]]
+                if len(attrs) == 1:
+                    new_item["tblAttributes"] = {"txtAttribute": attrs[0]}
+                elif len(attrs) > 1:
+                    new_item["tblAttributes"] = {"txtAttribute": attrs}
+                else:
+                    new_item["tblAttributes"] = ""
+                if isinstance(item["options"], list):
+                    item["options"] = {}
+                if "values" in item["options"]:
+                    for side in item["options"]["values"]:
+                        new_item["tblSide"] = {"txtSideName": side["label"]}
+                items.append(new_item)
+            stations.append({"tblItem": items, "txtStationDescription": station["label"]})
+        meals.append({"tblStation": stations, "txtDayPartDescription": meal["label"]})
+    return meals
 
 class DiningV2(WrapperBase):
     """The client for the Registrar. Used to make requests to the API.
@@ -136,19 +171,12 @@ class Dining(WrapperBase):
 
         >>> commons_today = din.menu_daily("593")
         """
-        response = self._request(
-            path.join(ENDPOINTS['MENUS'], 'daily', str(building_id))
-        )
-        # Normalize `tblDayPart` and `tblItem` to array
-        meals = response["result_data"]["Document"]["tblMenu"]["tblDayPart"]
-        if isinstance(meals, dict):
-            response["result_data"]["Document"]["tblMenu"]["tblDayPart"] = [meals]
-        for meal in response["result_data"]["Document"]["tblMenu"]["tblDayPart"]:
-            if isinstance(meal["tblStation"], dict):
-                meal["tblStation"] = [meal["tblStation"]]
-            for station in meal["tblStation"]:
-                if isinstance(station["tblItem"], dict):
-                    station["tblItem"] = [station["tblItem"]]
+        today = str(datetime.date.today())
+        v2_response = DiningV2(self.bearer, self.token).menu(building_id, today)
+        response = {'result_data': {'Document': {}}}
+        response["result_data"]["Document"]["menudate"] = datetime.datetime.strptime(today, '%Y-%m-%d').strftime('%-m/%d/%Y')
+        response["result_data"]["Document"]["location"] = v2_response["result_data"]["days"][0]["cafes"][building_id]["name"]
+        response["result_data"]["Document"]["tblMenu"] = {"tblDayPart": get_meals(v2_response, building_id)}
         return response
 
     def menu_weekly(self, building_id):
@@ -160,5 +188,14 @@ class Dining(WrapperBase):
 
         >>> commons_week = din.menu_weekly("593")
         """
-        response = self._request(path.join(ENDPOINTS['MENUS'], 'weekly', str(building_id)))
+        din = DiningV2(self.bearer, self.token)
+        response = {'result_data': {'Document': {}}}
+        days = []
+        for i in xrange(7):
+            date = str(datetime.date.today() + datetime.timedelta(days=i))
+            v2_response = din.menu(building_id, date)
+            response["result_data"]["Document"]["location"] = v2_response["result_data"]["days"][0]["cafes"][building_id]["name"]
+            formatted_date = datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%-m/%d/%Y')
+            days.append({"tblDayPart": get_meals(v2_response, building_id), "menudate": formatted_date})
+        response["result_data"]["Document"]["tblMenu"] = days
         return normalize_weekly(response)
