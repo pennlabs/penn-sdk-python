@@ -46,7 +46,7 @@ def get_meals(v2_response, building_id):
     day_parts = result_data["days"][0]["cafes"][building_id]["dayparts"][0]
     for meal in day_parts:
         stations = []
-        for station in day_parts[0]["stations"]:
+        for station in meal["stations"]:
             items = []
             for item_id in station["items"]:
                 item = result_data["items"][item_id]
