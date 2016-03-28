@@ -150,7 +150,7 @@ class Dining(WrapperBase):
 
           >>> venues = din.venues()
         """
-        response = self._request(ENDPOINTS['VENUES'])
+        response = self._request(V2_ENDPOINTS['VENUES'])
         # Normalize `dateHours` to array
         for venue in response["result_data"]["document"]["venue"]:
             if isinstance(venue.get("dateHours"), dict):
