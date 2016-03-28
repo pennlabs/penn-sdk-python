@@ -19,6 +19,13 @@ V2_ENDPOINTS = {
     'ITEMS': V2_BASE_URL + 'items&item='
 }
 
+VENUE_NAMES = {
+    '593': '1920 Commons',
+    '636': 'Hill House',
+    '637': 'Kings Court English House',
+    '638': 'Kosher Dining at Falk'
+}
+
 
 # Normalization for dining menu data
 def normalize_weekly(data):
@@ -153,6 +160,8 @@ class Dining(WrapperBase):
         response = self._request(V2_ENDPOINTS['VENUES'])
         # Normalize `dateHours` to array
         for venue in response["result_data"]["document"]["venue"]:
+            if venue.get("id") in VENUE_NAMES:
+                venue["name"] = VENUE_NAMES[venue.get("id")]
             if isinstance(venue.get("dateHours"), dict):
                 venue["dateHours"] = [venue["dateHours"]]
             if "dateHours" in venue:
@@ -175,7 +184,10 @@ class Dining(WrapperBase):
         v2_response = DiningV2(self.bearer, self.token).menu(building_id, today)
         response = {'result_data': {'Document': {}}}
         response["result_data"]["Document"]["menudate"] = datetime.datetime.strptime(today, '%Y-%m-%d').strftime('%-m/%d/%Y')
-        response["result_data"]["Document"]["location"] = v2_response["result_data"]["days"][0]["cafes"][building_id]["name"]
+        if building_id in VENUE_NAMES:
+            response["result_data"]["Document"]["location"] = VENUE_NAMES[building_id]
+        else:
+            response["result_data"]["Document"]["location"] = v2_response["result_data"]["days"][0]["cafes"][building_id]["name"]
         response["result_data"]["Document"]["tblMenu"] = {"tblDayPart": get_meals(v2_response, building_id)}
         return response
 
@@ -194,7 +206,10 @@ class Dining(WrapperBase):
         for i in xrange(7):
             date = str(datetime.date.today() + datetime.timedelta(days=i))
             v2_response = din.menu(building_id, date)
-            response["result_data"]["Document"]["location"] = v2_response["result_data"]["days"][0]["cafes"][building_id]["name"]
+            if building_id in VENUE_NAMES:
+                response["result_data"]["Document"]["location"] = VENUE_NAMES[building_id]
+            else:
+                response["result_data"]["Document"]["location"] = v2_response["result_data"]["days"][0]["cafes"][building_id]["name"]
             formatted_date = datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%-m/%d/%Y')
             days.append({"tblDayPart": get_meals(v2_response, building_id), "menudate": formatted_date})
         response["result_data"]["Document"]["tblMenu"] = days
