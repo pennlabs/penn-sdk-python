@@ -31,7 +31,7 @@ class Laundry(object):
         r = requests.get(ALL_URL)
         r.raise_for_status()
 
-        parsed = BeautifulSoup(r.text)
+        parsed = BeautifulSoup(r.text, 'html5lib')
         info_table = parsed.find_all('table')[2]
 
         # This bit of code generates a dict of hallname->hall number by
