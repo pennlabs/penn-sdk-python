@@ -24,7 +24,7 @@ class TestTransit(unittest.TestCase):
         now = datetime.datetime(2014, 9, 16, 22, 24, 52, 91243)
         yesterday = datetime.datetime(2014, 9, 15, 22, 24, 52, 91243)
         data = self.transit.apc(yesterday, now)
-        self.assertEquals(data['result_data'][0]['Bus'], 'T17')
+        self.assertEquals(data['result_data'][0]['Bus'], 'T29')
 
     def test_mdt(self):
         now = datetime.datetime(2014, 9, 16, 22, 24, 52, 91243)
