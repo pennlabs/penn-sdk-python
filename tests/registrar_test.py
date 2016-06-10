@@ -28,9 +28,6 @@ class TestRegistrar(unittest.TestCase):
         cis_search = self.reg.search({'course_id': 'cis'})
         cis_dept = self.reg.department('cis')
         self.assertTrue(len(list(cis_search)) >= len(list(cis_dept)) > 20)
-        # There will always be a Kors class at Penn
-        sub_search = self.reg.search({'course_id': 'hist', 'instructor': 'Kors'})
-        self.assertTrue(len(list(sub_search)))
 
     def test_search_params(self):
         params = self.reg.search_params()
