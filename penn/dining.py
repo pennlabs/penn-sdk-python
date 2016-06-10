@@ -1,5 +1,4 @@
 """A module for consuming the Penn Dining API"""
-from os import path
 from .base import WrapperBase
 import datetime
 
