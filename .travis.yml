@@ -3,4 +3,14 @@ language: python
 python:
   - "2.7"
   - "3.4"
+  - "3.5"
 script: nosetests
+deploy:
+  provider: pypi
+  user: 'pennappslabs'
+  password:
+    secure: FGWvqYOqUVd8pAQdEOfV7fP8/52OrJO35wdi3qUW3ZsbFENHHUcQTQd87ccBKQwiHbfwv/B7x1v0L+PMyool9waytzYUFW1LJjcDpmCTQ2fhmmqTTyFF04WAeqI7KOjHhWBCT+Yn8Ch5P8dqVCyxSvw+UZjoHazk/67mVqHXkQ4=
+  distributions: sdist bdist_wheel
+  on:
+    tags: true
+    repo: pennlabs/penn-sdk-python
