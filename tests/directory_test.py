@@ -15,3 +15,11 @@ class TestDirectory(unittest.TestCase):
         person = self.dir.detail_search({'last_name':'Wissmann'})['result_data']
         self.assertEquals(len(person), 1)
         self.assertEquals(person[0]['result_data'][0]['detail_name'], "ALEXANDER R WISSMANN")
+
+    def test_faculty_name_not_standardized(self):
+        fac = self.dir.search({'first_name': 'kostas'})
+        self.assertEquals(fac['result_data'][0]['list_name'], "DANIILIDIS, KONSTANTINOS ")
+
+    def test_faculty_name_standardized(self):
+        fac = self.dir.search({'first_name': 'kostas'}, standardize=True)
+        self.assertEquals(fac['result_data'][0]['list_name'], "Konstantinos Daniilidis")

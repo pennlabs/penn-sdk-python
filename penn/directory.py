@@ -1,5 +1,6 @@
 from os import path
 from .base import WrapperBase
+from nameparser import HumanName
 
 
 BASE_URL = "https://esb.isc-seo.upenn.edu/8091/open_data/"
@@ -21,14 +22,24 @@ class Directory(WrapperBase):
       >>> d = Directory('MY_USERNAME_TOKEN', 'MY_PASSWORD_TOKEN')
     """
 
-    def search(self, params):
+    def search(self, params, standardize=False):
         """Get a list of person objects for the given search params.
 
         :param params: Dictionary specifying the query parameters
+        :param standardize: Whether to standardize names and other features,
+            currently disabled for backwards compatibility.
 
         >>> people = d.search({'first_name': 'tobias', 'last_name': 'funke'})
         """
-        return self._request(ENDPOINTS['SEARCH'], params)
+        resp = self._request(ENDPOINTS['SEARCH'], params)
+        if not standardize:
+            return resp
+        # Standardization logic
+        for res in resp['result_data']:
+            name = HumanName(res['list_name'])
+            name.capitalize()
+            res['list_name'] = str(name)
+        return resp
 
     def detail_search(self, params):
         """Get a detailed list of person objects for the given search params.
