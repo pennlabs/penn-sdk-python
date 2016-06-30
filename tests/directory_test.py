@@ -23,3 +23,11 @@ class TestDirectory(unittest.TestCase):
     def test_faculty_name_standardized(self):
         fac = self.dir.search({'first_name': 'kostas'}, standardize=True)
         self.assertEquals(fac['result_data'][0]['list_name'], "Konstantinos Daniilidis")
+
+    def test_email_not_standardized(self):
+        email = self.dir.search({'first_name': 'amy', 'last_name': 'gallagher'})
+        self.assertEqual(email['result_data'][0]['list_email'], 'Amy.Gallagher@uphs.upenn.edu')
+
+    def test_email_not_standardized(self):
+        email = self.dir.search({'first_name': 'amy', 'last_name': 'gallagher'}, standardize=True)
+        self.assertEqual(email['result_data'][0]['list_email'], 'amy.gallagher@uphs.upenn.edu')

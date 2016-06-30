@@ -36,9 +36,12 @@ class Directory(WrapperBase):
             return resp
         # Standardization logic
         for res in resp['result_data']:
+            # Standardize name
             name = HumanName(res['list_name'])
             name.capitalize()
             res['list_name'] = str(name)
+            # Lowercase email
+            res['list_email'] = res['list_email'].lower()
         return resp
 
     def detail_search(self, params):
