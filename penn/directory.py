@@ -27,7 +27,9 @@ class Directory(WrapperBase):
 
         :param params: Dictionary specifying the query parameters
         :param standardize: Whether to standardize names and other features,
-            currently disabled for backwards compatibility.
+            currently disabled for backwards compatibility. Currently
+            standardizes names, lowercases emails, and removes faculty label
+            from affiliation.
 
         >>> people = d.search({'first_name': 'tobias', 'last_name': 'funke'})
         """
@@ -42,6 +44,8 @@ class Directory(WrapperBase):
             res['list_name'] = str(name)
             # Lowercase email
             res['list_email'] = res['list_email'].lower()
+            # Remove `Faculty - ` from affiliation
+            res['list_affiliation'] = res['list_affiliation'].replace('Faculty - ', '')
         return resp
 
     def detail_search(self, params):
