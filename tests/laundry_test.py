@@ -13,7 +13,8 @@ class TestLaundry():
         eq_('Class of 1925 House', data[0]['name'])
         # Check all halls have appropriate data points
         for i, hall in enumerate(data):
-            eq_(hall['hall_no'], i)
+            # Not a valid check anymore because of New College House
+            # eq_(hall['hall_no'], i)
             ok_(hall['dryers_available'] >= 0)
             ok_(hall['dryers_in_use'] >= 0)
             ok_(hall['washers_available'] >= 0)

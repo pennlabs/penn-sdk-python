@@ -54,14 +54,21 @@ class Laundry(object):
         # Construct the final JSON
         laundry_rooms = []
         for row in data_improved:
-            room_dict = dict()
-            room_dict['washers_available'] = int(row[1])
-            room_dict['dryers_available'] = int(row[2])
-            room_dict['washers_in_use'] = int(row[3])
-            room_dict['dryers_in_use'] = int(row[4])
-            room_dict['hall_no'] = hall_dict[row[0]]
-            room_dict['name'] = row[0]
-            laundry_rooms.append(room_dict)
+            try:
+                room_dict = dict()
+                room_dict['washers_available'] = int(row[1])
+                room_dict['dryers_available'] = int(row[2])
+                room_dict['washers_in_use'] = int(row[3])
+                room_dict['dryers_in_use'] = int(row[4])
+                room_dict['hall_no'] = hall_dict[row[0]]
+                room_dict['name'] = row[0]
+                laundry_rooms.append(room_dict)
+            except ValueError:
+                # TODO: Log that row has been skipped
+                # Current exceptions are the title row, warnings, and halls
+                # without washers and have placeholders (looking at you, New
+                # College House)
+                pass
         return laundry_rooms
 
     def hall_status(self, hall_no):
