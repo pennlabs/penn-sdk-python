@@ -15,7 +15,7 @@ except NameError:
 class TestTransit(unittest.TestCase):
 
     def setUp(self):
-        from credentials import TRA_USERNAME, TRA_PASSWORD
+        from .credentials import TRA_USERNAME, TRA_PASSWORD
         username = TRA_USERNAME
         password = TRA_PASSWORD
         self.transit = transit.Transit(username, password)

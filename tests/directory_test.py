@@ -5,7 +5,7 @@ from penn import directory
 class TestDirectory(unittest.TestCase):
 
     def setUp(self):
-        from credentials import DIR_USERNAME, DIR_PASSWORD
+        from .credentials import DIR_USERNAME, DIR_PASSWORD
         username = DIR_USERNAME
         password = DIR_PASSWORD
         self.assertFalse(username is None or password is None)
