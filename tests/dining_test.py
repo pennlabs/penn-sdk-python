@@ -6,7 +6,7 @@ import json
 class TestDining(unittest.TestCase):
 
     def setUp(self):
-        from credentials import DIN_USERNAME, DIN_PASSWORD
+        from .credentials import DIN_USERNAME, DIN_PASSWORD
         username = DIN_USERNAME
         password = DIN_PASSWORD
         self.assertFalse(username is None or password is None)
@@ -56,7 +56,7 @@ class TestDining(unittest.TestCase):
 class TestDiningV2(unittest.TestCase):
 
     def setUp(self):
-        from credentials import DIN_USERNAME, DIN_PASSWORD
+        from .credentials import DIN_USERNAME, DIN_PASSWORD
         username = DIN_USERNAME
         password = DIN_PASSWORD
         self.assertFalse(username is None or password is None)

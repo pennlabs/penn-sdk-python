@@ -5,7 +5,7 @@ from penn import News, Map
 class TestNEM(unittest.TestCase):
 
     def setUp(self):
-        from credentials import NEM_USERNAME, NEM_PASSWORD
+        from .credentials import NEM_USERNAME, NEM_PASSWORD
         username = NEM_USERNAME
         password = NEM_PASSWORD
         self.assertFalse(username is None or password is None)

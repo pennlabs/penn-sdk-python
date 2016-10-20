@@ -5,7 +5,7 @@ from penn import registrar
 class TestRegistrar(unittest.TestCase):
 
     def setUp(self):
-        from credentials import REG_USERNAME, REG_PASSWORD
+        from .credentials import REG_USERNAME, REG_PASSWORD
         username = REG_USERNAME
         password = REG_PASSWORD
         self.assertFalse(username is None or password is None)
