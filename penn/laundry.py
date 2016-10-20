@@ -1,6 +1,6 @@
+import re
 from bs4 import BeautifulSoup
 import requests
-import re
 
 ALL_URL = 'https://www.laundryalert.com/cgi-bin/penn6389/LMPage?Login=True'
 HALL_BASE_URL = 'https://www.laundryalert.com/cgi-bin/penn6389/LMRoom?Halls='
@@ -71,7 +71,8 @@ class Laundry(object):
                 pass
         return laundry_rooms
 
-    def hall_status(self, hall_no):
+    @staticmethod
+    def hall_status(hall_no):
         """Return the status of each specific washer/dryer in a particular
         laundry room.
 
@@ -104,7 +105,7 @@ class Laundry(object):
         # Remove the header row and all empty rows
         data_improved = [row for row in data if len(row) > 0][1:]
 
-        def toDict(data_row):
+        def to_dict(data_row):
             d = dict()
             d['number'] = data_row[0]
             d['machine_type'] = data_row[1]
@@ -115,4 +116,4 @@ class Laundry(object):
                 d['time_left'] = None
             return d
 
-        return {'machines': list(map(toDict, data_improved)), 'hall_name': hall_name}
+        return {'machines': list(map(to_dict, data_improved)), 'hall_name': hall_name}

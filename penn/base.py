@@ -1,5 +1,5 @@
-from requests import get
 import re
+from requests import get
 
 
 class APIError(ValueError):
@@ -37,17 +37,18 @@ class WrapperBase(object):
 
         return response
 
-    def validate(self, validation_dict, params):
+    @staticmethod
+    def validate(validation_dict, params):
         errors = {}
         params_map = validation_dict['acceptable_search_url_parameters_map']
         for param in params:
             if param not in params_map:
                 errors[param] = 'This is not a valid parameter'
             else:
-                m = re.match(r"Use one of the values from the map (\w+)",
-                             params_map[param], flags=re.IGNORECASE)
-                if m:
-                    map_name = m.group(1)
+                match = re.match(r"Use one of the values from the map (\w+)",
+                                 params_map[param], flags=re.IGNORECASE)
+                if match:
+                    map_name = match.group(1)
                     d = validation_dict[map_name]
                     if params[param] not in d and params[param].upper() not in d:
                         errors[param] = 'Invalid value for this parameter'
