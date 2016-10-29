@@ -7,7 +7,7 @@ setup(
     url='https://github.com/pennlabs/penn-sdk-python',
     author='Penn Labs',
     author_email='pennappslabs@gmail.com',
-    version='1.2.1',
+    version='1.3.0',
     packages=['penn'],
     license='MIT',
     package_data={
