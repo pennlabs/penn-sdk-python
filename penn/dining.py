@@ -47,6 +47,7 @@ def normalize_weekly(data):
 
 
 def get_meals(v2_response, building_id):
+    """Extract meals into old format from a DiningV2 JSON response"""
     result_data = v2_response["result_data"]
     meals = []
     day_parts = result_data["days"][0]["cafes"][building_id]["dayparts"][0]
