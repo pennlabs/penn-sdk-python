@@ -1,6 +1,6 @@
 """A module for consuming the Penn Dining API"""
-from .base import WrapperBase
 import datetime
+from .base import WrapperBase
 
 
 BASE_URL = "https://esb.isc-seo.upenn.edu/8091/open_data/dining/"
@@ -26,8 +26,8 @@ VENUE_NAMES = {
 }
 
 
-# Normalization for dining menu data
 def normalize_weekly(data):
+    """Normalization for dining menu data"""
     if "tblMenu" not in data["result_data"]["Document"]:
         data["result_data"]["Document"]["tblMenu"] = []
     if isinstance(data["result_data"]["Document"]["tblMenu"], dict):
@@ -202,7 +202,7 @@ class Dining(WrapperBase):
         din = DiningV2(self.bearer, self.token)
         response = {'result_data': {'Document': {}}}
         days = []
-        for i in xrange(7):
+        for i in range(7):
             date = str(datetime.date.today() + datetime.timedelta(days=i))
             v2_response = din.menu(building_id, date)
             if building_id in VENUE_NAMES:

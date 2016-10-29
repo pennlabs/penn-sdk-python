@@ -4,10 +4,10 @@ from setuptools import setup
 setup(
     name='PennSDK',
     description='Python tools for building Penn-related applications',
-    url='https://github.com/pennappslabs/penn-sdk-python',
+    url='https://github.com/pennlabs/penn-sdk-python',
     author='Penn Labs',
     author_email='pennappslabs@gmail.com',
-    version='1.2',
+    version='1.2.1',
     packages=['penn'],
     license='MIT',
     package_data={

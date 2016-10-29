@@ -25,7 +25,8 @@ class Transit(WrapperBase):
       >>> trans = Transit('MY_USERNAME_TOKEN', 'MY_PASSWORD_TOKEN')
     """
 
-    def formatDate(self, date):
+    @staticmethod
+    def format_date(date):
         return date.strftime("%m/%d/%Y") + " " + date.strftime("%H:%M:%S")
 
     def apc(self, start_date, end_date):
@@ -40,8 +41,8 @@ class Transit(WrapperBase):
         >>> trans.apc(today - datetime.timedelta(days=1), today))
         """
         params = {
-            'start': self.formatDate(start_date),
-            'end': self.formatDate(end_date)
+            'start': self.format_date(start_date),
+            'end': self.format_date(end_date)
         }
         response = self._request(ENDPOINTS['APC'], params)
         return response
@@ -59,8 +60,8 @@ class Transit(WrapperBase):
         """
 
         params = {
-            'start': self.formatDate(start_date),
-            'end': self.formatDate(end_date)
+            'start': self.format_date(start_date),
+            'end': self.format_date(end_date)
         }
         response = self._request(ENDPOINTS['MDT'], params)
         return response
@@ -81,8 +82,8 @@ class Transit(WrapperBase):
 
         """
         params = {
-            'start': self.formatDate(start_date),
-            'end': self.formatDate(end_date)
+            'start': self.format_date(start_date),
+            'end': self.format_date(end_date)
         }
         response = self._request(ENDPOINTS['TRANSAPC'], params)
         return response
@@ -123,8 +124,8 @@ class Transit(WrapperBase):
         >>> trans.stoptimes(today - datetime.timedelta(days=1), today)
         """
         params = {
-            'start': self.formatDate(start_date),
-            'end': self.formatDate(end_date)
+            'start': self.format_date(start_date),
+            'end': self.format_date(end_date)
         }
         response = self._request(ENDPOINTS['STOPTIMES'], params)
         return response
