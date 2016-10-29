@@ -10,12 +10,12 @@ class StudySpaces(object):
         pass
 
     @staticmethod
-    def date_parse(d):
+    def date_parse(original):
         """Parses the date to dashed format.
 
         :param d: string with date in the format MM/DD/YYYY.
         """
-        l = d.split("-")
+        l = original.split("-")
         final = [l[1], l[2], l[0]]
         return '-'.join(final)
 
@@ -43,8 +43,8 @@ class StudySpaces(object):
         groupStudyCodes = {}
         url = BASE_URL + "/booking/vpdlc"
         soup = BeautifulSoup(requests.get(url).text, 'lxml')
-        l = soup.find_all('option')
-        for element in l:
+        options = soup.find_all('option')
+        for element in options:
             if element['value'] != '0':
                 url2 = BASE_URL + str(element['value'])
                 soup2 = BeautifulSoup(requests.get(url2).text, 'lxml')
@@ -78,9 +78,9 @@ class StudySpaces(object):
             newRoom = str(roomName)[:-1]
             times = []
 
-            filt = room.fieldset.find_all('label')
+            filtered = room.fieldset.find_all('label')
 
-            for t in filt:
+            for t in filtered:
                 # getting the individual times for each room
                 dictItem = {}
                 dictItem['room_name'] = newRoom
