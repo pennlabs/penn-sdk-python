@@ -16,9 +16,7 @@ class StudySpaces(object):
     def date_parse(d):
         """Parses the date to dashed format.
 
-        :param d:
-            string with date in the format MM/DD/YYYY.
-
+        :param d: string with date in the format MM/DD/YYYY.
         """
         l = d.split("-")
         final = [l[1], l[2], l[0]]
@@ -43,8 +41,7 @@ class StudySpaces(object):
         return groupStudyCodes
 
     def get_id_dict(self):
-        """
-        Extracts the ID's of the room into a dictionary.
+        """Extracts the ID's of the room into a dictionary.
         """
         groupStudyCodes = {}
         url = BASE_URL + "/booking/vpdlc"
@@ -59,8 +56,11 @@ class StudySpaces(object):
         return groupStudyCodes
 
     def extract_times(self, id, date, name):
-        """
-        Scrapes the avaiable rooms with the given ID and date.
+        """Scrapes the avaiable rooms with the given ID and date.
+
+        :param id: the ID of the building
+        :param date: the date to acquire available rooms from
+        :param name: the name of the building; obtained via get_id_dict
         """
         url = BASE_URL + "/rooms_acc.php?gid=%s&d=%s&cap=0" % (int(id), date)
         soup = BeautifulSoup(requests.get(url).text, 'lxml')
