@@ -8,3 +8,4 @@ from .transit import Transit
 from .news import News
 from .laundry import Laundry
 from .map import Map
+from .studyspaces import StudySpaces
