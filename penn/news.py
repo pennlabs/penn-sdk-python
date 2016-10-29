@@ -33,5 +33,5 @@ class News(WrapperBase):
         }
 
         data = self._request(ENDPOINTS['SEARCH'], params)
-        data['result_data'] = list(filter(lambda x: type(x) == dict, data['result_data']))
+        data['result_data'] = [res for res in data['result_data'] if isinstance(res, dict)]
         return data
