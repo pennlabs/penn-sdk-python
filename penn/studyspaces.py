@@ -3,9 +3,6 @@ import requests
 
 
 BASE_URL = "http://libcal.library.upenn.edu"
-ENDPOINTS = {
-    'IDS': BASE_URL + ''
-}
 
 
 class StudySpaces(object):
