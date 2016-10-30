@@ -25,12 +25,12 @@ class StudySpaces(object):
         """
         group_study_codes = []
         url = BASE_URL + "/booking/vpdlc"
-        soup = BeautifulSoup(requests.get(url).text, 'lxml')
+        soup = BeautifulSoup(requests.get(url).text, 'html5')
         l = soup.find_all('option')
         for element in l:
             if element['value'] != '0':
                 url2 = BASE_URL + str(element['value'])
-                soup2 = BeautifulSoup(requests.get(url2).text, 'lxml')
+                soup2 = BeautifulSoup(requests.get(url2).text, 'html5')
                 id = soup2.find('input', attrs={"id": "gid"})['value']
                 new_dict = {}
                 new_dict['id'] = int(id)
@@ -45,12 +45,12 @@ class StudySpaces(object):
         """
         group_study_codes = {}
         url = BASE_URL + "/booking/vpdlc"
-        soup = BeautifulSoup(requests.get(url).text, 'lxml')
+        soup = BeautifulSoup(requests.get(url).text, 'html5')
         options = soup.find_all('option')
         for element in options:
             if element['value'] != '0':
                 url2 = BASE_URL + str(element['value'])
-                soup2 = BeautifulSoup(requests.get(url2).text, 'lxml')
+                soup2 = BeautifulSoup(requests.get(url2).text, 'html5')
                 id = soup2.find('input', attrs={"id": "gid"})['value']
                 group_study_codes[int(id)] = str(element.contents[0])
         return group_study_codes
@@ -63,7 +63,7 @@ class StudySpaces(object):
         :param name: the name of the building; obtained via get_id_dict
         """
         url = BASE_URL + "/rooms_acc.php?gid=%s&d=%s&cap=0" % (int(id), date)
-        soup = BeautifulSoup(requests.get(url).text, 'lxml')
+        soup = BeautifulSoup(requests.get(url).text, 'html5')
 
         time_slots = soup.find_all('form')
         unparsed_rooms = time_slots[1].contents[2:-2]
@@ -71,7 +71,7 @@ class StudySpaces(object):
         roomTimes = []
 
         for i in unparsed_rooms:
-            room = BeautifulSoup(str(i), 'lxml')
+            room = BeautifulSoup(str(i), 'html5')
             try:
                 # extract room names
                 roomName = room.fieldset.legend.h2.contents[0]
