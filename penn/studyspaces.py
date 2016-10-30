@@ -87,7 +87,7 @@ class StudySpaces(object):
                 # getting the individual times for each room
                 dict_item = {}
                 dict_item['room_name'] = newRoom
-                time = str(t).split("\t\t\t\t\t")[1][1:-1]
+                time = str(t).split("\t\t\t\t\t")[2][1:-1]
                 times.append(time)
                 startAndEnd = time.split(" - ")
                 dict_item['start_time'] = startAndEnd[0].upper()

@@ -1,5 +1,6 @@
 from nose.tools import ok_
 from penn import StudySpaces
+import datetime
 
 
 class TestStudySpaces():
@@ -18,11 +19,12 @@ class TestStudySpaces():
     def test_extraction(self):
         dict_id = self.studyspaces.get_id_dict()
         ok_(len(dict_id) > 0)
-        for i in dict_id:
-            s = self.studyspaces.extract_times(1799, "2016-11-11",
-                                                     "Van Pelt-Dietrich Library Center Group Study Rooms")
-            ok_("building" in s)
-            ok_("start_time" in s)
-            ok_("end_time" in s)
-            ok_("date" in s)
-            ok_("roomname" in s)
+        d = datetime.datetime.now() + datetime.timedelta(days=1)
+        next_date = d.strftime("%Y-%m-%d")
+        s = self.studyspaces.extract_times(1799, next_date, "Van Pelt-Dietrich Library Center Group Study Rooms")
+        for i in s:
+            ok_("building" in i)
+            ok_("start_time" in i)
+            ok_("end_time" in i)
+            ok_("date" in i)
+            ok_("room_name" in i)
