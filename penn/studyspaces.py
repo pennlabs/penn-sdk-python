@@ -20,9 +20,10 @@ class StudySpaces(object):
         return '-'.join(final)
 
     def get_id_json(self):
-        """Extracts the ID's of the rooms to a JSON.
+        """Makes JSON with each element associating URL, ID, and building
+        name.
         """
-        groupStudyCodes = []
+        group_study_codes = []
         url = BASE_URL + "/booking/vpdlc"
         soup = BeautifulSoup(requests.get(url).text, 'lxml')
         l = soup.find_all('option')
@@ -31,18 +32,18 @@ class StudySpaces(object):
                 url2 = BASE_URL + str(element['value'])
                 soup2 = BeautifulSoup(requests.get(url2).text, 'lxml')
                 id = soup2.find('input', attrs={"id": "gid"})['value']
-                newDict = {}
-                newDict['id'] = int(id)
-                newDict['name'] = str(element.contents[0])
-                newDict['url'] = url2
-                groupStudyCodes.append(newDict)
-        return groupStudyCodes
+                new_dict = {}
+                new_dict['id'] = int(id)
+                new_dict['name'] = str(element.contents[0])
+                new_dict['url'] = url2
+                group_study_codes.append(new_dict)
+        return group_study_codes
 
     def get_id_dict(self):
         """Extracts the ID's of the room into a dictionary. Used as a
         helper for the extract_times method.
         """
-        groupStudyCodes = {}
+        group_study_codes = {}
         url = BASE_URL + "/booking/vpdlc"
         soup = BeautifulSoup(requests.get(url).text, 'lxml')
         options = soup.find_all('option')
@@ -51,8 +52,8 @@ class StudySpaces(object):
                 url2 = BASE_URL + str(element['value'])
                 soup2 = BeautifulSoup(requests.get(url2).text, 'lxml')
                 id = soup2.find('input', attrs={"id": "gid"})['value']
-                groupStudyCodes[int(id)] = str(element.contents[0])
-        return groupStudyCodes
+                group_study_codes[int(id)] = str(element.contents[0])
+        return group_study_codes
 
     def extract_times(self, id, date, name):
         """Scrapes the avaiable rooms with the given ID and date.
@@ -64,12 +65,12 @@ class StudySpaces(object):
         url = BASE_URL + "/rooms_acc.php?gid=%s&d=%s&cap=0" % (int(id), date)
         soup = BeautifulSoup(requests.get(url).text, 'lxml')
 
-        timeSlots = soup.find_all('form')
-        unparsedRooms = timeSlots[1].contents[2:-2]
+        time_slots = soup.find_all('form')
+        unparsed_rooms = time_slots[1].contents[2:-2]
 
         roomTimes = []
 
-        for i in unparsedRooms:
+        for i in unparsed_rooms:
             room = BeautifulSoup(str(i), 'lxml')
             try:
                 # extract room names
@@ -84,14 +85,14 @@ class StudySpaces(object):
 
             for t in filtered:
                 # getting the individual times for each room
-                dictItem = {}
-                dictItem['room_name'] = newRoom
+                dict_item = {}
+                dict_item['room_name'] = newRoom
                 time = str(t).split("\t\t\t\t\t")[1][1:-1]
                 times.append(time)
                 startAndEnd = time.split(" - ")
-                dictItem['start_time'] = startAndEnd[0].upper()
-                dictItem['end_time'] = startAndEnd[1].upper()
-                roomTimes.append(dictItem)
-                dictItem['date'] = self.date_parse(date)
-                dictItem['building'] = name
+                dict_item['start_time'] = startAndEnd[0].upper()
+                dict_item['end_time'] = startAndEnd[1].upper()
+                roomTimes.append(dict_item)
+                dict_item['date'] = self.date_parse(date)
+                dict_item['building'] = name
         return roomTimes
