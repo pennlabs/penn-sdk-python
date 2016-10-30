@@ -13,7 +13,7 @@ class StudySpaces(object):
     def date_parse(original):
         """Parses the date to dashed format.
 
-        :param d: string with date in the format MM/DD/YYYY.
+        :param original: string with date in the format MM/DD/YYYY.
         """
         l = original.split("-")
         final = [l[1], l[2], l[0]]
@@ -34,11 +34,13 @@ class StudySpaces(object):
                 newDict = {}
                 newDict['id'] = int(id)
                 newDict['name'] = str(element.contents[0])
+                newDict['url'] = url2
                 groupStudyCodes.append(newDict)
         return groupStudyCodes
 
     def get_id_dict(self):
-        """Extracts the ID's of the room into a dictionary.
+        """Extracts the ID's of the room into a dictionary. Used as a
+        helper for the extract_times method.
         """
         groupStudyCodes = {}
         url = BASE_URL + "/booking/vpdlc"
