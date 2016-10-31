@@ -9,6 +9,7 @@ Penn Labs
 - Kyle Hardgrave `@kylehg <https://github.com/kylehg>`_
 - Geoff Vedernikoff `@yefim <https://github.com/yefim>`_
 - Ceasar Bautista `@Ceasar <https://github.com/Ceasar>`_
+- Brandon Lin `@esqu1 <https://github.com/esqu1>`_
 
 Patches and Suggestions
 ```````````````````````
