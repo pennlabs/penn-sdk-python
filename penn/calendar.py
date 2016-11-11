@@ -32,5 +32,25 @@ class Calendar(object):
                 l.append([key] + list(dates_across_years))
         return l
 
+    def range_parse(ran):
+        '''Given a date range, returns a start and end date object
+        from the datetime module.
 
-
+        If the event lasts only for a day, the start and end date
+        will be the same.
+        '''
+        # get rid of excess parentheses
+        modified = ran.split('(')[0].strip()
+        endpoints = modified.split('-')
+        start = endpoints[0]
+        start_date = datetime.datetime.strptime(start, '%B %d').date()
+        if len(endpoints) == 1:
+            return [start_date, start_date]
+        end = endpoints[1]
+        # two cases to consider, month or no month present
+        try:
+            end_date = datetime.datetime.strptime(end, '%B %d').date()
+        except ValueError:
+            month = start_date.month
+            end_date = datetime.date(1900, month, int(end))
+        return [start_date, end_date]
