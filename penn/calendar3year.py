@@ -18,6 +18,7 @@ class Calendar(object):
         '''
         l = []
         soup = BeautifulSoup(requests.get(BASE_URL).text, 'html5lib')
+        title = soup.find_all('p', class_='h2')[0].get_text(strip=True)
         raw_calendar = soup.find_all('tbody')[16]
         events = raw_calendar.find_all('tr')[1:-1]
         for event in events:
@@ -27,11 +28,11 @@ class Calendar(object):
                 key = list(dates[0].descendants)[-1].encode('utf-8').strip()
                 for date in dates[2:]:
                     value = list(date.descendants)[-1].encode('utf-8').strip()
-                    print value
                     dates_across_years.append(value)
                 l.append([key] + list(dates_across_years))
         return l
 
+    @staticmethod
     def range_parse(self, ran):
         '''Given a date range, returns a start and end date object
         from the datetime module.
@@ -54,3 +55,11 @@ class Calendar(object):
             month = start_date.month
             end_date = datetime.date(1900, month, int(end))
         return [start_date, end_date]
+
+    @staticmethod
+    def title_parse(self, title):
+        '''Parses the title of the calendar to determine
+        the current year range.'''
+
+        ranges = title.split('-')
+        return [int(ranges[0]), int(ranges[2])]
