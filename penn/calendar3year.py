@@ -10,7 +10,7 @@ class Calendar(object):
     def __init__(self):
         pass
 
-    def pull():
+    def pull(self):
         '''Returns a list containing all the events from the 3 year calendar.
 
         Each element of the list is formatted as follows:
@@ -32,7 +32,7 @@ class Calendar(object):
                 l.append([key] + list(dates_across_years))
         return l
 
-    def range_parse(ran):
+    def range_parse(self, ran):
         '''Given a date range, returns a start and end date object
         from the datetime module.
 
