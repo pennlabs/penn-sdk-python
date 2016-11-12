@@ -1,9 +1,8 @@
-from bs4 import BeautifulSoup
 import requests
 import datetime
 
 
-BASE_URL = "http://www.upenn.edu/almanac/3yearcal.html"
+BASE_URL = "https://www.google.com/calendar/ical/pennalmanac@gmail.com/public/basic.ics"
 
 
 class Calendar(object):
@@ -55,38 +54,36 @@ class Calendar(object):
         return [start_date, end_date]
 
     def pull_3year(self):
-        """Returns a list containing all the events from the 3 year calendar.
+        """Returns a list (in JSON format) containing all the events from the Penn iCal Calendar.
 
         List contains events in chronological order.
 
-        Each element of the list is formatted as follows:
-        [ <event name>, <year 1 date range>, <year 2 date range>, <year 3 date range>, <year 1> ]
+        Each element of the list is a dictionary, containing:
+            - Name of the event 'name'
+            - Start date 'start'
+            - End date 'end'
         """
-        l = []
-        # year_change shows when the date changes to the next year
-        year_change = 0
-        summer = 0
-        soup = BeautifulSoup(requests.get(BASE_URL).text, 'html5lib')
-        title = soup.find_all('p', class_='h2')[0].get_text(strip=True)
-        year_range = self.title_parse(title)
-        raw_calendar = soup.find_all('tbody')[16]
-        events = raw_calendar.find_all('tr')[2:-1]
+        events = []
+        r = requests.get(BASE_URL).text
+        l = r.split("\r\n")
+        d = {}
+        for line in l:
+            if line == "BEGIN:VEVENT":
+                d = {}
+            elif line[:7] == "DTSTART":
+                raw_date = line.split(":")[1]
+                start_date = datetime.datetime.strptime(raw_date, '%Y%m%d').date()
+                d['start'] = start_date
+            elif line[:5] == "DTEND":
+                raw_date = line.split(":")[1]
+                end_date = datetime.datetime.strptime(raw_date,'%Y%m%d').date()
+                d['end'] = end_date
+            elif line[:7] == "SUMMARY":
+                name = line.split(":")[1]
+                d['name'] = name.encode('utf-8').strip()
+            elif line == "END:VEVENT":
+                events.append(d)
 
-        for event in events:
-            if str(event['class'][0]) == 'bodytext':
-                dates = event.find_all('td')
-                dates_across_years = []
-                key = list(dates[0].descendants)[-1].encode('utf-8').strip()
-                # key is the event name
-                for date in dates[2 - summer:]:
-                    value = list(date.descendants)[-1].encode('utf-8').strip()
-                    dates_across_years.append(value)
-                l.append([key] + list(dates_across_years) + [year_range[0] + year_change])
-            elif year_change != 1 and str(event['class'][0]) == 'rightSideLinkHeadings':
-                # account for spring semester
-                year_change = 1
-            elif year_change == 1:
-                # account for summer; table changes format then
-                summer = 1
-
-        return l
+        events.sort(key=lambda d: d['start'])
+        print events
+        return events
