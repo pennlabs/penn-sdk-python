@@ -10,28 +10,35 @@ class Calendar(object):
     def __init__(self):
         pass
 
-
     @staticmethod
     def title_parse(title):
         '''Parses the title of the calendar to determine
-        the current year range.'''
+        the current year range, to be used in the pull() method.
+
+        :param title: pre-formatted title with years
+        '''
 
         ranges = title.split('-')
         return [int(ranges[3]) - 3, int(ranges[3])]
 
     @staticmethod
-    def range_parse(ran):
+    def range_parse(ran, year):
         '''Given a date range, returns a start and end date object
         from the datetime module.
 
         If the event lasts only for a day, the start and end date
         will be the same.
+
+        :param ran: raw string with date range, either of the forms:
+            1. "<month> <day>-<day>"
+            2. "<month> <day>-<month> <day>"
+            3. "<month> <day>"
         '''
         # get rid of excess parentheses
         modified = ran.split('(')[0].strip()
         endpoints = modified.split('-')
         start = endpoints[0]
-        start_date = datetime.datetime.strptime(start, '%B %d').date()
+        start_date = datetime.datetime.strptime(start + ' ' + str(year), '%B %d %Y').date()
         if len(endpoints) == 1:
             return [start_date, start_date]
         end = endpoints[1]
@@ -40,14 +47,14 @@ class Calendar(object):
             end_date = datetime.datetime.strptime(end, '%B %d').date()
         except ValueError:
             month = start_date.month
-            end_date = datetime.date(1900, month, int(end))
+            end_date = datetime.date(year, month, int(end))
         return [start_date, end_date]
 
     def pull(self):
         '''Returns a list containing all the events from the 3 year calendar.
 
         Each element of the list is formatted as follows:
-        [ <event name>, <year 1 date range>, <year 2 date range>, <year 3 date range> ]
+        [ <event name>, <year 1 date range>, <year 2 date range>, <year 3 date range>, <year 1> ]
         '''
         l = []
         year_change = 0
@@ -68,6 +75,3 @@ class Calendar(object):
             elif year_change != 1 and str(event['class'][0]) == 'rightSideLinkHeadings':
                 year_change = 1
         return l
-
-
-
