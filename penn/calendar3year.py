@@ -34,6 +34,7 @@ class Calendar(object):
             1. "<month> <day>-<day>"
             2. "<month> <day>-<month> <day>"
             3. "<month> <day>"
+        :param year: integer containing the year
         """
 
         # get rid of excess parentheses
@@ -82,8 +83,10 @@ class Calendar(object):
                     dates_across_years.append(value)
                 l.append([key] + list(dates_across_years) + [year_range[0] + year_change])
             elif year_change != 1 and str(event['class'][0]) == 'rightSideLinkHeadings':
+                # account for spring semester
                 year_change = 1
             elif year_change == 1:
+                # account for summer; table changes format then
                 summer = 1
 
         return l
