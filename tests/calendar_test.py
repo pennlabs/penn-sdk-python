@@ -1,6 +1,6 @@
 from nose.tools import ok_
 from penn import Calendar
-
+import datetime
 
 class TestCalendar():
 
@@ -10,13 +10,10 @@ class TestCalendar():
     def test_pull(self):
         l = self.calendar.pull_3year()
         ok_(len(l) > 0)
-        for event in l:
-            ok_(len(event) == 5)
-            d = Calendar.range_parse(event[1], event[4])
-            change = (d[1] - d[0]).total_seconds()
-            ok_(change >= 0)
-        years = []
-        for event in l:
-            if event[4]  not in years:
-                years.append(event[4])
-        ok_(len(years) == 2)
+        for i, event in enumerate(l[:-1]):
+            ok_(len(event) == 3)
+            start = event['start']
+            end = event['end']
+            ok_((end - start).total_seconds() >= 0)
+            nextstart = l[i]['start']
+            ok_((nextstart - start).total_seconds() >= 0)
