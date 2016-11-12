@@ -85,5 +85,4 @@ class Calendar(object):
                 events.append(d)
 
         events.sort(key=lambda d: d['start'])
-        print events
         return events
