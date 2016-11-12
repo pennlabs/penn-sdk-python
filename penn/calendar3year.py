@@ -53,7 +53,7 @@ class Calendar(object):
             end_date = datetime.date(year, month, int(end))
         return [start_date, end_date]
 
-    def pull(self):
+    def pull_3year(self):
         """Returns a list containing all the events from the 3 year calendar.
 
         List contains events in chronological order.
@@ -64,6 +64,7 @@ class Calendar(object):
         l = []
         # year_change shows when the date changes to the next year
         year_change = 0
+        summer = 0
         soup = BeautifulSoup(requests.get(BASE_URL).text, 'html5lib')
         title = soup.find_all('p', class_='h2')[0].get_text(strip=True)
         year_range = self.title_parse(title)
@@ -76,11 +77,13 @@ class Calendar(object):
                 dates_across_years = []
                 key = list(dates[0].descendants)[-1].encode('utf-8').strip()
                 # key is the event name
-                for date in dates[2:]:
+                for date in dates[2 - summer:]:
                     value = list(date.descendants)[-1].encode('utf-8').strip()
                     dates_across_years.append(value)
                 l.append([key] + list(dates_across_years) + [year_range[0] + year_change])
             elif year_change != 1 and str(event['class'][0]) == 'rightSideLinkHeadings':
                 year_change = 1
+            elif year_change == 1:
+                summer = 1
 
         return l
