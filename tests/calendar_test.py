@@ -19,21 +19,21 @@ class TestCalendar():
         for event in l:
             if event['name'] == "Independence Day Observed (no classes)":
                 independence = event['start']
-                ok_(isinstance(independence, datetime.date))
-                ok_(independence.month == 7)
+                d = datetime.datetime.strptime(independence, '%Y-%m-%d').date()
+                ok_(d.month == 7)
 
     def test_name(self):
         l = self.calendar.pull_3year()
         ok_(len(l) > 0)
         for event in l:
-            start = event['start']
-            end = event['end']
+            start = datetime.datetime.strptime(event['start'], '%Y-%m-%d').date()
+            end = datetime.datetime.strptime(event['end'], '%Y-%m-%d').date()
             ok_((end - start).total_seconds() >= 0)
 
     def test_chrono(self):
         l = self.calendar.pull_3year()
         ok_(len(l) > 0)        
         for i, event in enumerate(l[:-1]):            
-            start = event['start']
-            nextstart = l[i]['start']
+            start = datetime.datetime.strptime(event['start'], '%Y-%m-%d').date()
+            nextstart = datetime.datetime.strptime(l[i]['start'], '%Y-%m-%d').date()
             ok_((nextstart - start).total_seconds() >= 0)
