@@ -36,7 +36,7 @@ class Calendar(object):
                 d['end'] = end_date.strftime('%Y-%m-%d')
             elif line[:7] == "SUMMARY":
                 name = line.split(":")[1]
-                d['name'] = name.encode('utf-8').strip()
+                d['name'] = str(name).strip()
             elif line == "END:VEVENT":
                 events.append(d)
 
