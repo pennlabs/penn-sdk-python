@@ -21,3 +21,8 @@ Contents:
   dining
   directory
   transit
+  map
+  news
+  laundry
+  library
+  calendar
