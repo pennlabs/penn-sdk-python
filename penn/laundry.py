@@ -4,6 +4,7 @@ import requests
 
 ALL_URL = 'https://www.laundryalert.com/cgi-bin/penn6389/LMPage?Login=True'
 HALL_BASE_URL = 'https://www.laundryalert.com/cgi-bin/penn6389/LMRoom?Halls='
+USAGE_BASE_URL = 'https://www.laundryalert.com/cgi-bin/penn6389/LMRoomUsage?CallingPage=LMRoom&Password=penn6389&Halls='
 
 
 class Laundry(object):
@@ -16,7 +17,16 @@ class Laundry(object):
     """
 
     def __init__(self):
-        pass
+        self.busy_dict = {
+            'LowBusyNightColor': 'Low',
+            'LowBusyDayColor': 'Low',
+            'MediumLowBusyColor': 'Medium',
+            'MediumHighBusyColor': 'High',
+            'HighBusyColor': 'Very High',
+            'NoDataBusyColor': 'No Data'
+        }
+        self.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+                     'Saturday', 'Sunday']
 
     @staticmethod
     def get_hall_no(href):
@@ -116,4 +126,39 @@ class Laundry(object):
                 d['time_left'] = None
             return d
 
-        return {'machines': list(map(to_dict, data_improved)), 'hall_name': hall_name}
+        return {
+            'machines': list(map(to_dict, data_improved)),
+            'hall_name': hall_name
+        }
+
+    def machine_usage(self, hall_no):
+        """Returns the average usage of laundry machines every hour
+        for a given hall.
+
+        The usages are returned in a dictionary, with the key being
+        the day of the week, and the value being an array listing the usages
+        per hour.
+
+        :param hall_no:
+             integer corresponding to the id number for the hall. Thus number
+             is returned as part of the all_status call.
+
+        >>> english_house = l.machine_usage(2)
+        """
+
+        try:
+            num = int(hall_no)
+        except ValueError:
+            raise ValueError("Room Number must be integer")
+        r = requests.get(USAGE_BASE_URL + str(num))
+        parsed = BeautifulSoup(r.text, 'html5lib')
+        usage_table = parsed.find_all('table', width='504px')[0]
+        rows = usage_table.find_all('tr')
+        usages = {}
+        for i, row in enumerate(rows):
+            day = []
+            hours = row.find_all('td')
+            for hour in hours:
+                day.append(self.busy_dict[str(hour['class'][0])])
+            usages[self.days[i]] = day
+        return usages

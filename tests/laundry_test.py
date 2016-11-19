@@ -30,3 +30,11 @@ class TestLaundry():
                 ok_('available' in machine)
                 ok_('machine_type' in machine)
                 ok_('time_left' in machine)
+
+    def test_usage(self):
+        for i in range(10):
+            data = self.laundry.machine_usage(i)
+            for j in data:
+                ok_(j in self.laundry.days)
+                for k in data[j]:
+                    ok_(k in self.laundry.busy_dict.values())
