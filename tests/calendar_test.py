@@ -17,6 +17,7 @@ class TestCalendar():
         l = self.calendar.pull_3year()
         ok_(len(l) > 0)
         for event in l:
+            ok_(isinstance(event['name'], str))
             if event['name'] == "Independence Day Observed (no classes)":
                 independence = event['start']
                 d = datetime.datetime.strptime(independence, '%Y-%m-%d').date()
@@ -26,6 +27,7 @@ class TestCalendar():
         l = self.calendar.pull_3year()
         ok_(len(l) > 0)
         for event in l:
+            ok_(isinstance(event['name'], str))
             start = datetime.datetime.strptime(event['start'], '%Y-%m-%d').date()
             end = datetime.datetime.strptime(event['end'], '%Y-%m-%d').date()
             ok_((end - start).total_seconds() >= 0)
