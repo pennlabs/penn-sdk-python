@@ -32,7 +32,7 @@ class TestLaundry():
                 ok_('time_left' in machine)
 
     def test_usage(self):
-        for i in xrange(10):
+        for i in range(10):
             data = self.laundry.machine_usage(i)
             for j in data:
                 ok_(j in self.laundry.days)
