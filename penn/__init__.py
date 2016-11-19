@@ -1,4 +1,4 @@
-__version__ = '1.5.1'
+__version__ = '1.5.2'
 
 from .registrar import Registrar
 from .directory import Directory
