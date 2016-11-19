@@ -17,7 +17,16 @@ class Laundry(object):
     """
 
     def __init__(self):
-        pass
+        self.busy_dict = {
+            'LowBusyNightColor': 'Low',
+            'LowBusyDayColor': 'Low',
+            'MediumLowBusyColor': 'Medium',
+            'MediumHighBusyColor': 'High',
+            'HighBusyColor': 'Very High',
+            'NoDataBusyColor': 'No Data'
+        }
+        self.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+                     'Saturday', 'Sunday']
 
     @staticmethod
     def get_hall_no(href):
@@ -117,10 +126,12 @@ class Laundry(object):
                 d['time_left'] = None
             return d
 
-        return {'machines': list(map(to_dict, data_improved)), 'hall_name': hall_name}
+        return {
+            'machines': list(map(to_dict, data_improved)),
+            'hall_name': hall_name
+        }
 
-    @staticmethod
-    def machine_usage(hall_no):
+    def machine_usage(self, hall_no):
         """Returns the average usage of laundry machines every hour
         for a given hall.
 
@@ -134,16 +145,7 @@ class Laundry(object):
 
         >>> english_house = l.machine_usage(2)
         """
-        busy_dict = {
-            'LowBusyNightColor': 'Low',
-            'LowBusyDayColor': 'Low',
-            'MediumLowBusyColor': 'Medium',
-            'MediumHighBusyColor': 'High',
-            'HighBusyColor': 'Very High',
-            'NoDataBusyColor': 'No Data'
-        }
-        days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday',
-                'Friday', 'Saturday', 'Sunday']
+
         try:
             num = int(hall_no)
         except ValueError:
@@ -157,6 +159,6 @@ class Laundry(object):
             day = []
             hours = row.find_all('td')
             for hour in hours:
-                day.append(busy_dict[str(hour['class'][0])])
-            usages[days[i]] = day
+                day.append(self.busy_dict[str(hour['class'][0])])
+            usages[self.days[i]] = day
         return usages
