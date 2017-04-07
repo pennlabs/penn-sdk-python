@@ -1,11 +1,8 @@
 from nose.tools import ok_
-from penn import whartonCalendar
+from penn import whartoncalendar
 import datetime
 
 class TestCalendar():
-
-    def setUp(self):
-        self.calendar = Calendar()
 
     def test_pull(self):
         l = self.whartonCalendar.pull_wharton_events_on_date('2015-09-16')
@@ -28,7 +25,7 @@ class TestCalendar():
             ok_(isinstance(event['name'], str))
             start = datetime.datetime.strptime(event['startTime'], '%I:%M %p').date()
             end = datetime.datetime.strptime(event['endTime'], '%I:%M %p').date()
-            ok_((end - start).total_seconds() >= 0)
+            ok_((end - start).total_seconds() >= 60)
 
     def test_chrono(self):
         l = self.whartonCalendar.pull_wharton_events_on_date('2015-09-16')

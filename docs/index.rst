@@ -26,3 +26,5 @@ Contents:
   laundry
   library
   calendar
+  studyspaces
+  whartoncalendar
