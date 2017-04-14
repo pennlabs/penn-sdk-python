@@ -2,6 +2,7 @@ from nose.tools import ok_
 from penn import Calendar
 import datetime
 
+
 class TestCalendar():
 
     def setUp(self):
@@ -34,8 +35,8 @@ class TestCalendar():
 
     def test_chrono(self):
         l = self.calendar.pull_3year()
-        ok_(len(l) > 0)        
-        for i, event in enumerate(l[:-1]):            
+        ok_(len(l) > 0)
+        for i, event in enumerate(l[:-1]):
             start = datetime.datetime.strptime(event['start'], '%Y-%m-%d').date()
             nextstart = datetime.datetime.strptime(l[i]['start'], '%Y-%m-%d').date()
             ok_((nextstart - start).total_seconds() >= 0)

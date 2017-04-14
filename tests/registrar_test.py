@@ -17,8 +17,9 @@ class TestRegistrar(unittest.TestCase):
 
     def test_department(self):
         cis = self.reg.department('cis')
-        next(cis) # Should be an iterator
-        self.assertTrue(len(list(cis)) > 20) # Should have multiple pages of items
+        next(cis)  # Should be an iterator
+        # Should have multiple pages of items
+        self.assertTrue(len(list(cis)) > 20)
 
     def test_course(self):
         cis120 = self.reg.course('cis', '120')
@@ -34,11 +35,11 @@ class TestRegistrar(unittest.TestCase):
         self.assertTrue('activity_map' in params)
 
     def test_search_validation_bad_param(self):
-        results = self.reg.search({'foo':'bar'}, validate=True)
+        results = self.reg.search({'foo': 'bar'}, validate=True)
         self.assertEquals('This is not a valid parameter', results['Errors']['foo'])
 
     def test_search_validation_bad_value(self):
-        results = self.reg.search({'activity':'foo'}, validate=True)
+        results = self.reg.search({'activity': 'foo'}, validate=True)
         self.assertEquals('Invalid value for this parameter', results['Errors']['activity'])
 
     def test_search_validation_all_good(self):
