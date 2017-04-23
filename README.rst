@@ -19,7 +19,7 @@ Getting an API key
 To use these libraries, you must first obtain an API token and password,
 which can be done here_. There are separate API tokens and password for each of dining, registrar, news/events/maps, transit, and directory.
 
-There is also a Laundry API, Study Spaces API, and Calendar, which don't need a key.
+There is also a Laundry API, Study Spaces API, and Calendar (wtih support for Wharton events), which don't need a key.
 
 
 Documentation
