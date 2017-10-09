@@ -1,9 +1,9 @@
 import re
-from bs4 import BeautifulSoup
 import requests
+import urllib2
+from bs4 import BeautifulSoup
 
-ALL_URL = 'https://www.laundryalert.com/cgi-bin/penn6389/LMPage?Login=True'
-HALL_BASE_URL = 'https://www.laundryalert.com/cgi-bin/penn6389/LMRoom?Halls='
+ALL_URL = 'http://suds.kite.upenn.edu/'
 USAGE_BASE_URL = 'https://www.laundryalert.com/cgi-bin/penn6389/LMRoomUsage?CallingPage=LMRoom&Password=penn6389&Halls='
 
 
@@ -27,6 +27,57 @@ class Laundry(object):
         }
         self.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
                      'Saturday', 'Sunday']
+        self.hall_to_link = {}
+        self.create_hall_to_link_mapping()
+
+    def create_hall_to_link_mapping(self):
+        """
+        :return: Mapping from hall name to associated link in SUDS.
+        """
+        r = requests.get(ALL_URL)
+        r.raise_for_status()
+
+        parsed = BeautifulSoup(r.text, 'html5lib')
+        halls = parsed.find_all('h2')
+        for hall in halls:
+            self.hall_to_link[hall.contents[0].string] = ALL_URL + hall.contents[0]['href']
+
+    @staticmethod
+    def update_machine_object(cols, machine_object):
+        if cols[2].getText() == "In use" or cols[2].getText() == "Almost done":
+            machine_object["running"] += 1
+            time_remaining = cols[3].getText().split(" ")[0]
+            machine_object["time_remaining"].append(time_remaining)
+
+        elif cols[2].getText() == "Out of order":
+            machine_object["out_of_order"] += 1
+        elif cols[2].getText() == "Not online":
+            machine_object["offline"] += 1
+        else:
+            machine_object["open"] += 1
+        return machine_object
+
+    def parse_a_hall(self, hall):
+        if hall not in self.hall_to_link:
+            return None  # change to to empty json idk
+        page = requests.get(self.hall_to_link[hall])
+        soup = BeautifulSoup(page.content, 'html.parser')
+        soup.prettify()
+        washers = {"open": 0, "running": 0, "out_of_order": 0, "offline": 0, "time_remaining": []}
+        dryers = {"open": 0, "running": 0, "out_of_order": 0, "offline": 0, "time_remaining": []}
+
+        rows = soup.find_all('tr')
+        for row in rows:
+            cols = row.find_all('td')
+            if len(cols) > 1:
+                machine_type = cols[1].getText()
+                if machine_type == "Washer":
+                    washers = Laundry.update_machine_object(cols, washers)
+                else:
+                    dryers = Laundry.update_machine_object(cols, dryers)
+
+        machines = {"Washers": washers, "Dryers": dryers}
+        return machines
 
     @staticmethod
     def get_hall_no(href):
@@ -38,96 +89,26 @@ class Laundry(object):
 
         >>> all_laundry = l.all_status()
         """
-        r = requests.get(ALL_URL)
-        r.raise_for_status()
+        laundry_rooms = {}
+        for room in self.hall_to_link:
+            laundry_rooms[room] = self.parse_a_hall(room)
 
-        parsed = BeautifulSoup(r.text, 'html5lib')
-        info_table = parsed.find_all('table')[2]
-
-        # This bit of code generates a dict of hallname->hall number by
-        # parsing the link href of each room
-        hall_dict = {}
-        for link in info_table.find_all('a', class_='buttlink'):
-            clean_link = link.get_text().strip()
-            hall_dict[clean_link] = self.get_hall_no(link.get('href'))
-
-        # Parse the table into the relevant data
-        data = []
-        for row in info_table.find_all('tr'):
-            row_data = (val.get_text().strip() for val in row.find_all('td'))
-            clean_row = [val for val in row_data if len(val) > 0]
-            data.append(clean_row)
-
-        # Remove the header row, service row, and all empty rows
-        data_improved = [row for row in data if len(row) > 0][1:]
-
-        # Construct the final JSON
-        laundry_rooms = []
-        for row in data_improved:
-            try:
-                room_dict = dict()
-                room_dict['washers_available'] = int(row[1])
-                room_dict['dryers_available'] = int(row[2])
-                room_dict['washers_in_use'] = int(row[3])
-                room_dict['dryers_in_use'] = int(row[4])
-                room_dict['hall_no'] = hall_dict[row[0]]
-                room_dict['name'] = row[0]
-                laundry_rooms.append(room_dict)
-            except ValueError:
-                # TODO: Log that row has been skipped
-                # Current exceptions are the title row, warnings, and halls
-                # without washers and have placeholders (looking at you, New
-                # College House)
-                pass
         return laundry_rooms
 
-    @staticmethod
-    def hall_status(hall_no):
+    def hall_status(self, hall_name):
         """Return the status of each specific washer/dryer in a particular
         laundry room.
 
-        :param hall_no:
-             integer corresponding to the id number for the hall. Thus number
+        :param hall_name:
+             Unescaped string corresponding to the name of the hall hall. This name
              is returned as part of the all_status call.
 
-        >>> english_house = l.hall_status(2)
+        >>> english_house = l.hall_status("English%20House")
         """
-        try:
-            num = int(hall_no)
-        except ValueError:
-            raise ValueError("Room Number must be integer")
-
-        r = requests.get(HALL_BASE_URL + str(num))
-        r.raise_for_status()
-
-        parsed = BeautifulSoup(r.text, 'html5lib')
-        tables = parsed.find_all('table')
-        hall_name = tables[2].get_text().strip()
-        info_table = tables[4]
-
-        # Parse the table into the relevant data
-        data = []
-        for row in info_table.find_all('tr'):
-            row_data = (val.get_text().strip() for val in row.find_all('td'))
-            clean_row = [val for val in row_data if len(val) > 0]
-            data.append(clean_row)
-
-        # Remove the header row and all empty rows
-        data_improved = [row for row in data if len(row) > 0][1:]
-
-        def to_dict(data_row):
-            d = dict()
-            d['number'] = data_row[0]
-            d['machine_type'] = data_row[1]
-            d['available'] = data_row[2] == u'Available'
-            if len(data_row) == 4:
-                d['time_left'] = data_row[3]
-            else:
-                d['time_left'] = None
-            return d
+        machines = self.parse_a_hall((urllib2.unquote(hall_name)))
 
         return {
-            'machines': list(map(to_dict, data_improved)),
+            'machines': machines,
             'hall_name': hall_name
         }
 
@@ -162,3 +143,9 @@ class Laundry(object):
                 day.append(self.busy_dict[str(hour['class'][0])])
             usages[self.days[i]] = day
         return usages
+
+
+# if __name__ == "__main__":
+#     l = Laundry()
+#     l.create_hall_to_link_mapping()
+#     print(l.hall_status("English%20House"))
