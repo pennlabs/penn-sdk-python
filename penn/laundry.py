@@ -1,6 +1,9 @@
 import re
 import requests
-import urllib2
+try:
+    import urllib2
+except:
+    import urllib.parse as urlib2
 from bs4 import BeautifulSoup
 
 ALL_URL = 'http://suds.kite.upenn.edu/'

@@ -4,7 +4,8 @@ from penn import Laundry
 
 class TestLaundry():
     def setUp(self):
-        self.laundry = Laundry()
+        pass
+        # self.laundry = Laundry()
 
     def test_all(self):
         pass
