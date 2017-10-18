@@ -28,33 +28,48 @@ class Laundry(object):
         self.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
                      'Saturday', 'Sunday']
         self.hall_to_link = {}
+        self.id_to_hall = {}
         self.create_hall_to_link_mapping()
 
     def create_hall_to_link_mapping(self):
         """
-        :return: Mapping from hall name to associated link in SUDS.
+        :return: Mapping from hall name to associated link in SUDS. Creates inverted index from id to hall
         """
         r = requests.get(ALL_URL)
         r.raise_for_status()
 
         parsed = BeautifulSoup(r.text, 'html5lib')
         halls = parsed.find_all('h2')
+        counter = 0
         for hall in halls:
-            self.hall_to_link[hall.contents[0].string] = ALL_URL + hall.contents[0]['href']
+            hall_name = hall.contents[0].string
+            hall_name = hall_name.replace("/", " ") # convert / to space
+            self.hall_to_link[hall_name] = ALL_URL + hall.contents[0]['href']
+            self.id_to_hall[str(counter)] = hall_name
+            counter = counter + 1
+
 
     @staticmethod
     def update_machine_object(cols, machine_object):
         if cols[2].getText() == "In use" or cols[2].getText() == "Almost done":
-            machine_object["running"] += 1
             time_remaining = cols[3].getText().split(" ")[0]
-            machine_object["time_remaining"].append(time_remaining)
-
+            try:
+                machine_object["time_remaining"].append(int(time_remaining))
+            except ValueError:
+                pass
         elif cols[2].getText() == "Out of order":
             machine_object["out_of_order"] += 1
         elif cols[2].getText() == "Not online":
             machine_object["offline"] += 1
         else:
             machine_object["open"] += 1
+
+        # edge case that handles machine not sending time data
+        diff = int(machine_object["running"]) - len(machine_object["time_remaining"])
+        while diff > 0:
+            machine_object["time_remaining"].append("not updating status")
+            diff = diff - 1
+
         return machine_object
 
     def parse_a_hall(self, hall):
@@ -95,7 +110,7 @@ class Laundry(object):
 
         return laundry_rooms
 
-    def hall_status(self, hall_name):
+    def hall_status(self, hall_id):
         """Return the status of each specific washer/dryer in a particular
         laundry room.
 
@@ -105,6 +120,7 @@ class Laundry(object):
 
         >>> english_house = l.hall_status("English%20House")
         """
+        hall_name = self.id_to_hall[hall_id]
         machines = self.parse_a_hall((urllib2.unquote(hall_name)))
 
         return {
@@ -143,9 +159,3 @@ class Laundry(object):
                 day.append(self.busy_dict[str(hour['class'][0])])
             usages[self.days[i]] = day
         return usages
-
-
-# if __name__ == "__main__":
-#     l = Laundry()
-#     l.create_hall_to_link_mapping()
-#     print(l.hall_status("English%20House"))
