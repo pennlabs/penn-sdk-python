@@ -56,6 +56,7 @@ class Laundry(object):
     def update_machine_object(cols, machine_object):
         if cols[2].getText() == "In use" or cols[2].getText() == "Almost done":
             time_remaining = cols[3].getText().split(" ")[0]
+            machine_object["running"] += 1
             try:
                 machine_object["time_remaining"].append(int(time_remaining))
             except ValueError:
