@@ -92,7 +92,7 @@ class Laundry(object):
                 machine_type = cols[1].getText()
                 if machine_type == "Washer":
                     washers = Laundry.update_machine_object(cols, washers)
-                else:
+                elif machine_type == "Dryer":
                     dryers = Laundry.update_machine_object(cols, dryers)
 
         machines = {"Washers": washers, "Dryers": dryers}
