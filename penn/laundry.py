@@ -32,6 +32,7 @@ class Laundry(object):
                      'Saturday', 'Sunday']
         self.hall_to_link = {}
         self.id_to_hall = {}
+        self.hall_id_list = []
         self.create_hall_to_link_mapping()
 
     def create_hall_to_link_mapping(self):
@@ -49,6 +50,7 @@ class Laundry(object):
             hall_name = hall_name.replace("/", " ") # convert / to space
             self.hall_to_link[hall_name] = ALL_URL + hall.contents[0]['href']
             self.id_to_hall[str(counter)] = hall_name
+            self.hall_id_list.append({"hall_name": hall_name, "id": counter})
             counter = counter + 1
 
 
