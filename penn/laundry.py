@@ -51,7 +51,7 @@ class Laundry(object):
             if hall_name.split()[0] in ["Harrison", "Harnwell", "Rodin"]:
                 hall_name = hall_name.replace(" ", "_", 1)
             self.hall_to_link[hall_name] = ALL_URL + hall.contents[0]['href']
-            self.id_to_hall[str(counter)] = hall_name
+            self.id_to_hall[counter] = hall_name
             self.hall_id_list.append({"hall_name": hall_name, "id": counter})
             counter = counter + 1
 
@@ -99,7 +99,7 @@ class Laundry(object):
                 elif machine_type == "Dryer":
                     dryers = Laundry.update_machine_object(cols, dryers)
 
-        machines = {"Washers": washers, "Dryers": dryers}
+        machines = {"washers": washers, "dryers": dryers}
         return machines
 
     @staticmethod
