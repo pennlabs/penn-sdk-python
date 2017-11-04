@@ -1,12 +1,14 @@
 import re
+import csv
 import requests
+import pkg_resources
 try:
     import urllib2
 except:
     import urllib.parse as urlib2
 from bs4 import BeautifulSoup
 
-ALL_URL = 'http://suds.kite.upenn.edu/'
+ALL_URL = 'http://suds.kite.upenn.edu/?location='
 USAGE_BASE_URL = 'https://www.laundryalert.com/cgi-bin/penn6389/LMRoomUsage?CallingPage=LMRoom&Password=penn6389&Halls='
 
 
@@ -39,21 +41,15 @@ class Laundry(object):
         """
         :return: Mapping from hall name to associated link in SUDS. Creates inverted index from id to hall
         """
-        r = requests.get(ALL_URL)
-        r.raise_for_status()
-
-        parsed = BeautifulSoup(r.text, 'html5lib')
-        halls = parsed.find_all('h2')
-        counter = 0
-        for hall in halls:
-            hall_name = hall.contents[0].string
-            hall_name = hall_name.replace("/", " ") # convert / to space
-            if hall_name.split()[0] in ["Harrison", "Harnwell", "Rodin"]:
-                hall_name = hall_name.replace(" ", "_", 1)
-            self.hall_to_link[hall_name] = ALL_URL + hall.contents[0]['href']
-            self.id_to_hall[str(counter)] = hall_name
-            self.hall_id_list.append({"hall_name": hall_name, "id": counter})
-            counter = counter + 1
+        laundry_path = pkg_resources.resource_filename("penn", "data/laundry.csv")
+        with open(laundry_path, "r") as f:
+            reader = csv.reader(f)
+            for row in reader:
+                hall_id, hall_name, location, uuid = row
+                hall_id = int(hall_id)
+                self.hall_to_link[hall_name] = ALL_URL + uuid
+                self.id_to_hall[hall_id] = hall_name
+                self.hall_id_list.append({"hall_name": hall_name, "id": hall_id, "location": location})
 
 
     @staticmethod
@@ -99,7 +95,7 @@ class Laundry(object):
                 elif machine_type == "Dryer":
                     dryers = Laundry.update_machine_object(cols, dryers)
 
-        machines = {"Washers": washers, "Dryers": dryers}
+        machines = {"washers": washers, "dryers": dryers}
         return machines
 
     @staticmethod
