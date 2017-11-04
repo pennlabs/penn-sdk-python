@@ -48,6 +48,8 @@ class Laundry(object):
         for hall in halls:
             hall_name = hall.contents[0].string
             hall_name = hall_name.replace("/", " ") # convert / to space
+            if hall_name.split()[0] in ["Harrison", "Harnwell", "Rodin"]:
+                hall_name = hall_name.replace(" ", "_", 1)
             self.hall_to_link[hall_name] = ALL_URL + hall.contents[0]['href']
             self.id_to_hall[str(counter)] = hall_name
             self.hall_id_list.append({"hall_name": hall_name, "id": counter})
@@ -73,7 +75,7 @@ class Laundry(object):
         # edge case that handles machine not sending time data
         diff = int(machine_object["running"]) - len(machine_object["time_remaining"])
         while diff > 0:
-            machine_object["time_remaining"].append("not updating status")
+            machine_object["time_remaining"].append(-1)
             diff = diff - 1
 
         return machine_object
