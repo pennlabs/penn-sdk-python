@@ -34,6 +34,7 @@ class Laundry(object):
                      'Saturday', 'Sunday']
         self.hall_to_link = {}
         self.id_to_hall = {}
+        self.id_to_location = {}
         self.hall_id_list = []
         self.create_hall_to_link_mapping()
 
@@ -49,6 +50,7 @@ class Laundry(object):
                 hall_id = int(hall_id)
                 self.hall_to_link[hall_name] = ALL_URL + uuid
                 self.id_to_hall[hall_id] = hall_name
+                self.id_to_location[hall_id] = location
                 self.hall_id_list.append({"hall_name": hall_name, "id": hall_id, "location": location})
 
 
@@ -125,11 +127,13 @@ class Laundry(object):
         >>> english_house = l.hall_status("English%20House")
         """
         hall_name = self.id_to_hall[hall_id]
+        location = self.id_to_location[hall_id]
         machines = self.parse_a_hall((urllib2.unquote(hall_name)))
 
         return {
             'machines': machines,
-            'hall_name': hall_name
+            'hall_name': hall_name,
+            'location': location
         }
 
     def machine_usage(self, hall_no):
