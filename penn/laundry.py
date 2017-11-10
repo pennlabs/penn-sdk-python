@@ -2,10 +2,6 @@ import re
 import csv
 import requests
 import pkg_resources
-try:
-    import urllib2
-except:
-    import urllib.parse as urlib2
 from bs4 import BeautifulSoup
 
 ALL_URL = 'http://suds.kite.upenn.edu/?location='
@@ -34,6 +30,7 @@ class Laundry(object):
                      'Saturday', 'Sunday']
         self.hall_to_link = {}
         self.id_to_hall = {}
+        self.id_to_location = {}
         self.hall_id_list = []
         self.create_hall_to_link_mapping()
 
@@ -49,8 +46,8 @@ class Laundry(object):
                 hall_id = int(hall_id)
                 self.hall_to_link[hall_name] = ALL_URL + uuid
                 self.id_to_hall[hall_id] = hall_name
+                self.id_to_location[hall_id] = location
                 self.hall_id_list.append({"hall_name": hall_name, "id": hall_id, "location": location})
-
 
     @staticmethod
     def update_machine_object(cols, machine_object):
@@ -118,18 +115,23 @@ class Laundry(object):
         """Return the status of each specific washer/dryer in a particular
         laundry room.
 
-        :param hall_name:
-             Unescaped string corresponding to the name of the hall hall. This name
+        :param hall_id:
+             Integer corresponding to the id of the hall. This id
              is returned as part of the all_status call.
 
         >>> english_house = l.hall_status("English%20House")
         """
+        if hall_id not in self.id_to_hall:
+            raise ValueError("No hall with id %s exists." % hall_id)
+
         hall_name = self.id_to_hall[hall_id]
-        machines = self.parse_a_hall((urllib2.unquote(hall_name)))
+        location = self.id_to_location[hall_id]
+        machines = self.parse_a_hall(hall_name)
 
         return {
             'machines': machines,
-            'hall_name': hall_name
+            'hall_name': hall_name,
+            'location': location
         }
 
     def machine_usage(self, hall_no):

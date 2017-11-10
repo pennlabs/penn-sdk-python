@@ -7,12 +7,13 @@ setup(
     url='https://github.com/pennlabs/penn-sdk-python',
     author='Penn Labs',
     author_email='admin@pennlabs.org',
-    version='1.6.5',
+    version='1.6.6',
     packages=['penn'],
     license='MIT',
     package_data={
         # If any package contains *.txt or *.rst files, include them:
         '': ['*.txt', '*.rst'],
+        'penn': ['data/laundry.csv'],
     },
     long_description=open('./README.rst').read(),
     install_requires=[
