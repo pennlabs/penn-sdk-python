@@ -46,13 +46,17 @@ class StudySpaces(object):
         group_study_codes = {}
         url = BASE_URL + "/booking/vpdlc"
         soup = BeautifulSoup(requests.get(url).text, 'html5lib')
-        options = soup.find_all('option')
-        for element in options:
-            if element['value'] != '0':
-                url2 = BASE_URL + str(element['value'])
-                soup2 = BeautifulSoup(requests.get(url2).text, 'html5lib')
-                id = soup2.find('input', attrs={"id": "gid"})['value']
-                group_study_codes[int(id)] = str(element.contents[0])
+        selects = soup.find_all('select')
+        for select in selects:
+            if select["id"] == "capacity":
+                continue
+            options = select.find_all('option')
+            for element in options:
+                if element['value'] != '0':
+                    url2 = BASE_URL + str(element['value'])
+                    soup2 = BeautifulSoup(requests.get(url2).text, 'html5lib')
+                    id = soup2.find('input', attrs={"id": "gid"})['value']
+                    group_study_codes[int(id)] = str(element.contents[0])
         return group_study_codes
 
     def extract_times(self, id, date, name):
