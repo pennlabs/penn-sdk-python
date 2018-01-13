@@ -26,14 +26,12 @@ class StudySpaces(object):
         group_study_codes = []
         url = BASE_URL + "/booking/vpdlc"
         soup = BeautifulSoup(requests.get(url).text, 'html5lib')
-        l = soup.find_all('option')
+        l = soup.find('select', {'id': 'lid'}).find_all('option')
         for element in l:
             if element['value'] != '0':
-                url2 = BASE_URL + str(element['value'])
-                soup2 = BeautifulSoup(requests.get(url2).text, 'html5lib')
-                id = soup2.find('input', attrs={"id": "gid"})['value']
+                url2 = "{}/spaces?lid={}".format(BASE_URL, str(element['value']))
                 new_dict = {}
-                new_dict['id'] = int(id)
+                new_dict['id'] = int(str(element['value']))
                 new_dict['name'] = str(element.contents[0])
                 new_dict['url'] = url2
                 group_study_codes.append(new_dict)
@@ -46,17 +44,10 @@ class StudySpaces(object):
         group_study_codes = {}
         url = BASE_URL + "/booking/vpdlc"
         soup = BeautifulSoup(requests.get(url).text, 'html5lib')
-        selects = soup.find_all('select')
-        for select in selects:
-            if select["id"] == "capacity":
-                continue
-            options = select.find_all('option')
-            for element in options:
-                if element['value'] != '0':
-                    url2 = BASE_URL + str(element['value'])
-                    soup2 = BeautifulSoup(requests.get(url2).text, 'html5lib')
-                    id = soup2.find('input', attrs={"id": "gid"})['value']
-                    group_study_codes[int(id)] = str(element.contents[0])
+        options = soup.find('select', {'id': 'lid'}).find_all('option')
+        for element in options:
+            if element['value'] != '0':
+                group_study_codes[int(str(element['value']))] = str(element.contents[0])
         return group_study_codes
 
     def extract_times(self, id, date, name):
