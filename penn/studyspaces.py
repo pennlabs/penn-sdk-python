@@ -1,5 +1,7 @@
-from bs4 import BeautifulSoup
 import requests
+import json
+
+from bs4 import BeautifulSoup
 
 
 BASE_URL = "http://libcal.library.upenn.edu"
@@ -9,85 +11,23 @@ class StudySpaces(object):
     def __init__(self):
         pass
 
-    @staticmethod
-    def date_parse(original):
-        """Parses the date to dashed format.
+    def get_buildings(self):
+        """Returns a dictionary matching building IDs to their names."""
 
-        :param original: string with date in the format MM/DD/YYYY.
-        """
-        l = original.split("-")
-        final = [l[1], l[2], l[0]]
-        return '-'.join(final)
+        soup = BeautifulSoup(requests.get("{}/spaces".format(BASE_URL)).content, "html5lib")
+        options = soup.find("select", {"id": "lid"}).find_all("option")
+        return {int(option["value"]): str(option.text) for option in options}
 
-    def get_id_json(self):
-        """Makes JSON with each element associating URL, ID, and building
-        name.
-        """
-        group_study_codes = []
-        url = BASE_URL + "/booking/vpdlc"
-        soup = BeautifulSoup(requests.get(url).text, 'html5lib')
-        l = soup.find('select', {'id': 'lid'}).find_all('option')
-        for element in l:
-            if element['value'] != '0':
-                url2 = "{}/spaces?lid={}".format(BASE_URL, str(element['value']))
-                new_dict = {}
-                new_dict['id'] = int(str(element['value']))
-                new_dict['name'] = str(element.contents[0])
-                new_dict['url'] = url2
-                group_study_codes.append(new_dict)
-        return group_study_codes
+    def get_rooms(self, building, start, end):
+        """Returns a dictionary matching all rooms given a building id and a date range."""
 
-    def get_id_dict(self):
-        """Extracts the ID's of the room into a dictionary. Used as a
-        helper for the extract_times method.
-        """
-        group_study_codes = {}
-        url = BASE_URL + "/booking/vpdlc"
-        soup = BeautifulSoup(requests.get(url).text, 'html5lib')
-        options = soup.find('select', {'id': 'lid'}).find_all('option')
-        for element in options:
-            if element['value'] != '0':
-                group_study_codes[int(str(element['value']))] = str(element.contents[0])
-        return group_study_codes
-
-    def extract_times(self, id, date, name):
-        """Scrapes the avaiable rooms with the given ID and date.
-
-        :param id: the ID of the building
-        :param date: the date to acquire available rooms from
-        :param name: the name of the building; obtained via get_id_dict
-        """
-        url = BASE_URL + "/rooms_acc.php?gid=%s&d=%s&cap=0" % (int(id), date)
-        soup = BeautifulSoup(requests.get(url).text, 'html5lib')
-
-        time_slots = soup.find_all('form')
-        unparsed_rooms = time_slots[1].contents[2:-2]
-
-        roomTimes = []
-
-        for i in unparsed_rooms:
-            room = BeautifulSoup(str(i), 'html5lib')
-            try:
-                # extract room names
-                roomName = room.fieldset.legend.h2.contents[0]
-            except AttributeError:
-                # in case the contents aren't a list
-                continue
-            newRoom = str(roomName)[:-1]
-            times = []
-
-            filtered = room.fieldset.find_all('label')
-
-            for t in filtered:
-                # getting the individual times for each room
-                dict_item = {}
-                dict_item['room_name'] = newRoom
-                time = str(t).split("\t\t\t\t\t")[2][1:-1]
-                times.append(time)
-                startAndEnd = time.split(" - ")
-                dict_item['start_time'] = startAndEnd[0].upper()
-                dict_item['end_time'] = startAndEnd[1].upper()
-                roomTimes.append(dict_item)
-                dict_item['date'] = self.date_parse(date)
-                dict_item['building'] = name
-        return roomTimes
+        room_endpoint = "{}/process_equip_p_availability.php".format(BASE_URL)
+        data = {
+            "lid": building,
+            "gid": 0,
+            "start": start.strftime("%Y-%m-%d"),
+            "end": end.strftime("%Y-%m-%d"),
+            "bookings": []
+        }
+        resp = requests.post(room_endpoint, data=json.dumps(data), headers={'Referer': "{}/spaces?lid={}".format(BASE_URL, building)})
+        return resp.json()
