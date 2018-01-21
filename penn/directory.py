@@ -38,7 +38,6 @@ class Directory(WrapperBase):
         res['list_affiliation'] = res['list_affiliation'].replace('Faculty - ', '')
         return res
 
-
     def search(self, params, standardize=False):
         """Get a list of person objects for the given search params.
 

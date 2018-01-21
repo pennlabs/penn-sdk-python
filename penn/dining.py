@@ -81,6 +81,7 @@ def get_meals(v2_response, building_id):
         meals.append({"tblStation": stations, "txtDayPartDescription": meal["label"]})
     return meals
 
+
 class DiningV2(WrapperBase):
     """The client for the Registrar. Used to make requests to the API.
 
@@ -140,6 +141,7 @@ class DiningV2(WrapperBase):
         """
         response = self._request(V2_ENDPOINTS['ITEMS'] + item_id)
         return response
+
 
 class Dining(WrapperBase):
     """The client for the Registrar. Used to make requests to the API.
