@@ -8,23 +8,11 @@ class TestStudySpaces():
     def setUp(self):
         self.studyspaces = StudySpaces()
 
-    def test_json(self):
-        json_id = self.studyspaces.get_id_json()
-        ok_(len(json_id) > 0)
-        for i in json_id:
-            ok_(i['id'] > 0)
-            ok_(i['name'] != '')
-            ok_(i['url'] != '')
+    def test_buildings(self):
+        buildings = self.studyspaces.get_buildings()
+        ok_(len(buildings) > 0)
 
-    def test_extraction(self):
-        dict_id = self.studyspaces.get_id_dict()
-        ok_(len(dict_id) > 0)
-        d = datetime.datetime.now() + datetime.timedelta(days=1)
-        next_date = d.strftime("%Y-%m-%d")
-        s = self.studyspaces.extract_times(1799, next_date, "Van Pelt-Dietrich Library Center Group Study Rooms")
-        for i in s:
-            ok_("building" in i)
-            ok_("start_time" in i)
-            ok_("end_time" in i)
-            ok_("date" in i)
-            ok_("room_name" in i)
+    def test_rooms(self):
+        now = datetime.datetime.now()
+        rooms = self.studyspaces.get_rooms(2683, now, now + datetime.timedelta(days=3))
+        ok_(len(rooms) > 0)
