@@ -65,7 +65,7 @@ class StudySpaces(object):
             rooms[room_id].append({
                 "start": self.format_date(row["start"]),
                 "end": self.format_date(row["end"]),
-                "booked": row["status"] != 0
+                "available": row["status"] == 0
             })
         out = []
         for k, v in rooms.items():
