@@ -30,4 +30,14 @@ class StudySpaces(object):
             "bookings": []
         }
         resp = requests.post(room_endpoint, data=json.dumps(data), headers={'Referer': "{}/spaces?lid={}".format(BASE_URL, building)})
-        return resp.json()
+        rooms = {}
+        for row in resp.json():
+            room_id = int(row["resourceId"][4:])
+            if room_id not in rooms:
+                rooms[room_id] = []
+            rooms[room_id].append({
+                "start": row["start"],
+                "end": row["end"],
+                "booked": row["status"] != 0
+            })
+        return [{"room_id": k, "times": v} for k, v in rooms.items()]
