@@ -1,6 +1,8 @@
+import datetime
+import pytz
+
 from nose.tools import ok_
 from penn import StudySpaces
-import datetime
 
 
 class TestStudySpaces():
@@ -17,6 +19,6 @@ class TestStudySpaces():
         ok_(len(mapping) > 0)
 
     def test_rooms(self):
-        now = datetime.datetime.now()
+        now = pytz.timezone("US/Eastern").localize(datetime.datetime.now())
         rooms = self.studyspaces.get_rooms(2683, now, now + datetime.timedelta(days=3))
         ok_(len(rooms) > 0)
