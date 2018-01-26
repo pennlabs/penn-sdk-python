@@ -37,9 +37,12 @@ class StudySpaces(object):
             title = items["title"][1:-1]
             title = title.encode().decode("unicode_escape" if six.PY3 else "string_escape")
             title = re.sub(r" \(Capacity [0-9]+\)", r"", title)
+            thumbnail = items["thumbnail"][1:-1]
+            if thumbnail:
+                thumbnail = "https:" + thumbnail
             out[int(items["eid"])] = {
                 "name": title,
-                "thumbnail": items["thumbnail"][1:-1],
+                "thumbnail": thumbnail,
                 "capacity": int(items["capacity"])
             }
         return out
