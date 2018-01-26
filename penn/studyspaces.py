@@ -1,5 +1,7 @@
 import requests
+import datetime
 import json
+import pytz
 
 from bs4 import BeautifulSoup
 
@@ -17,6 +19,11 @@ class StudySpaces(object):
         soup = BeautifulSoup(requests.get("{}/spaces".format(BASE_URL)).content, "html5lib")
         options = soup.find("select", {"id": "lid"}).find_all("option")
         return [{"id": int(opt["value"]), "name": str(opt.text), "service": "libcal"} for opt in options]
+
+    @staticmethod
+    def format_date(date):
+        date = pytz.timezone("US/Eastern").localize(datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S"))
+        return date.isoformat()
 
     def get_rooms(self, building, start, end):
         """Returns a dictionary matching all rooms given a building id and a date range."""
@@ -36,8 +43,8 @@ class StudySpaces(object):
             if room_id not in rooms:
                 rooms[room_id] = []
             rooms[room_id].append({
-                "start": row["start"],
-                "end": row["end"],
+                "start": self.format_date(row["start"]),
+                "end": self.format_date(row["end"]),
                 "booked": row["status"] != 0
             })
         return [{"room_id": k, "times": v} for k, v in rooms.items()]
