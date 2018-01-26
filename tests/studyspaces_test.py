@@ -12,6 +12,10 @@ class TestStudySpaces():
         buildings = self.studyspaces.get_buildings()
         ok_(len(buildings) > 0)
 
+    def test_room_name_mapping(self):
+        mapping = self.studyspaces.get_room_id_name_mapping(2683)
+        ok_(len(mapping) > 0)
+
     def test_rooms(self):
         now = datetime.datetime.now()
         rooms = self.studyspaces.get_rooms(2683, now, now + datetime.timedelta(days=3))
