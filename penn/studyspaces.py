@@ -34,9 +34,13 @@ class StudySpaces(object):
         out = {}
         for item in re.findall(r"resources.push\(((?s).*?)\);", data, re.MULTILINE):
             items = {k: v for k, v in re.findall(r'(\w+?):\s*(.*?),', item)}
+            title = items["title"][1:-1]
+            title = title.encode().decode("unicode_escape" if six.PY3 else "string_escape")
+            title = re.sub(r" \(Capacity [0-9]+\)", r"", title)
             out[int(items["eid"])] = {
-                "name": items["title"][1:-1].encode().decode("unicode_escape" if six.PY3 else "string_escape"),
-                "thumbnail": items["thumbnail"][1:-1]
+                "name": title,
+                "thumbnail": items["thumbnail"][1:-1],
+                "capacity": int(items["capacity"])
             }
         return out
 
@@ -63,9 +67,13 @@ class StudySpaces(object):
                 "end": self.format_date(row["end"]),
                 "booked": row["status"] != 0
             })
-        return [{
-            "room_id": k,
-            "times": v,
-            "name": mapping[k]["name"] if k in mapping else None,
-            "thumbnail": mapping[k]["thumbnail"] if k in mapping else None
-        } for k, v in rooms.items()]
+        out = []
+        for k, v in rooms.items():
+            item = {
+                "room_id": k,
+                "times": v
+            }
+            if k in mapping:
+                item.update(mapping[k])
+            out.append(item)
+        return out
