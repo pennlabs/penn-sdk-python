@@ -24,12 +24,8 @@ class StudySpaces(object):
 
     @staticmethod
     def parse_date(date):
-        return datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
-
-    @staticmethod
-    def localize_date(date):
-        date = pytz.timezone("US/Eastern").localize(date)
-        return date.isoformat()
+        date = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+        return pytz.timezone("US/Eastern").localize(date)
 
     @staticmethod
     def get_room_id_name_mapping(building):
@@ -70,8 +66,8 @@ class StudySpaces(object):
             room_end = self.parse_date(row["end"])
             if start <= room_start <= end:
                 rooms[room_id].append({
-                    "start": self.localize_date(room_start),
-                    "end": self.localize_date(room_end),
+                    "start": room_start.isoformat(),
+                    "end": room_end.isoformat(),
                     "available": row["status"] == 0
                 })
         out = []
