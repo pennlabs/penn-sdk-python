@@ -12,11 +12,11 @@ class StudySpaces(object):
         pass
 
     def get_buildings(self):
-        """Returns a dictionary matching building IDs to their names."""
+        """Returns a list of building IDs, building names, and services."""
 
         soup = BeautifulSoup(requests.get("{}/spaces".format(BASE_URL)).content, "html5lib")
         options = soup.find("select", {"id": "lid"}).find_all("option")
-        return {int(option["value"]): str(option.text) for option in options}
+        return [{"id": int(opt["value"]), "name": str(opt.text), "service": "libcal"} for opt in options]
 
     def get_rooms(self, building, start, end):
         """Returns a dictionary matching all rooms given a building id and a date range."""
