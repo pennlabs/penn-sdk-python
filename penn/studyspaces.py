@@ -23,8 +23,12 @@ class StudySpaces(object):
         return [{"id": int(opt["value"]), "name": str(opt.text), "service": "libcal"} for opt in options]
 
     @staticmethod
-    def format_date(date):
-        date = pytz.timezone("US/Eastern").localize(datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S"))
+    def parse_date(date):
+        return datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+
+    @staticmethod
+    def localize_date(date):
+        date = pytz.timezone("US/Eastern").localize(date)
         return date.isoformat()
 
     @staticmethod
@@ -53,7 +57,7 @@ class StudySpaces(object):
             "lid": building,
             "gid": 0,
             "start": start.strftime("%Y-%m-%d"),
-            "end": end.strftime("%Y-%m-%d"),
+            "end": (end + datetime.timedelta(days=1)).strftime("%Y-%m-%d"),
             "bookings": []
         }
         resp = requests.post(room_endpoint, data=json.dumps(data), headers={'Referer': "{}/spaces?lid={}".format(BASE_URL, building)})
@@ -62,11 +66,14 @@ class StudySpaces(object):
             room_id = int(row["resourceId"][4:])
             if room_id not in rooms:
                 rooms[room_id] = []
-            rooms[room_id].append({
-                "start": self.format_date(row["start"]),
-                "end": self.format_date(row["end"]),
-                "available": row["status"] == 0
-            })
+            room_start = self.parse_date(row["start"])
+            room_end = self.parse_date(row["end"])
+            if start <= room_start <= end:
+                rooms[room_id].append({
+                    "start": self.localize_date(room_start),
+                    "end": self.localize_date(room_end),
+                    "available": row["status"] == 0
+                })
         out = []
         for k, v in rooms.items():
             item = {
