@@ -48,9 +48,9 @@ class StudySpaces(object):
         """Returns a dictionary matching all rooms given a building id and a date range."""
 
         if start.tzinfo is None:
-            start = pytz.timezone("US/Eastern").localize(self.localize_date(start))
+            start = pytz.timezone("US/Eastern").localize(start)
         if end.tzinfo is None:
-            end = pytz.timezone("US/Eastern").localize(self.localize_date(end))
+            end = pytz.timezone("US/Eastern").localize(end)
 
         mapping = self.get_room_id_name_mapping(building)
         room_endpoint = "{}/process_equip_p_availability.php".format(BASE_URL)
