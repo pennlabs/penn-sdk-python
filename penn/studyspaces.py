@@ -42,9 +42,10 @@ class StudySpaces(object):
                 thumbnail = "https:" + thumbnail
             out[int(items["eid"])] = {
                 "name": title,
-                "thumbnail": thumbnail,
                 "capacity": int(items["capacity"])
             }
+            if thumbnail:
+                out[int(items["eid"])]["thumbnail"] = thumbnail
         return out
 
     def get_rooms(self, building, start, end):
