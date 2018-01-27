@@ -1,10 +1,12 @@
 import re
+import os
 import csv
 import requests
 import pkg_resources
 from bs4 import BeautifulSoup
 
-ALL_URL = 'http://suds.kite.upenn.edu/?location='
+LAUNDRY_DOMAIN = os.environ.get("LAUNDRY_DOMAIN", "suds.kite.upenn.edu")
+ALL_URL = 'http://{}/?location='.format(LAUNDRY_DOMAIN)
 USAGE_BASE_URL = 'https://www.laundryalert.com/cgi-bin/penn6389/LMRoomUsage?CallingPage=LMRoom&Password=penn6389&Halls='
 
 
