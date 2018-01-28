@@ -60,5 +60,3 @@ MANIFEST
 docs/_build
 .pypirc
 .idea/
-*.swp
-*.swo
