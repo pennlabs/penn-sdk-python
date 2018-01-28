@@ -4,7 +4,11 @@ python:
   - "2.7"
   - "3.4"
   - "3.5"
-script: nosetests
+install:
+  - pip install flake8 -r requirements.txt
+script:
+  - flake8 --max-line-length=150 --exclude=venv,docs,build --ignore=F401,F403,F405 .
+  - nosetests
 deploy:
   provider: pypi
   user: 'pennappslabs'

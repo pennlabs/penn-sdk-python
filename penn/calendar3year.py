@@ -21,9 +21,9 @@ class Calendar(object):
         """
         events = []
         r = requests.get(BASE_URL).text
-        l = r.split("\r\n")
+        lines = r.split("\r\n")
         d = {}
-        for line in l:
+        for line in lines:
             if line == "BEGIN:VEVENT":
                 d = {}
             elif line[:7] == "DTSTART":
@@ -32,7 +32,7 @@ class Calendar(object):
                 d['start'] = start_date.strftime('%Y-%m-%d')
             elif line[:5] == "DTEND":
                 raw_date = line.split(":")[1]
-                end_date = datetime.datetime.strptime(raw_date,'%Y%m%d').date()
+                end_date = datetime.datetime.strptime(raw_date, '%Y%m%d').date()
                 d['end'] = end_date.strftime('%Y-%m-%d')
             elif line[:7] == "SUMMARY":
                 name = line.split(":")[1]
