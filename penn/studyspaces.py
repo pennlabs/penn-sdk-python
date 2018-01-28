@@ -8,10 +8,18 @@ import six
 from bs4 import BeautifulSoup
 
 
-BASE_URL = "http://libcal.library.upenn.edu"
+BASE_URL = "https://libcal.library.upenn.edu"
 
 
 class StudySpaces(object):
+    """Used for interacting with the UPenn library GSR booking system.
+
+    Usage::
+
+      >>> from penn import StudySpaces
+      >>> s = StudySpaces()
+    """
+
     def __init__(self):
         pass
 
@@ -24,23 +32,34 @@ class StudySpaces(object):
 
     @staticmethod
     def parse_date(date):
+        """Converts library system dates into timezone aware Python datetime objects."""
+
         date = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
         return pytz.timezone("US/Eastern").localize(date)
 
     @staticmethod
     def get_room_id_name_mapping(building):
+        """ Returns a dictionary mapping id to name, thumbnail, and capacity. """
+
         data = requests.get("{}/spaces?lid={}".format(BASE_URL, building)).content.decode("utf8")
         # find all of the javascript room definitions
         out = {}
         for item in re.findall(r"resources.push\(((?s).*?)\);", data, re.MULTILINE):
+            # parse all of the room attributes
             items = {k: v for k, v in re.findall(r'(\w+?):\s*(.*?),', item)}
+
+            # room name formatting
             title = items["title"][1:-1]
             title = title.encode().decode("unicode_escape" if six.PY3 else "string_escape")
             title = re.sub(r" \(Capacity [0-9]+\)", r"", title)
+
+            # turn thumbnail into proper url
             thumbnail = items["thumbnail"][1:-1]
             if thumbnail:
                 thumbnail = "https:" + thumbnail
-            out[int(items["eid"])] = {
+
+            room_id = int(items["eid"])
+            out[room_id] = {
                 "name": title,
                 "thumbnail": thumbnail or None,
                 "capacity": int(items["capacity"])
