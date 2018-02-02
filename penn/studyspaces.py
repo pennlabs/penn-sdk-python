@@ -28,7 +28,46 @@ class StudySpaces(object):
 
         soup = BeautifulSoup(requests.get("{}/spaces".format(BASE_URL)).content, "html5lib")
         options = soup.find("select", {"id": "lid"}).find_all("option")
-        return [{"id": int(opt["value"]), "name": str(opt.text), "service": "libcal"} for opt in options]
+        return [{"id": int(opt["value"]), "name": str(opt.text), "service": "libcal"} for opt in options if int(opt["value"]) > 0]
+
+    def book_room(self, building, room, start, end, firstname, lastname, email, groupname, phone, size, fake=False):
+        """ Books a room given the required information. """
+
+        data = {
+            "formData[fname]": firstname,
+            "formData[lname]": lastname,
+            "formData[email]": email,
+            "formData[nick]": groupname,
+            "formData[q2533]": phone,
+            "formData[q2555]": size,
+            "forcedEmail": ""
+        }
+
+        try:
+            room_obj = self.get_room_id_name_mapping(building)[room]
+        except KeyError:
+            raise ValueError("No room with id {} found in building with id {}!".format(room, building))
+
+        if room_obj["lid"] != building:
+            raise ValueError("Mismatch between building IDs! (expected {}, got {})".format(building, room_obj["lid"]))
+
+        room_data = {
+            "id": 1,
+            "eid": room,
+            "gid": room_obj["gid"],
+            "lid": room_obj["lid"],
+            "start": start.strftime("%Y-%m-%d %H:%M"),
+            "end": end.strftime("%Y-%m-%d %H:%M")
+        }
+
+        for key, val in room_data.items():
+            data["bookings[0][{}]".format(key)] = val
+
+        if fake:
+            return True
+
+        resp = requests.post("{}/ajax/space/book".format(BASE_URL), data)
+        return "success" in resp.json()
 
     @staticmethod
     def parse_date(date):
@@ -59,8 +98,13 @@ class StudySpaces(object):
                 thumbnail = "https:" + thumbnail
 
             room_id = int(items["eid"])
+            room_gid = int(items["gid"])
+            room_lid = int(items["lid"])
+
             out[room_id] = {
                 "name": title,
+                "gid": room_gid,
+                "lid": room_lid,
                 "thumbnail": thumbnail or None,
                 "capacity": int(items["capacity"])
             }
@@ -105,5 +149,5 @@ class StudySpaces(object):
             }
             if k in mapping:
                 item.update(mapping[k])
-            out.append(item)
+                out.append(item)
         return out
