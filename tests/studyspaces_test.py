@@ -12,6 +12,10 @@ class TestStudySpaces():
     def test_buildings(self):
         buildings = self.studyspaces.get_buildings()
         ok_(len(buildings) > 0)
+        for building in buildings:
+            ok_(building["id"] > 0)
+            ok_(building["name"])
+            ok_(building["service"])
 
     def test_room_name_mapping(self):
         mapping = self.studyspaces.get_room_id_name_mapping(2683)
@@ -25,6 +29,9 @@ class TestStudySpaces():
         for building in buildings[:3]:
             rooms = self.studyspaces.get_rooms(building["id"], now, now + datetime.timedelta(days=3))
             ok_(len(rooms) > 0, "The building {} does not have any rooms!".format(building))
+            for room in rooms:
+                ok_(room["room_id"] > 0)
+                ok_(len(room["times"]) > 0)
 
     def test_booking(self):
         """ Test the checks before booking the room, but don't actually book a room. """
