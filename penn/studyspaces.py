@@ -33,14 +33,20 @@ class StudySpaces(object):
     def book_room(self, building, room, start, end, firstname, lastname, email, groupname, phone, size, fake=False):
         """Books a room given the required information.
 
-        :param building: The ID of the building the room is in.
-        :param room: The ID of the room to book.
-        :param start: The start range of when to book the room.
-        :param end: The end range of when to book the room.
-        :param fake: Don't actually book the room.
-        :returns: Boolean indicating whether the booking succeeded or not.
-        :raises ValueError: If one of the fields is missing or incorrectly formatted.
-
+        :param building:
+            The ID of the building the room is in.
+        :param room:
+            The ID of the room to book.
+        :param start:
+            The start range of when to book the room.
+        :param end:
+            The end range of when to book the room.
+        :param fake:
+            Don't actually book the room.
+        :returns:
+            Boolean indicating whether the booking succeeded or not.
+        :raises ValueError:
+            If one of the fields is missing or incorrectly formatted.
         """
 
         data = {
@@ -94,9 +100,10 @@ class StudySpaces(object):
     def get_room_id_name_mapping(building):
         """Returns a dictionary mapping id to name, thumbnail, and capacity.
 
-        :param building: The ID of the building to fetch rooms for.
-        :returns: A list of rooms, with each item being a dictionary that contains the room id and available times.
-
+        :param building:
+            The ID of the building to fetch rooms for.
+        :returns:
+            A list of rooms, with each item being a dictionary that contains the room id and available times.
         """
 
         data = requests.get("{}/spaces?lid={}".format(BASE_URL, building)).content.decode("utf8")
