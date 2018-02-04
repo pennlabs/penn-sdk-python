@@ -46,7 +46,7 @@ class TestStudySpaces():
         room_id = rooms[0]["room_id"]
         room_time = rooms[0]["times"][0]
 
-        self.studyspaces.book_room(
+        result = self.studyspaces.book_room(
             building_id,
             room_id,
             datetime.datetime.strptime(room_time["start"][:-6], "%Y-%m-%dT%H:%M:%S"),
@@ -59,3 +59,4 @@ class TestStudySpaces():
             "2-3",
             fake=True
         )
+        ok_(result["results"])

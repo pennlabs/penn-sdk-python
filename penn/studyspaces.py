@@ -64,10 +64,11 @@ class StudySpaces(object):
             data["bookings[0][{}]".format(key)] = val
 
         if fake:
-            return True
+            return {"results": True, "error": None}
 
         resp = requests.post("{}/ajax/space/book".format(BASE_URL), data)
-        return "success" in resp.json()
+        resp_data = resp.json()
+        return {"results": "success" in resp_data, "error": resp_data.get("error")}
 
     @staticmethod
     def parse_date(date):
