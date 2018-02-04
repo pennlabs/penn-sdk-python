@@ -87,7 +87,10 @@ class StudySpaces(object):
         if resp_data.get("success"):
             return True
         else:
-            raise ValueError(str(resp_data))
+            if "error" in resp_data:
+                raise ValueError(resp_data["error"])
+            else:
+                raise ValueError(re.sub('<.*?>', '', resp_data.get("msg").strip()).strip())
 
     @staticmethod
     def parse_date(date):
