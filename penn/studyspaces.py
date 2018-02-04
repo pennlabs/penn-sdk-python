@@ -87,7 +87,7 @@ class StudySpaces(object):
         if resp_data.get("success"):
             return True
         else:
-            raise ValueError(resp_data.get("error"))
+            raise ValueError(str(resp_data))
 
     @staticmethod
     def parse_date(date):
