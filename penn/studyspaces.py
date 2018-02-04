@@ -94,7 +94,13 @@ class StudySpaces(object):
 
     @staticmethod
     def parse_date(date):
-        """Converts library system dates into timezone aware Python datetime objects."""
+        """Converts library system dates into timezone aware Python datetime objects.
+
+        :param date:
+            A library system date in the format '2018-01-25 12:30:00'.
+        :returns:
+            A timezone aware python datetime object.
+        """
 
         date = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
         return pytz.timezone("US/Eastern").localize(date)
@@ -140,7 +146,17 @@ class StudySpaces(object):
         return out
 
     def get_rooms(self, building, start, end):
-        """Returns a dictionary matching all rooms given a building id and a date range."""
+        """Returns a dictionary matching all rooms given a building id and a date range.
+
+        The resulting dictionary contains both rooms that are available and rooms that already have been booked.
+
+        :param building:
+            The ID of the building to fetch rooms for.
+        :param start:
+            The start date of the range used to filter available rooms.
+        :param end:
+            The end date of the range used to filter available rooms.
+        """
 
         if start.tzinfo is None:
             start = pytz.timezone("US/Eastern").localize(start)
