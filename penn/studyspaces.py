@@ -46,7 +46,7 @@ class StudySpaces(object):
         :returns:
             Boolean indicating whether the booking succeeded or not.
         :raises ValueError:
-            If one of the fields is missing or incorrectly formatted.
+            If one of the fields is missing or incorrectly formatted, or if the server fails to book the room.
         """
 
         data = {
@@ -80,7 +80,7 @@ class StudySpaces(object):
             data["bookings[0][{}]".format(key)] = val
 
         if fake:
-            return {"results": True, "error": None}
+            return True
 
         resp = requests.post("{}/ajax/space/book".format(BASE_URL), data)
         resp_data = resp.json()
