@@ -59,4 +59,4 @@ class TestStudySpaces():
             "2-3",
             fake=True
         )
-        ok_(result["results"])
+        ok_(result)
