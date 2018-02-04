@@ -84,8 +84,8 @@ class StudySpaces(object):
 
         resp = requests.post("{}/ajax/space/book".format(BASE_URL), data)
         resp_data = resp.json()
-        if "success" in resp_data:
-            return resp_data["success"]
+        if resp_data.get("success"):
+            return True
         else:
             raise ValueError(resp_data.get("error"))
 
