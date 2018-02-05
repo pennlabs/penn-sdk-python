@@ -1,4 +1,3 @@
-import re
 import os
 import csv
 import requests
@@ -38,7 +37,7 @@ class Laundry(object):
 
     def create_hall_to_link_mapping(self):
         """
-        :return: Mapping from hall name to associated link in SUDS. Creates inverted index from id to hall
+        :return: Mapping from hall name to associated link in SUDS. Creates inverted index from id to hall.
         """
         laundry_path = pkg_resources.resource_filename("penn", "data/laundry.csv")
         with open(laundry_path, "r") as f:
@@ -76,6 +75,12 @@ class Laundry(object):
         return machine_object
 
     def parse_a_hall(self, hall):
+        """Return names, hall numbers, and the washers/dryers available for a certain hall.
+
+        :param hall:
+            The ID of the hall to retrieve data for.
+        :type hall: int
+        """
         if hall not in self.hall_to_link:
             return None  # change to to empty json idk
         page = requests.get(self.hall_to_link[hall])
@@ -109,10 +114,6 @@ class Laundry(object):
 
         machines = {"washers": washers, "dryers": dryers, "details": detailed}
         return machines
-
-    @staticmethod
-    def get_hall_no(href):
-        return int(re.search(r"Halls=(\d+)", href).group(1))
 
     def all_status(self):
         """Return names, hall numbers, and the washers/dryers available for all
