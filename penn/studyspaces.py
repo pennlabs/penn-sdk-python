@@ -38,11 +38,11 @@ class StudySpaces(object):
         :param room:
             The ID of the room to book.
         :param start:
-            The start range of when to book the room.
+            The start time range of when to book the room.
         :param end:
-            The end range of when to book the room.
+            The end time range of when to book the room.
         :param fake:
-            Don't actually book the room.
+            If this is set to true, don't actually book the room. Default is false.
         :returns:
             Boolean indicating whether the booking succeeded or not.
         :raises ValueError:
@@ -108,6 +108,8 @@ class StudySpaces(object):
     @staticmethod
     def get_room_id_name_mapping(building):
         """Returns a dictionary mapping id to name, thumbnail, and capacity.
+
+        The dictionary also contains information about the lid and gid, which are used in the booking process.
 
         :param building:
             The ID of the building to fetch rooms for.
