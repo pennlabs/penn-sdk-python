@@ -42,6 +42,10 @@ class TestStudySpaces():
 
         now = datetime.datetime.now()
         rooms = self.studyspaces.get_rooms(building_id, now, now + datetime.timedelta(days=1))
+
+        if not rooms:
+            return
+
         # get the first room
         room_id = rooms[0]["room_id"]
         room_time = rooms[0]["times"][0]
