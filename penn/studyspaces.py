@@ -35,14 +35,19 @@ class StudySpaces(object):
 
         :param building:
             The ID of the building the room is in.
+        :type building: int
         :param room:
             The ID of the room to book.
+        :type room: int
         :param start:
             The start time range of when to book the room.
+        :type start: datetime
         :param end:
             The end time range of when to book the room.
+        :type end: datetime
         :param fake:
             If this is set to true, don't actually book the room. Default is false.
+        :type fake: bool
         :returns:
             Boolean indicating whether the booking succeeded or not.
         :raises ValueError:
@@ -98,6 +103,7 @@ class StudySpaces(object):
 
         :param date:
             A library system date in the format '2018-01-25 12:30:00'.
+        :type date: datetime
         :returns:
             A timezone aware python datetime object.
         """
@@ -113,6 +119,7 @@ class StudySpaces(object):
 
         :param building:
             The ID of the building to fetch rooms for.
+        :type building: int
         :returns:
             A list of rooms, with each item being a dictionary that contains the room id and available times.
         """
@@ -154,10 +161,13 @@ class StudySpaces(object):
 
         :param building:
             The ID of the building to fetch rooms for.
+        :type building: int
         :param start:
             The start date of the range used to filter available rooms.
+        :type start: datetime
         :param end:
             The end date of the range used to filter available rooms.
+        :type end: datetime
         """
 
         if start.tzinfo is None:
