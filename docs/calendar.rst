@@ -1,7 +1,7 @@
 .. _calendar:
 
 Penn Academic Calendar API
-=====================
+==========================
 
 .. module:: penn.calendar3year
 

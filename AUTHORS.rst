@@ -10,6 +10,7 @@ Penn Labs
 - Geoff Vedernikoff `@yefim <https://github.com/yefim>`_
 - Ceasar Bautista `@Ceasar <https://github.com/Ceasar>`_
 - Brandon Lin `@esqu1 <https://github.com/esqu1>`_
+- Eric Wang `@ezwang <https://github.com/ezwang>`_
 
 Patches and Suggestions
 ```````````````````````
