@@ -25,10 +25,10 @@ class StudySpaces(object):
 
     def get_buildings(self):
         """Returns a list of building IDs, building names, and services."""
-
-        soup = BeautifulSoup(requests.get("{}/spaces".format(BASE_URL)).content, "html5lib")
-        options = soup.find("select", {"id": "lid"}).find_all("option")
-        return [{"id": int(opt["value"]), "name": str(opt.text), "service": "libcal"} for opt in options if int(opt["value"]) > 0]
+        
+        # soup = BeautifulSoup(requests.get("{}/spaces".format(BASE_URL)).content, "html5lib")
+        # options = soup.find("select", {"id": "lid"}).find_all("option")
+        # return [{"id": int(opt["value"]), "name": str(opt.text), "service": "libcal"} for opt in options if int(opt["value"]) > 0]
 
     def book_room(self, building, room, start, end, firstname, lastname, email, groupname, phone, size, fake=False):
         """Books a room given the required information.
