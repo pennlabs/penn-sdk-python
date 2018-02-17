@@ -1,5 +1,4 @@
-{
-    "locations": [
+[
                   {
                   "lid": 1086,
                   "gid": 1889,
@@ -65,4 +64,4 @@
                   "service": "libcal"
                   }
                 ]
-}
+
