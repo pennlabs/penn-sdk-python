@@ -1,0 +1,75 @@
+[
+                  {
+                  "lid": 1086,
+                  "gid": 1889,
+                  "name": "Weigle",
+                  "service": "libcal"
+                  },
+                  {
+                  "lid": 1086,
+                  "gid": 4660,
+                  "name": "VP Ground Floor",
+                  "service": "libcal"
+                  },
+                  {
+                  "lid": 1086,
+                  "gid": 4659,
+                  "name": "VP 3rd Floor",
+                  "service": "libcal"
+                  },
+                  {
+                  "lid": 1086,
+                  "gid": 1891,
+                  "name": "VP 4th Floor",
+                  "service": "libcal"
+                  },
+                  {
+                  "lid": 2587,
+                  "gid": 4368,
+                  "name": "Lippincott",
+                  "service": "libcal"
+                  },
+                  {
+                  "lid": 2495,
+                  "gid": 1886,
+                  "name": "Education Commons",
+                  "service": "libcal"
+                  },
+                  {
+                  "lid": 2683,
+                  "gid": 1885,
+                  "name": "Biomedical Library",
+                  "service": "libcal"
+                  },
+                  {
+                  "lid": 2637,
+                  "gid": 1904,
+                  "name": "Fisher Fine Arts",
+                  "service": "libcal"
+                  },
+                  {
+                  "lid": 1090,
+                  "gid": 1909,
+                  "name": "Levin Building",
+                  "service": "libcal"
+                  },
+                  {
+                  "lid": 2634,
+                  "gid": 1914,
+                  "name": "Museum Library",
+                  "service": "libcal"
+                  },
+                  {
+                  "lid": 2636,
+                  "gid": 4887,
+                  "name": "VP Seminar",
+                  "service": "libcal"
+                  },
+                  {
+                  "lid": 2611,
+                  "gid": 4748,
+                  "name": "VP Special Use",
+                  "service": "libcal"
+                  }
+                ]
+
