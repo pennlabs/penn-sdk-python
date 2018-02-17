@@ -13,7 +13,7 @@ class TestStudySpaces():
         buildings = self.studyspaces.get_buildings()
         ok_(len(buildings) > 0)
         for building in buildings:
-            ok_(building["id"] > 0)
+            ok_(building["lid"] > 0)
             ok_(building["name"])
             ok_(building["service"])
 
