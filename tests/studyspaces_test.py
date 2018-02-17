@@ -27,7 +27,7 @@ class TestStudySpaces():
         now = datetime.datetime.now()
         buildings = self.studyspaces.get_buildings()
         for building in buildings[:3]:
-            rooms = self.studyspaces.get_rooms(building["id"], now, now + datetime.timedelta(days=3))
+            rooms = self.studyspaces.get_rooms(building["lid"], now, now + datetime.timedelta(days=3))
             ok_(len(rooms) > 0, "The building {} does not have any rooms!".format(building))
             for room in rooms:
                 ok_(room["room_id"] > 0)
@@ -38,7 +38,7 @@ class TestStudySpaces():
 
         buildings = self.studyspaces.get_buildings()
         # get the first building
-        building_id = buildings[0]["id"]
+        building_id = buildings[0]["lid"]
 
         now = datetime.datetime.now()
         rooms = self.studyspaces.get_rooms(building_id, now, now + datetime.timedelta(days=1))
