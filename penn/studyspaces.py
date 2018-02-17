@@ -28,8 +28,8 @@ class StudySpaces(object):
         """Returns a list of building IDs, building names, and services."""
 
         location_path = pkg_resources.resource_filename("penn", "data/locations.json")
-        with open(location_path, "r") as locations:
-            return locations
+        with open(location_path, "r") as location:
+            return location
         # soup = BeautifulSoup(requests.get("{}/spaces".format(BASE_URL)).content, "html5lib")
         # options = soup.find("select", {"id": "lid"}).find_all("option")
         # return [{"id": int(opt["value"]), "name": str(opt.text), "service": "libcal"} for opt in options if int(opt["value"]) > 0]
