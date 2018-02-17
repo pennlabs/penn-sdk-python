@@ -12,6 +12,103 @@ from bs4 import BeautifulSoup
 BASE_URL = "https://libcal.library.upenn.edu"
 
 
+class StudySpacesV2(object):
+    """Used for interacting with the library libcal api.
+
+    Usage::
+
+      >>> from penn import StudySpacesV2
+      >>> s = StudySpacesV2('LIBCAL_CLIENT_ID', 'LIBCAL_CLIENT_SECRET')
+    """
+
+    def __init__(self, client_id, client_secret):
+        self.token = None
+        self.expiration = None
+        self.client_id = client_id
+        self.client_secret = client_secret
+
+    def _obtain_token(self):
+        """Obtain an auth token from client id and client secret."""
+
+        # don't renew token if hasn't expired yet
+        if self.expiration and self.expiration > datetime.datetime.now():
+            return
+
+        resp = requests.post("https://api2.libcal.com/1.1/oauth/token", data={
+            "client_id": self.client_id,
+            "client_secret": self.client_secret,
+            "grant_type": "client_credentials"
+        }).json()
+        self.expiration = datetime.datetime.now() + datetime.timedelta(seconds=resp["expires_in"])
+        self.token = resp["access_token"]
+
+    def _request(self, *args, **kwargs):
+        """Make a signed request to the libcal API."""
+        if not self.token:
+            self._obtain_token()
+
+        headers = {
+            "Authorization": "Bearer {}".format(self.token)
+        }
+
+        if "headers" in kwargs:
+            kwargs["headers"].update(headers)
+        else:
+            kwargs["headers"] = headers
+
+        resp = requests.request(*args, **kwargs)
+        if resp.status_code == 401 and not kwargs.get("no_token"):
+            self._obtain_token()
+            kwargs["no_token"] = True
+            self._request(*args, **kwargs)
+        return resp
+
+    def get_buildings(self):
+        """Returns a list of location IDs and names."""
+        resp = self._request("GET", "https://api2.libcal.com/1.1/space/locations").json()
+        return [x for x in resp if x["public"] == 1]
+
+    def get_rooms(self, lid):
+        resp = self._request("GET", "https://api2.libcal.com/1.1/space/categories/{}".format(lid))
+        categories = resp.json()[0]["categories"]
+        id_to_category = {i["cid"]: i["name"] for i in categories}
+        categories = ",".join([str(x["cid"]) for x in categories])
+        resp = self._request("GET", "https://api2.libcal.com/1.1/space/category/{}".format(categories))
+        output = {"id": lid, "categories": []}
+        for category in resp.json():
+            cat_out = {"cid": category["cid"], "name": id_to_category[category["cid"]], "rooms": []}
+            items = category["items"]
+            items = ",".join([str(x) for x in items])
+            resp = self._request("GET", "https://api2.libcal.com/1.1/space/item/{}?availability".format(items))
+            for room in resp.json():
+                if "image" in room and room["image"]:
+                    room["image"] = "https:" + room["image"]
+                if "formid" in room:
+                    del room["formid"]
+                cat_out["rooms"].append(room)
+            output["categories"].append(cat_out)
+        return output
+
+    def book_room(self, item, start, end, fname, lname, email, nickname, custom={}, test=False):
+        data = {
+            "start": start,
+            "fname": fname,
+            "lname": lname,
+            "email": email,
+            "nickname": nickname,
+            "bookings": [
+                {
+                    "id": item,
+                    "to": end
+                }
+            ],
+            "test": test
+        }
+        data.update(custom)
+        resp = self._request("POST", "https://api2.libcal.com/1.1/space/reserve", json=data)
+        return resp.json()
+
+
 class StudySpaces(object):
     """Used for interacting with the UPenn library GSR booking system.
 
