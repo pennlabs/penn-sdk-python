@@ -1,14 +1,14 @@
 import datetime
 
 from nose.tools import ok_
-from penn import StudySpaces, StudySpacesV2
+from penn import StudySpaces, StudySpaces
 
 
-class TestStudySpacesV2():
+class TestStudySpaces():
 
     def setUp(self):
         from .credentials import LIBCAL_ID, LIBCAL_SECRET
-        self.studyspaces = StudySpacesV2(LIBCAL_ID, LIBCAL_SECRET)
+        self.studyspaces = StudySpaces(LIBCAL_ID, LIBCAL_SECRET)
 
     def test_buildings(self):
         buildings = self.studyspaces.get_buildings()
@@ -43,6 +43,7 @@ class TestStudySpacesV2():
             test=True
         )
         ok_("success" in result)
+<<<<<<< 04c96f4e9a4364e247c180341105ff3c735ed175
 
 
 class TestStudySpaces():
@@ -105,3 +106,5 @@ class TestStudySpaces():
             fake=True
         )
         ok_(result)
+=======
+>>>>>>> replace old studyspaces

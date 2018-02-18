@@ -9,5 +9,4 @@ from .news import News
 from .laundry import Laundry
 from .map import Map
 from .studyspaces import StudySpaces
-from .studyspaces import StudySpacesV2
 from .calendar3year import Calendar
