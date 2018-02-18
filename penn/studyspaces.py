@@ -11,6 +11,7 @@ from .base import APIError
 
 
 BASE_URL = "https://libcal.library.upenn.edu"
+API_URL = "https://api2.libcal.com"
 
 
 class StudySpacesV2(object):
@@ -35,7 +36,7 @@ class StudySpacesV2(object):
         if self.expiration and self.expiration > datetime.datetime.now():
             return
 
-        resp = requests.post("https://api2.libcal.com/1.1/oauth/token", data={
+        resp = requests.post("{}/1.1/oauth/token".format(API_URL), data={
             "client_id": self.client_id,
             "client_secret": self.client_secret,
             "grant_type": "client_credentials"
@@ -56,10 +57,15 @@ class StudySpacesV2(object):
             "Authorization": "Bearer {}".format(self.token)
         }
 
+        # add authorization headers
         if "headers" in kwargs:
             kwargs["headers"].update(headers)
         else:
             kwargs["headers"] = headers
+
+        # add api site to url
+        args = list(args)
+        args[1] = "{}{}".format(API_URL, args[1])
 
         resp = requests.request(*args, **kwargs)
         if resp.status_code == 401 and not kwargs.get("no_token"):
@@ -70,21 +76,38 @@ class StudySpacesV2(object):
 
     def get_buildings(self):
         """Returns a list of location IDs and names."""
-        resp = self._request("GET", "https://api2.libcal.com/1.1/space/locations").json()
+        resp = self._request("GET", "/1.1/space/locations").json()
         return [x for x in resp if x["public"] == 1]
 
-    def get_rooms(self, lid):
-        resp = self._request("GET", "https://api2.libcal.com/1.1/space/categories/{}".format(lid))
-        categories = resp.json()[0]["categories"]
+    def get_rooms(self, lid, start=None, end=None):
+        """Returns a list of rooms and their availabilities, grouped by category.
+
+        :param lid: The ID of the location to retrieve rooms for.
+        :type lid: int
+        :param start: The start range for the availabilities to retrieve, in YYYY-MM-DD format.
+        :type start: str
+        :param end: The end range for the availabilities to retrieve, in YYYY-MM-DD format.
+        :type end: str
+        """
+        range_str = "availability"
+        if start:
+            range_str += "=" + start
+            if end:
+                range_str += "," + end
+
+        resp = self._request("GET", "/1.1/space/categories/{}".format(lid)).json()
+        if "error" in resp:
+            raise APIError(resp["error"])
+        categories = resp[0]["categories"]
         id_to_category = {i["cid"]: i["name"] for i in categories}
         categories = ",".join([str(x["cid"]) for x in categories])
-        resp = self._request("GET", "https://api2.libcal.com/1.1/space/category/{}".format(categories))
+        resp = self._request("GET", "/1.1/space/category/{}".format(categories))
         output = {"id": lid, "categories": []}
         for category in resp.json():
             cat_out = {"cid": category["cid"], "name": id_to_category[category["cid"]], "rooms": []}
             items = category["items"]
             items = ",".join([str(x) for x in items])
-            resp = self._request("GET", "https://api2.libcal.com/1.1/space/item/{}?availability".format(items))
+            resp = self._request("GET", "/1.1/space/item/{}?{}".format(items, range_str))
             for room in resp.json():
                 if "image" in room and room["image"]:
                     room["image"] = "https:" + room["image"]
@@ -110,7 +133,7 @@ class StudySpacesV2(object):
             "test": test
         }
         data.update(custom)
-        resp = self._request("POST", "https://api2.libcal.com/1.1/space/reserve", json=data)
+        resp = self._request("POST", "/1.1/space/reserve", json=data)
         return resp.json()
 
 
