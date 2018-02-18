@@ -17,9 +17,9 @@ setup(
     },
     long_description=open('./README.rst').read(),
     install_requires=[
-        'nameparser==0.4.0',
-        'requests==2.4.3',
-        'beautifulsoup4==4.3.2',
-        'html5lib==0.999'
+        'nameparser==0.5.6',
+        'requests==2.18.4',
+        'beautifulsoup4==4.6.0',
+        'html5lib==1.0.1'
     ]
 )
