@@ -83,7 +83,7 @@ class Laundry(object):
         """
         if hall not in self.hall_to_link:
             return None  # change to to empty json idk
-        page = requests.get(self.hall_to_link[hall])
+        page = requests.get(self.hall_to_link[hall], timeout=60)
         soup = BeautifulSoup(page.content, 'html.parser')
         soup.prettify()
         washers = {"open": 0, "running": 0, "out_of_order": 0, "offline": 0, "time_remaining": []}
@@ -169,7 +169,7 @@ class Laundry(object):
             num = int(hall_no)
         except ValueError:
             raise ValueError("Room Number must be integer")
-        r = requests.get(USAGE_BASE_URL + str(num))
+        r = requests.get(USAGE_BASE_URL + str(num), timeout=60)
         parsed = BeautifulSoup(r.text, 'html5lib')
         usage_table = parsed.find_all('table', width='504px')[0]
         rows = usage_table.find_all('tr')
