@@ -1,5 +1,6 @@
 import re
 from requests import get
+from requests.exceptions import Timeout
 
 
 class APIError(ValueError):
@@ -24,7 +25,13 @@ class WrapperBase(object):
         """Make a signed request to the API, raise any API errors, and
         returning a tuple of (data, metadata)
         """
-        response = get(url, params=params, headers=self.headers, timeout=60)
+
+        # try 3 times if a timeout occurs
+        for _ in range(3):
+            try:
+                response = get(url, params=params, headers=self.headers, timeout=30)
+            except Timeout:
+                continue
         if response.status_code != 200:
             raise ValueError('Request to {} returned {}'
                              .format(response.url, response.status_code))
