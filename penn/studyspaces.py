@@ -7,6 +7,7 @@ import six
 import pkg_resources
 
 from bs4 import BeautifulSoup
+from .base import APIError
 
 
 BASE_URL = "https://libcal.library.upenn.edu"
@@ -38,12 +39,10 @@ class StudySpacesV2(object):
             "client_id": self.client_id,
             "client_secret": self.client_secret,
             "grant_type": "client_credentials"
-        })
+        }).json()
 
-        if resp.status_code != 200:
-            raise ValueError("LibCal Auth Failed: {}".format(resp.json()["error"]))
-
-        resp = resp.json()
+        if "error" in resp:
+            raise APIError("LibCal Auth Failed: {}".format(resp["error"]))
 
         self.expiration = datetime.datetime.now() + datetime.timedelta(seconds=resp["expires_in"])
         self.token = resp["access_token"]
@@ -130,12 +129,9 @@ class StudySpaces(object):
     def get_buildings(self):
         """Returns a list of building IDs, building names, and services."""
 
-        location_path = pkg_resources.resource_filename("penn", "data/locations.json")
-        with open(location_path, "r") as locations:
-            return json.loads(locations.read())
-        # soup = BeautifulSoup(requests.get("{}/spaces".format(BASE_URL)).content, "html5lib")
-        # options = soup.find("select", {"id": "lid"}).find_all("option")
-        # return [{"id": int(opt["value"]), "name": str(opt.text), "service": "libcal"} for opt in options if int(opt["value"]) > 0]
+        soup = BeautifulSoup(requests.get("{}/spaces".format(BASE_URL)).content, "html5lib")
+        options = soup.find("select", {"id": "lid"}).find_all("option")
+        return [{"id": int(opt["value"]), "name": str(opt.text), "service": "libcal"} for opt in options if int(opt["value"]) > 0]
 
     def book_room(self, building, room, start, end, firstname, lastname, email, groupname, phone, size, fake=False):
         """Books a room given the required information.
