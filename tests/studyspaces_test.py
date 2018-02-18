@@ -1,7 +1,7 @@
 import datetime
 
 from nose.tools import ok_
-from penn import StudySpaces, StudySpaces
+from penn import StudySpaces
 
 
 class TestStudySpaces():
