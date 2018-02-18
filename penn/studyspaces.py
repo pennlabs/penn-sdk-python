@@ -38,7 +38,13 @@ class StudySpacesV2(object):
             "client_id": self.client_id,
             "client_secret": self.client_secret,
             "grant_type": "client_credentials"
-        }).json()
+        })
+
+        if resp.status_code != 200:
+            raise ValueError("LibCal Auth Failed: {}".format(resp.json()["error"]))
+
+        resp = resp.json()
+
         self.expiration = datetime.datetime.now() + datetime.timedelta(seconds=resp["expires_in"])
         self.token = resp["access_token"]
 
