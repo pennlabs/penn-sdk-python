@@ -98,4 +98,4 @@ If you find a bug, please submit it through the `GitHub issues page`_.
 Pull requests are welcome!
 
 .. _`GitHub issues page`: https://github.com/pennlabs/penn-sdk-python/issues
-.. _`here`: https://secure.www.upenn.edu/computing/da/webloginportal/eforms/index.html?content=kew/EDocLite?edlName=openDataRequestForm&userAction=initiate
+.. _`here`: https://provider.www.upenn.edu/computing/da/secure/webloginportal/eforms/
