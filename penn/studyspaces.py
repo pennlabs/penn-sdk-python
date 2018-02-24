@@ -102,7 +102,7 @@ class StudySpaces(object):
         output = {"id": lid, "categories": []}
 
         # if there aren't any rooms associated with this location, return
-        if len(resp) < 1:
+        if len(resp) < 1 or "categories" not in resp[0]:
             return output
 
         categories = resp[0]["categories"]
