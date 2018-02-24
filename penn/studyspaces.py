@@ -99,11 +99,16 @@ class StudySpaces(object):
         resp = self._request("GET", "/1.1/space/categories/{}".format(lid)).json()
         if "error" in resp:
             raise APIError(resp["error"])
+        output = {"id": lid, "categories": []}
+
+        # if there aren't any rooms associated with this location, return
+        if len(resp) < 1:
+            return output
+
         categories = resp[0]["categories"]
         id_to_category = {i["cid"]: i["name"] for i in categories}
         categories = ",".join([str(x["cid"]) for x in categories])
         resp = self._request("GET", "/1.1/space/category/{}".format(categories))
-        output = {"id": lid, "categories": []}
         for category in resp.json():
             cat_out = {"cid": category["cid"], "name": id_to_category[category["cid"]], "rooms": []}
 
