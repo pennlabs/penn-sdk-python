@@ -106,14 +106,22 @@ class StudySpaces(object):
         output = {"id": lid, "categories": []}
         for category in resp.json():
             cat_out = {"cid": category["cid"], "name": id_to_category[category["cid"]], "rooms": []}
+
+            # ignore equipment categories
+            if cat_out["name"].endswith("Equipment"):
+                continue
+
             items = category["items"]
             items = ",".join([str(x) for x in items])
             resp = self._request("GET", "/1.1/space/item/{}?{}".format(items, range_str))
             for room in resp.json():
+                # prepend protocol to urls
                 if "image" in room and room["image"]:
                     room["image"] = "https:" + room["image"]
+                # convert html descriptions to text
                 if "description" in room:
                     room["description"] = BeautifulSoup(room["description"], "html.parser").text.replace('\xa0', '').strip()
+                # remove extra fields
                 if "formid" in room:
                     del room["formid"]
                 cat_out["rooms"].append(room)
