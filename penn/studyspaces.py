@@ -167,3 +167,12 @@ class StudySpaces(object):
         data.update(custom)
         resp = self._request("POST", "/1.1/space/reserve", json=data)
         return resp.json()
+
+    def cancel_room(self, booking_id):
+        """Cancel a room given a booking id.
+
+        :param booking_id: A booking id or a list of booking ids (separated by commas) to cancel.
+        :type booking_id: str
+        """
+        resp = self._request("POST", "/1.1/space/cancel/{}".format(booking_id))
+        return resp.json()
