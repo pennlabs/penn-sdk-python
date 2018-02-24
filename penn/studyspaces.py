@@ -102,8 +102,11 @@ class StudySpaces(object):
         output = {"id": lid, "categories": []}
 
         # if there aren't any rooms associated with this location, return
-        if len(resp) < 1 or "categories" not in resp[0]:
+        if len(resp) < 1:
             return output
+
+        if "error" in resp[0]:
+            return APIError(resp["error"])
 
         categories = resp[0]["categories"]
         id_to_category = {i["cid"]: i["name"] for i in categories}
