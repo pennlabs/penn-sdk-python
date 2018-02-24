@@ -1,6 +1,7 @@
 import requests
 import datetime
 
+from bs4 import BeautifulSoup
 from .base import APIError
 
 
@@ -111,6 +112,8 @@ class StudySpaces(object):
             for room in resp.json():
                 if "image" in room and room["image"]:
                     room["image"] = "https:" + room["image"]
+                if "description" in room:
+                    room["description"] = BeautifulSoup(room["description"], "html.parser").text.replace('\xa0', '').strip()
                 if "formid" in room:
                     del room["formid"]
                 cat_out["rooms"].append(room)
