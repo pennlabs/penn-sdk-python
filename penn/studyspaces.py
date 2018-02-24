@@ -71,7 +71,13 @@ class StudySpaces(object):
     def get_buildings(self):
         """Returns a list of location IDs and names."""
         resp = self._request("GET", "/1.1/space/locations").json()
-        return [x for x in resp if x["public"] == 1]
+        out = []
+        for x in resp:
+            if x["public"] == 1:
+                del x["public"]
+                x["service"] = "libcal"
+                out.append(x)
+        return out
 
     def get_rooms(self, lid, start=None, end=None):
         """Returns a list of rooms and their availabilities, grouped by category.

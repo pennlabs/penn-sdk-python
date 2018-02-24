@@ -14,6 +14,7 @@ class TestStudySpaces():
         for location in buildings:
             ok_("lid" in location)
             ok_("name" in location)
+            ok_("service" in location)
 
     def test_rooms(self):
         buildings = self.studyspaces.get_buildings()
@@ -24,7 +25,10 @@ class TestStudySpaces():
     def test_booking(self):
         buildings = self.studyspaces.get_buildings()
         rooms = self.studyspaces.get_rooms(buildings[0]["lid"])
-        room = rooms["categories"][0]["rooms"][0]
+        for item in rooms["categories"][0]["rooms"]:
+            if item["availability"]:
+                room = item
+                break
         item = room["id"]
         result = self.studyspaces.book_room(
             item=item,
