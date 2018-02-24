@@ -28,11 +28,11 @@ VENUE_NAMES = {
 
 def normalize_weekly(data):
     """Normalization for dining menu data"""
-    if "menus" not in data["result_data"]["Document"]:
-        data["result_data"]["Document"]["menus"] = []
-    if isinstance(data["result_data"]["Document"]["menus"], dict):
-        data["result_data"]["Document"]["menus"] = [data["result_data"]["Document"]["menus"]]
-    for day in data["result_data"]["Document"]["menus"]:
+    if "menus" not in data["result_data"]["weekly_menu"]:
+        data["result_data"]["weekly_menu"]["menus"] = []
+    if isinstance(data["result_data"]["weekly_menu"]["menus"], dict):
+        data["result_data"]["weekly_menu"]["menus"] = [data["result_data"]["weekly_menu"]["menus"]]
+    for day in data["result_data"]["weekly_menu"]["menus"]:
         if "meals" not in day:
             continue
         if isinstance(day["meals"], dict):
@@ -175,13 +175,13 @@ class Dining(WrapperBase):
         """
         today = str(datetime.date.today())
         v2_response = DiningV2(self.bearer, self.token).menu(building_id, today)
-        response = {'result_data': {'Document': {}}}
-        response["result_data"]["Document"]["menudate"] = datetime.datetime.strptime(today, '%Y-%m-%d').strftime('%-m/%d/%Y')
+        response = {'result_data': {'weekly_menu': {}}}
+        response["result_data"]["weekly_menu"]["menudate"] = datetime.datetime.strptime(today, '%Y-%m-%d').strftime('%-m/%d/%Y')
         if building_id in VENUE_NAMES:
-            response["result_data"]["Document"]["location"] = VENUE_NAMES[building_id]
+            response["result_data"]["weekly_menu"]["location"] = VENUE_NAMES[building_id]
         else:
-            response["result_data"]["Document"]["location"] = v2_response["result_data"]["days"][0]["cafes"][building_id]["name"]
-        response["result_data"]["Document"]["menus"] = {"meals": get_meals(v2_response, building_id)}
+            response["result_data"]["weekly_menu"]["location"] = v2_response["result_data"]["days"][0]["cafes"][building_id]["name"]
+        response["result_data"]["weekly_menu"]["menus"] = {"meals": get_meals(v2_response, building_id)}
         return response
 
     def menu_weekly(self, building_id):
@@ -194,16 +194,16 @@ class Dining(WrapperBase):
         >>> commons_week = din.menu_weekly("593")
         """
         din = DiningV2(self.bearer, self.token)
-        response = {'result_data': {'Document': {}}}
+        response = {'result_data': {'weekly_menu': {}}}
         days = []
         for i in range(7):
             date = str(datetime.date.today() + datetime.timedelta(days=i))
             v2_response = din.menu(building_id, date)
             if building_id in VENUE_NAMES:
-                response["result_data"]["Document"]["location"] = VENUE_NAMES[building_id]
+                response["result_data"]["weekly_menu"]["location"] = VENUE_NAMES[building_id]
             else:
-                response["result_data"]["Document"]["location"] = v2_response["result_data"]["days"][0]["cafes"][building_id]["name"]
+                response["result_data"]["weekly_menu"]["location"] = v2_response["result_data"]["days"][0]["cafes"][building_id]["name"]
             formatted_date = datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%-m/%d/%Y')
             days.append({"meals": get_meals(v2_response, building_id), "menudate": formatted_date})
-        response["result_data"]["Document"]["menus"] = days
+        response["result_data"]["weekly_menu"]["menus"] = days
         return normalize_weekly(response)
