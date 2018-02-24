@@ -106,7 +106,10 @@ class StudySpaces(object):
             return output
 
         if "error" in resp[0]:
-            return APIError(resp["error"])
+            return APIError(resp[0]["error"])
+
+        if "categories" not in resp[0]:
+            return output
 
         categories = resp[0]["categories"]
         id_to_category = {i["cid"]: i["name"] for i in categories}
