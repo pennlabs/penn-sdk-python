@@ -131,7 +131,7 @@ class StudySpaces(object):
                     room["image"] = "https:" + room["image"]
                 # convert html descriptions to text
                 if "description" in room:
-                    room["description"] = BeautifulSoup(room["description"], "html.parser").text.replace('\xa0', ' ').strip()
+                    room["description"] = BeautifulSoup(room["description"].replace('\xa0', ' '), "html.parser").text.strip()
                 # remove extra fields
                 if "formid" in room:
                     del room["formid"]
