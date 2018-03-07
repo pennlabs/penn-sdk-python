@@ -88,6 +88,9 @@ environment variables by default.
     TRANSIT_USERNAME = 'MY_DIRECTORY_USERNAME'
     TRANSIT_PASSWORD = 'MY_DIRECTORY_PASSWORD'
 
+    LIBCAL_ID = 'MY_LIBCAL_ID'
+    LIBCAL_SECRET = 'MY_LIBCAL_SECRET'
+
 Then run ``make test`` to run all tests in your shell.
 
 Contributing & Bug Reporting

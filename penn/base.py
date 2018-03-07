@@ -24,10 +24,11 @@ class WrapperBase(object):
         """Make a signed request to the API, raise any API errors, and
         returning a tuple of (data, metadata)
         """
-        response = get(url, params=params, headers=self.headers, timeout=60)
+
+        response = get(url, params=params, headers=self.headers, timeout=30)
+
         if response.status_code != 200:
-            raise ValueError('Request to {} returned {}'
-                             .format(response.url, response.status_code))
+            raise APIError('Request to {} returned {}'.format(response.url, response.status_code))
 
         response = response.json()
 
