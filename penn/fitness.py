@@ -1,5 +1,6 @@
 import requests
 import datetime
+import pytz
 from bs4 import BeautifulSoup
 
 FITNESS_URL = "https://connect2concepts.com/connect2/?type=bar&key=650471C6-D72E-4A16-B664-5B9C3F62EEAC"
@@ -22,6 +23,7 @@ class Fitness(object):
         resp.raise_for_status()
 
         soup = BeautifulSoup(resp.text, "html5lib")
+        eastern = pytz.timezone('US/Eastern')
         output = []
         for item in soup.findAll("div", {"class": "barChart"}):
             data = [x.strip() for x in item.get_text("\n").strip().split("\n")]
@@ -30,7 +32,7 @@ class Fitness(object):
                 "name": data[0],
                 "open": "Open" in data[1],
                 "count": int(data[2].rsplit(" ", 1)[-1]),
-                "updated": datetime.datetime.strptime(data[3][8:].strip(), '%m/%d/%Y %I:%M %p').isoformat(),
+                "updated": eastern.localize(datetime.datetime.strptime(data[3][8:].strip(), '%m/%d/%Y %I:%M %p')).isoformat(),
                 "percent": int(data[4][:-1])
             })
         return output
