@@ -1,4 +1,5 @@
 import requests
+import datetime
 from bs4 import BeautifulSoup
 
 FITNESS_URL = "https://connect2concepts.com/connect2/?type=bar&key=650471C6-D72E-4A16-B664-5B9C3F62EEAC"
@@ -29,7 +30,7 @@ class Fitness(object):
                 "name": data[0],
                 "open": "Open" in data[1],
                 "count": int(data[2].rsplit(" ", 1)[-1]),
-                "updated": data[3][8:].strip(),
+                "updated": datetime.datetime.strptime(data[3][8:].strip(), '%m/%d/%Y %I:%M %p').isoformat(),
                 "percent": int(data[4][:-1])
             })
         return output
