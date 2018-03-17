@@ -40,11 +40,3 @@ class TestLaundry():
                 ok_('id' in machine)
                 ok_('type' in machine)
                 ok_('status' in machine)
-
-    def test_usage(self):
-        for i in range(10):
-            data = self.laundry.machine_usage(i)
-            for j in data:
-                ok_(j in self.laundry.days)
-                for k in data[j]:
-                    ok_(k in self.laundry.busy_dict.values())
