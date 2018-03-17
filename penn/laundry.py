@@ -5,7 +5,7 @@ import pkg_resources
 from bs4 import BeautifulSoup
 
 LAUNDRY_DOMAIN = os.environ.get("LAUNDRY_DOMAIN", "suds.kite.upenn.edu")
-ALL_URL = 'http://{}/?location='.format(LAUNDRY_DOMAIN)
+ALL_URL = 'http://{}/'.format(LAUNDRY_DOMAIN)
 USAGE_BASE_URL = 'https://www.laundryalert.com/cgi-bin/penn6389/LMRoomUsage?CallingPage=LMRoom&Password=penn6389&Halls='
 
 
@@ -83,18 +83,23 @@ class Laundry(object):
         """
         if hall not in self.hall_to_link:
             return None  # change to to empty json idk
-        page = requests.get(self.hall_to_link[hall])
+        page = requests.get(ALL_URL)
         soup = BeautifulSoup(page.content, 'html.parser')
         soup.prettify()
         washers = {"open": 0, "running": 0, "out_of_order": 0, "offline": 0, "time_remaining": []}
         dryers = {"open": 0, "running": 0, "out_of_order": 0, "offline": 0, "time_remaining": []}
-
+        found_hall = False
         detailed = []
 
         rows = soup.find_all('tr')
         for row in rows:
             cols = row.find_all('td')
-            if len(cols) > 1:
+            if len(cols) == 1 and len(cols[0].find_all('center')) == 1 and len(cols[0].find_all('center')[0].find_all('h2')) == 1: # Title element
+                if(cols[0].find_all('center')[0].find_all('h2')[0].find_all('a')[0].getText() == hall): # Check if found correct hall
+                    found_hall = True
+                else:
+                    found_hall = False
+            elif len(cols) == 5 and cols[2]['class'][0] == 'status' and found_hall == True: # Content element for relevant hall
                 machine_type = cols[1].getText()
                 if machine_type == "Washer":
                     washers = Laundry.update_machine_object(cols, washers)
