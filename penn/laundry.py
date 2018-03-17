@@ -95,12 +95,13 @@ class Laundry(object):
         rows = soup.find_all('tr')
         for row in rows:
             cols = row.find_all('td')
-            if len(cols) == 1 and len(cols[0].find_all('center')) == 1 and len(cols[0].find_all('center')[0].find_all('h2')) == 1: # Title element
-                if(cols[0].find_all('center')[0].find_all('h2')[0].find_all('a')[0].getText() == hall): # Check if found correct hall
+            if len(cols) == 1 and len(cols[0].find_all('center')) == 1 and \
+            len(cols[0].find_all('center')[0].find_all('h2')) == 1:  # Title element
+                if(cols[0].find_all('center')[0].find_all('h2')[0].find_all('a')[0].getText() == hall):  # Check if found correct hall
                     found_hall = True
                 else:
                     found_hall = False
-            elif len(cols) == 5 and cols[2]['class'][0] == 'status' and found_hall == True: # Content element for relevant hall
+            elif len(cols) == 5 and cols[2]['class'][0] == 'status' and found_hall == True:  # Content element for relevant hall
                 machine_type = cols[1].getText()
                 if machine_type == "Washer":
                     washers = Laundry.update_machine_object(cols, washers)
@@ -134,7 +135,7 @@ class Laundry(object):
         soup.prettify()
         for hall in lhall:
             if hall not in self.id_to_hall:
-                lmachines.append({}) # empty machine? Can also just skip to next id 
+                lmachines.append({})  # empty machine? Can also just skip to next id 
             else:
                 hall = self.id_to_hall[hall]
                 washers = {"open": 0, "running": 0, "out_of_order": 0, "offline": 0, "time_remaining": []}
@@ -145,12 +146,13 @@ class Laundry(object):
                 rows = soup.find_all('tr')
                 for row in rows:
                     cols = row.find_all('td')
-                    if len(cols) == 1 and len(cols[0].find_all('center')) == 1 and len(cols[0].find_all('center')[0].find_all('h2')) == 1: # Title element
-                        if(cols[0].find_all('center')[0].find_all('h2')[0].find_all('a')[0].getText() == hall): # Check if found correct hall
+                    if len(cols) == 1 and len(cols[0].find_all('center')) == 1 and \
+                    len(cols[0].find_all('center')[0].find_all('h2')) == 1:  # Title element
+                        if(cols[0].find_all('center')[0].find_all('h2')[0].find_all('a')[0].getText() == hall):  # Check if found correct hall
                             found_hall = True
                         else:
                             found_hall = False
-                    elif len(cols) == 5 and cols[2]['class'][0] == 'status' and found_hall == True: # Content element for relevant hall
+                    elif len(cols) == 5 and cols[2]['class'][0] == 'status' and found_hall == True:  # Content element for relevant hall
                         machine_type = cols[1].getText()
                         if machine_type == "Washer":
                             washers = Laundry.update_machine_object(cols, washers)
