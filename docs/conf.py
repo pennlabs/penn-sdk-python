@@ -49,7 +49,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Penn SDK'
-copyright = u'2014, Penn Labs'
+copyright = u'2018, Penn Labs'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

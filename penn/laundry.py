@@ -83,6 +83,7 @@ class Laundry(object):
         """
         if hall not in self.hall_to_link:
             return None  # change to to empty json idk
+
         page = requests.get(ALL_URL)
         soup = BeautifulSoup(page.content, 'html.parser')
         soup.prettify()
@@ -205,4 +206,3 @@ class Laundry(object):
             'hall_name': hall_name,
             'location': location
         }
-        

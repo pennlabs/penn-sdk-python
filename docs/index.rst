@@ -26,3 +26,4 @@ Contents:
   laundry
   library
   calendar
+  fitness

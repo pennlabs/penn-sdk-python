@@ -9,8 +9,7 @@ PennSDK: Wrapper for Multiple Penn APIs
     :target: https://travis-ci.org/pennlabs/penn-sdk-python
 
 Penn SDK is the Python library for writing code that interfaces with University of Pennsylvania
-data. It consists of wrappers for the Registrar, Dining, and
-Directory API's
+data. It consists of wrappers for various APIs, including the Registrar, Dining, and Directory APIs.
 
 
 Getting an API key
@@ -19,7 +18,9 @@ Getting an API key
 To use these libraries, you must first obtain an API token and password,
 which can be done here_. There are separate API tokens and password for each of dining, registrar, news/events/maps, transit, and directory.
 
-There is also a Laundry API, Study Spaces API, and Calendar, which don't need a key.
+There is also a Laundry API and Calendar, which don't need a key.
+
+The StudySpaces API requires a LibCal client ID and secret.
 
 
 Documentation
@@ -88,6 +89,9 @@ environment variables by default.
     TRANSIT_USERNAME = 'MY_DIRECTORY_USERNAME'
     TRANSIT_PASSWORD = 'MY_DIRECTORY_PASSWORD'
 
+    LIBCAL_ID = 'MY_LIBCAL_ID'
+    LIBCAL_SECRET = 'MY_LIBCAL_SECRET'
+
 Then run ``make test`` to run all tests in your shell.
 
 Contributing & Bug Reporting
@@ -98,4 +102,4 @@ If you find a bug, please submit it through the `GitHub issues page`_.
 Pull requests are welcome!
 
 .. _`GitHub issues page`: https://github.com/pennlabs/penn-sdk-python/issues
-.. _`here`: https://secure.www.upenn.edu/computing/da/webloginportal/eforms/index.html?content=kew/EDocLite?edlName=openDataRequestForm&userAction=initiate
+.. _`here`: https://provider.www.upenn.edu/computing/da/secure/webloginportal/eforms/
