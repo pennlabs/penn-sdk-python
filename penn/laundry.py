@@ -205,35 +205,4 @@ class Laundry(object):
             'hall_name': hall_name,
             'location': location
         }
-
-    def machine_usage(self, hall_no):
-        """Returns the average usage of laundry machines every hour
-        for a given hall.
-
-        The usages are returned in a dictionary, with the key being
-        the day of the week, and the value being an array listing the usages
-        per hour.
-
-        :param hall_no:
-             integer corresponding to the id number for the hall. Thus number
-             is returned as part of the all_status call.
-
-        >>> english_house = l.machine_usage(2)
-        """
-
-        try:
-            num = int(hall_no)
-        except ValueError:
-            raise ValueError("Room Number must be integer")
-        r = requests.get(USAGE_BASE_URL + str(num))
-        parsed = BeautifulSoup(r.text, 'html5lib')
-        usage_table = parsed.find_all('table', width='504px')[0]
-        rows = usage_table.find_all('tr')
-        usages = {}
-        for i, row in enumerate(rows):
-            day = []
-            hours = row.find_all('td')
-            for hour in hours:
-                day.append(self.busy_dict[str(hour['class'][0])])
-            usages[self.days[i]] = day
-        return usages
+        
