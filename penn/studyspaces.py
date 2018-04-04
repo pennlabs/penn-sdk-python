@@ -60,7 +60,8 @@ class StudySpaces(object):
 
         # add api site to url
         args = list(args)
-        args[1] = "{}{}".format(API_URL, args[1])
+        if not args[1].startswith("http"):
+            args[1] = "{}{}".format(API_URL, args[1])
 
         has_no_token = kwargs.get("no_token")
         if has_no_token:
