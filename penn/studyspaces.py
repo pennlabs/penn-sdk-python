@@ -38,7 +38,7 @@ class StudySpaces(object):
         }).json()
 
         if "error" in resp:
-            raise APIError("LibCal Auth Failed: {}".format(resp["error"]))
+            raise APIError("LibCal Auth Failed: {}, {}".format(resp["error"], resp.get("error_description")))
 
         self.expiration = datetime.datetime.now() + datetime.timedelta(seconds=resp["expires_in"])
         self.token = resp["access_token"]
@@ -62,8 +62,11 @@ class StudySpaces(object):
         args = list(args)
         args[1] = "{}{}".format(API_URL, args[1])
 
+        has_no_token = kwargs.get("no_token")
+        if has_no_token:
+            del kwargs["no_token"]
         resp = requests.request(*args, **kwargs)
-        if resp.status_code == 401 and not kwargs.get("no_token"):
+        if resp.status_code == 401 and not has_no_token:
             self._obtain_token()
             kwargs["no_token"] = True
             self._request(*args, **kwargs)
