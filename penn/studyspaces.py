@@ -193,7 +193,11 @@ class StudySpaces(object):
         }
         data.update(custom)
         resp = self._request("POST", "/1.1/space/reserve", json=data)
-        return resp.json()
+        out = resp.json()
+        if "results" not in out and "error" not in out:
+            out["results"] = True
+            out["error"] = None
+        return out
 
     def cancel_room(self, booking_id):
         """Cancel a room given a booking id.
