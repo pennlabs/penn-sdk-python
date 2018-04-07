@@ -132,7 +132,8 @@ class StudySpaces(object):
             for room in resp.json():
                 # prepend protocol to urls
                 if "image" in room and room["image"]:
-                    room["image"] = "https:" + room["image"]
+                    if not room["image"].startswith("http"):
+                        room["image"] = "https:" + room["image"]
                 # convert html descriptions to text
                 if "description" in room:
                     description = room["description"].replace(u'\xa0', u' ')
