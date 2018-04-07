@@ -97,7 +97,7 @@ class StudySpaces(object):
         range_str = "availability"
         if start:
             range_str += "=" + start
-            if end:
+            if end and not start == end:
                 range_str += "," + end
 
         resp = self._request("GET", "/1.1/space/categories/{}".format(lid)).json()
