@@ -210,9 +210,12 @@ class StudySpaces(object):
         if "errors" in out and "error" not in out:
             out["error"] = out["errors"]
             del out["errors"]
-        if "results" not in out and "error" not in out:
-            out["results"] = True
-            out["error"] = None
+        if "results" not in out:
+            if "error" not in out:
+                out["error"] = None
+                out["results"] = True
+            else:
+                out["results"] = False
         return out
 
     def cancel_room(self, booking_id):
