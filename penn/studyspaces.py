@@ -207,6 +207,9 @@ class StudySpaces(object):
         data.update(custom)
         resp = self._request("POST", "/1.1/space/reserve", json=data)
         out = resp.json()
+        if "errors" in out and "error" not in out:
+            out["error"] = out["errors"]
+            del out["errors"]
         if "results" not in out and "error" not in out:
             out["results"] = True
             out["error"] = None
