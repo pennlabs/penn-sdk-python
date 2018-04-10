@@ -1,3 +1,4 @@
+import pytz
 import requests
 import datetime
 
@@ -95,10 +96,15 @@ class StudySpaces(object):
         :type end: str
         """
         range_str = "availability"
+        eastern = pytz.timezone('US/Eastern')
         if start:
+            start_datetime = datetime.datetime.combine(datetime.datetime.strptime(start, "%Y-%m-%d").date(), datetime.datetime.min.time())
+            start_datetime = eastern.localize(start_datetime)
             range_str += "=" + start
             if end and not start == end:
                 range_str += "," + end
+        else:
+            start_datetime = None
 
         resp = self._request("GET", "/1.1/space/categories/{}".format(lid)).json()
         if "error" in resp:
@@ -141,6 +147,17 @@ class StudySpaces(object):
                 # remove extra fields
                 if "formid" in room:
                     del room["formid"]
+                # enforce date filter
+                # API returns dates outside of the range, fix this manually
+                if start_datetime:
+                    out_times = []
+                    for time in room["availability"]:
+                        colon_index = time["from"].rfind(":")
+                        parsed_start = time["from"][:colon_index] + time["from"][colon_index+1:]
+                        parsed_start = datetime.datetime.strptime(parsed_start, "%Y-%m-%dT%H:%M:%S%z")
+                        if parsed_start >= start_datetime:
+                            out_times.append(time)
+                    room["availability"] = out_times
                 cat_out["rooms"].append(room)
             output["categories"].append(cat_out)
         return output
