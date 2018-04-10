@@ -1,4 +1,3 @@
-import pytz
 import requests
 import datetime
 
@@ -96,10 +95,8 @@ class StudySpaces(object):
         :type end: str
         """
         range_str = "availability"
-        eastern = pytz.timezone('US/Eastern')
         if start:
             start_datetime = datetime.datetime.combine(datetime.datetime.strptime(start, "%Y-%m-%d").date(), datetime.datetime.min.time())
-            start_datetime = eastern.localize(start_datetime)
             range_str += "=" + start
             if end and not start == end:
                 range_str += "," + end
@@ -152,9 +149,7 @@ class StudySpaces(object):
                 if start_datetime:
                     out_times = []
                     for time in room["availability"]:
-                        colon_index = time["from"].rfind(":")
-                        parsed_start = time["from"][:colon_index] + time["from"][colon_index+1:]
-                        parsed_start = datetime.datetime.strptime(parsed_start, "%Y-%m-%dT%H:%M:%S%z")
+                        parsed_start = datetime.datetime.strptime(time["from"][:-6], "%Y-%m-%dT%H:%M:%S")
                         if parsed_start >= start_datetime:
                             out_times.append(time)
                     room["availability"] = out_times
