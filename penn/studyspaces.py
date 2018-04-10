@@ -208,7 +208,7 @@ class StudySpaces(object):
         resp = self._request("POST", "/1.1/space/reserve", json=data)
         out = resp.json()
         if "errors" in out and "error" not in out:
-            out["error"] = out["errors"]
+            out["error"] = BeautifulSoup(out["errors"].replace("\n", " "), "html.parser").text.strip()
             del out["errors"]
         if "results" not in out:
             if "error" not in out:
