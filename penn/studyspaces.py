@@ -8,6 +8,8 @@ from .base import APIError
 BASE_URL = "https://libcal.library.upenn.edu"
 API_URL = "https://api2.libcal.com"
 
+LOCATION_BLACKLIST = set([3620, 2636, 2611, 3217, 2637, 2634])
+
 
 class StudySpaces(object):
     """Used for interacting with the library libcal api.
@@ -78,6 +80,8 @@ class StudySpaces(object):
         resp = self._request("GET", "/1.1/space/locations").json()
         out = []
         for x in resp:
+            if x["lid"] in LOCATION_BLACKLIST:
+                continue
             if x["public"] == 1:
                 del x["public"]
                 x["service"] = "libcal"
