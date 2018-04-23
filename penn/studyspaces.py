@@ -9,6 +9,7 @@ BASE_URL = "https://libcal.library.upenn.edu"
 API_URL = "https://api2.libcal.com"
 
 LOCATION_BLACKLIST = set([3620, 2636, 2611, 3217, 2637, 2634])
+ROOM_BLACKLIST = set([7176, 16970, 16998, 17625])
 
 
 class StudySpaces(object):
@@ -137,6 +138,8 @@ class StudySpaces(object):
             items = ",".join([str(x) for x in items])
             resp = self._request("GET", "/1.1/space/item/{}?{}".format(items, range_str))
             for room in resp.json():
+                if room["id"] in ROOM_BLACKLIST:
+                    continue
                 # prepend protocol to urls
                 if "image" in room and room["image"]:
                     if not room["image"].startswith("http"):
@@ -158,7 +161,8 @@ class StudySpaces(object):
                             out_times.append(time)
                     room["availability"] = out_times
                 cat_out["rooms"].append(room)
-            output["categories"].append(cat_out)
+            if cat_out["rooms"]:
+                output["categories"].append(cat_out)
         return output
 
     def book_room(self, item, start, end, fname, lname, email, nickname, custom={}, test=False):
