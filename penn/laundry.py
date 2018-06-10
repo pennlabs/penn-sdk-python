@@ -144,7 +144,7 @@ class Laundry(object):
 
         >>> all_laundry = l.all_status()
         """
-        hall_names = list(self.hall_to_link)
+        hall_names = list(self.id_to_hall)
         hall_values = self.parse_halls(hall_names)
 
         return {k: v for k, v in zip(hall_names, hall_values)}
