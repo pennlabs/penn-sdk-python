@@ -82,42 +82,9 @@ class Laundry(object):
         :type hall: int
         """
         if hall not in self.hall_to_link:
-            return None  # change to to empty json idk
+            return None
 
-        page = requests.get(ALL_URL)
-        soup = BeautifulSoup(page.content, 'html.parser')
-        soup.prettify()
-        washers = {"open": 0, "running": 0, "out_of_order": 0, "offline": 0, "time_remaining": []}
-        dryers = {"open": 0, "running": 0, "out_of_order": 0, "offline": 0, "time_remaining": []}
-        found_hall = False
-        detailed = []
-
-        rows = soup.find_all('tr')
-        for row in rows:
-            cols = row.find_all('td')
-            if len(cols) == 1 and len(cols[0].find_all('center')) == 1 and len(cols[0].find_all('center')[0].find_all('h2')) == 1:  # Title element
-                # Check if found correct hall
-                found_hall = cols[0].find_all('center')[0].find_all('h2')[0].find_all('a')[0].getText() == hall
-            elif len(cols) == 5 and cols[2]['class'][0] == 'status' and found_hall:  # Content element for relevant hall
-                machine_type = cols[1].getText()
-                if machine_type == "Washer":
-                    washers = Laundry.update_machine_object(cols, washers)
-                elif machine_type == "Dryer":
-                    dryers = Laundry.update_machine_object(cols, dryers)
-                if machine_type in ["Washer", "Dryer"]:
-                    try:
-                        time = int(cols[3].getText().split(" ")[0])
-                    except ValueError:
-                        time = 0
-                    detailed.append({
-                        "id": int(cols[0].getText().split(" ")[1][1:]),
-                        "type": cols[1].getText().lower(),
-                        "status": cols[2].getText(),
-                        "time_remaining": time
-                    })
-
-        machines = {"washers": washers, "dryers": dryers, "details": detailed}
-        return machines
+        return self.parse_halls([hall])[0]
 
     def parse_halls(self, lhall):
         """Return list of names, hall numbers, and the washers/dryers available for a list of halls.
@@ -132,7 +99,7 @@ class Laundry(object):
         soup.prettify()
         for hall in lhall:
             if hall not in self.id_to_hall:
-                lmachines.append({})  # empty machine? Can also just skip to next id
+                lmachines.append(None)
             else:
                 hall = self.id_to_hall[hall]
                 washers = {"open": 0, "running": 0, "out_of_order": 0, "offline": 0, "time_remaining": []}
@@ -177,11 +144,10 @@ class Laundry(object):
 
         >>> all_laundry = l.all_status()
         """
-        laundry_rooms = {}
-        for room in self.hall_to_link:
-            laundry_rooms[room] = self.parse_a_hall(room)
+        hall_names = list(self.hall_to_link)
+        hall_values = self.parse_halls(hall_names)
 
-        return laundry_rooms
+        return {k: v for k, v in zip(hall_names, hall_values)}
 
     def hall_status(self, hall_id):
         """Return the status of each specific washer/dryer in a particular
