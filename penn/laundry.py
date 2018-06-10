@@ -96,10 +96,8 @@ class Laundry(object):
         for row in rows:
             cols = row.find_all('td')
             if len(cols) == 1 and len(cols[0].find_all('center')) == 1 and len(cols[0].find_all('center')[0].find_all('h2')) == 1:  # Title element
-                if(cols[0].find_all('center')[0].find_all('h2')[0].find_all('a')[0].getText() == hall):  # Check if found correct hall
-                    found_hall = True
-                else:
-                    found_hall = False
+                # Check if found correct hall
+                found_hall = cols[0].find_all('center')[0].find_all('h2')[0].find_all('a')[0].getText() == hall
             elif len(cols) == 5 and cols[2]['class'][0] == 'status' and found_hall:  # Content element for relevant hall
                 machine_type = cols[1].getText()
                 if machine_type == "Washer":
