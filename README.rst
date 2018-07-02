@@ -92,6 +92,8 @@ environment variables by default.
     LIBCAL_ID = 'MY_LIBCAL_ID'
     LIBCAL_SECRET = 'MY_LIBCAL_SECRET'
 
+    FITNESS_TOKEN = 'MY_FITNESS_TOKEN'
+
 Then run ``make test`` to run all tests in your shell.
 
 Contributing & Bug Reporting

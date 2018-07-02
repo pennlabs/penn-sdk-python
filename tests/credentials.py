@@ -17,3 +17,5 @@ NEM_PASSWORD = os.getenv('NEM_PASSWORD')
 
 LIBCAL_ID = os.getenv('LIBCAL_ID')
 LIBCAL_SECRET = os.getenv('LIBCAL_SECRET')
+
+FITNESS_TOKEN = os.getenv('FITNESS_TOKEN')
