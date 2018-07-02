@@ -19,8 +19,8 @@ To use these libraries, you must first obtain an API token and password,
 which can be done here_. There are separate API tokens and password for each of dining, registrar, news/events/maps, transit, and directory.
 
 There is also a Laundry API and Calendar, which don't need a key.
-
 The StudySpaces API requires a LibCal client ID and secret.
+The Fitness schedule API requires a key from TeamUp (https://teamup.com/api-keys/request).
 
 
 Documentation
