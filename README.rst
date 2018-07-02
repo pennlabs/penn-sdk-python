@@ -2,7 +2,7 @@
 PennSDK: Wrapper for Multiple Penn APIs
 =======================================
 
-.. image:: https://badge.fury.io/py/PennSDK.png
+.. image:: https://badge.fury.io/py/PennSDK.svg
     :target: http://badge.fury.io/py/PennSDK
 
 .. image:: https://travis-ci.org/pennlabs/penn-sdk-python.svg
