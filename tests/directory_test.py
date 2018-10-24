@@ -41,11 +41,11 @@ class TestDirectory(unittest.TestCase):
 
     def test_email_not_standardized(self):
         email = self.dir.search({'first_name': 'amy', 'last_name': 'gallagher'})
-        self.assertEqual(email['result_data'][0]['list_email'], 'Amy.Gallagher@uphs.upenn.edu')
+        self.assertEqual(email['result_data'][0]['list_email'], 'am.kwiatanowski@uphs.upenn.edu')
 
     def test_email_standardized(self):
         email = self.dir.search({'first_name': 'amy', 'last_name': 'gallagher'}, standardize=True)
-        self.assertEqual(email['result_data'][0]['list_email'], 'amy.gallagher@uphs.upenn.edu')
+        self.assertEqual(email['result_data'][0]['list_email'], 'am.kwiatanowski@uphs.upenn.edu')
 
     def test_afl_not_standardized(self):
         afl = self.dir.search({'first_name': 'kostas'})
