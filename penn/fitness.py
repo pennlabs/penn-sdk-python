@@ -27,10 +27,10 @@ class Fitness(object):
         })
         resp.raise_for_status()
         raw_data = resp.json()
-        data = []
+        data = {}
         for item in raw_data["events"]:
+            name = re.sub(r"\s*(Hours)?\s*-?\s*(CLOSED|OPEN)?$", "", item["title"], re.I).rsplit("-", 1)[0].strip().title()
             out = {
-                "name": re.sub(r"\s*(Hours)?\s*-?\s*(CLOSED|OPEN)$", "", item["title"], re.I),
                 "all_day": item["all_day"]
             }
             if not item["all_day"]:
@@ -38,8 +38,13 @@ class Fitness(object):
                 out["end"] = item["end_dt"]
             else:
                 out["day"] = item["start_dt"].split("T")[0]
-            data.append(out)
-        return data
+            if name not in data:
+                data[name] = {
+                    "name": name,
+                    "hours": []
+                }
+            data[name]["hours"].append(out)
+        return list(data.values())
 
     def get_usage(self):
         """Get fitness locations and their current usage."""
@@ -53,8 +58,9 @@ class Fitness(object):
         for item in soup.findAll("div", {"class": "barChart"}):
             data = [x.strip() for x in item.get_text("\n").strip().split("\n")]
             data = [x for x in data if x]
+            name = re.sub(r"\s*(Hours)?\s*-?\s*(CLOSED|OPEN)?$", "", data[0], re.I).strip().title()
             output.append({
-                "name": re.sub(r"\s*(Hours)?\s*-?\s*(CLOSED|OPEN)$", "", data[0], re.I),
+                "name": name,
                 "open": "Open" in data[1],
                 "count": int(data[2].rsplit(" ", 1)[-1]),
                 "updated": eastern.localize(datetime.datetime.strptime(data[3][8:].strip(), '%m/%d/%Y %I:%M %p')).isoformat(),
