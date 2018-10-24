@@ -58,7 +58,7 @@ class Fitness(object):
         for item in soup.findAll("div", {"class": "barChart"}):
             data = [x.strip() for x in item.get_text("\n").strip().split("\n")]
             data = [x for x in data if x]
-            name = re.sub(r"\s*(Hours)?\s*-?\s*(CLOSED|OPEN)?$", "", data[0], re.I).strip().title()
+            name = re.sub(r"\s*(Hours)?\s*-?\s*(CLOSED|OPEN)?$", "", data[0], re.I).strip()
             output.append({
                 "name": name,
                 "open": "Open" in data[1],
