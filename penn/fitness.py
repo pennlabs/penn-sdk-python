@@ -30,7 +30,7 @@ class Fitness(object):
         data = []
         for item in raw_data["events"]:
             out = {
-                "name": re.sub(r"\s*-?\s*(CLOSED|OPEN)$", "", item["title"], re.I),
+                "name": re.sub(r"\s*(Hours)?\s*-?\s*(CLOSED|OPEN)$", "", item["title"], re.I),
                 "all_day": item["all_day"]
             }
             if not item["all_day"]:
@@ -54,7 +54,7 @@ class Fitness(object):
             data = [x.strip() for x in item.get_text("\n").strip().split("\n")]
             data = [x for x in data if x]
             output.append({
-                "name": re.sub(r"\s*-?\s*(CLOSED|OPEN)$", "", data[0], re.I),
+                "name": re.sub(r"\s*(Hours)?\s*-?\s*(CLOSED|OPEN)$", "", data[0], re.I),
                 "open": "Open" in data[1],
                 "count": int(data[2].rsplit(" ", 1)[-1]),
                 "updated": eastern.localize(datetime.datetime.strptime(data[3][8:].strip(), '%m/%d/%Y %I:%M %p')).isoformat(),
