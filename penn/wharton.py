@@ -7,6 +7,7 @@ from .base import APIError
 
 BASE_URL = "https://apps.wharton.upenn.edu/gsr"
 
+
 class Wharton(object):
     """Used for interacting with the Wharton GSR site.
 
@@ -27,20 +28,19 @@ class Wharton(object):
         html = resp.content.decode("utf8")
 
         if "https://weblogin.pennkey.upenn.edu" in html:
-        	raise APIError("Wharton Auth Failed. Session ID is not valid.")
+            raise APIError("Wharton Auth Failed. Session ID is not valid.")
 
         soup = BeautifulSoup(html, "html5lib")
         reservations = []
         media = soup.find_all("div", {'class': "Media-body"})
         for res in media:
-        	times = res.find_all("span", {'class': "list-view-item__end-time"})
-        	reservation = {
-        		"date": res.find("span", {'class': "list-view-item__start-time u-display-block"}).get_text(),
-        		"startTime": times[0].get_text(),
-        		"endTime": times[1].get_text(),
-        		"location": res.find("span", {'class': "list-view-item-building"}).get_text(),
-        		"booking_id": int(res.find("a")['href'].split("delete/")[1][:-1])
-        	}
-        	reservations.append(reservation)
+            times = res.find_all("span", {'class': "list-view-item__end-time"})
+            reservation = {
+                "date": res.find("span", {'class': "list-view-item__start-time u-display-block"}).get_text(),
+                "startTime": times[0].get_text(),
+                "endTime": times[1].get_text(),
+                "location": res.find("span", {'class': "list-view-item-building"}).get_text(),
+                "booking_id": int(res.find("a")['href'].split("delete/")[1][:-1])
+            }
+            reservations.append(reservation)
         return reservations
-        
