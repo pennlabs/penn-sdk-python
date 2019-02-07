@@ -44,3 +44,36 @@ class Wharton(object):
             }
             reservations.append(reservation)
         return reservations
+
+    def delete_booking(self, sessionid, booking_id):
+        """Returns a list of location IDs and names."""
+        url = "{}{}{}".format(BASE_URL, "/delete/", booking_id)
+        print(url)
+        cookies = dict(sessionid=sessionid)
+        
+        try:
+            resp = requests.get(url, cookies=cookies)
+        except resp.exceptions.HTTPError as error:
+            raise APIError("Server Error: {}".format(error))
+
+        if resp.status_code == 404:
+            raise APIError("Booking could not be found on server.")
+
+        html = resp.content.decode("utf8")
+        if "https://weblogin.pennkey.upenn.edu" in html:
+            raise APIError("Wharton Auth Failed. Session ID is not valid.")
+
+        soup = BeautifulSoup(html, "html5lib")
+        print(resp.cookies)
+        csrftoken = resp.cookies['csrftoken']
+        middleware_token = soup.find("input", {'name': "csrfmiddlewaretoken"}).get('value')
+        cookies2 = {'sessionid': sessionid, 'csrftoken': csrftoken}
+
+        try:
+            resp2 = requests.post(url, cookies=cookies2, data={'csrfmiddlewaretoken': middleware_token})
+        except resp.exceptions.HTTPError as error:
+            raise APIError("Server Error: {}".format(error))
+
+        print(resp2.content.decode("utf8"))
+
+        return "success"
