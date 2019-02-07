@@ -11,3 +11,4 @@ from .map import Map
 from .studyspaces import StudySpaces
 from .calendar3year import Calendar
 from .fitness import Fitness
+from .wharton import Wharton
