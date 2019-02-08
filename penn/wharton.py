@@ -2,6 +2,7 @@ import requests
 
 from bs4 import BeautifulSoup
 from .base import APIError
+from flask import jsonify, request
 
 
 BASE_URL = "https://apps.wharton.upenn.edu/gsr"
@@ -46,6 +47,7 @@ class Wharton(object):
             reservations.append(reservation)
         return reservations
 
+
     def delete_booking(self, sessionid, booking_id):
         """Deletes a Wharton GSR Booking for a given booking and session id"""
         url = "{}{}{}/".format(BASE_URL, "/delete/", booking_id)
@@ -79,3 +81,68 @@ class Wharton(object):
             raise APIError("Server Error: {}".format(error))
 
         return "success"
+
+
+    def get_wharton_gsrs(self, sessionid):
+        time = request.args.get('date')
+        if time:
+            time += " 05:00"
+        else:
+            time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%S")
+        resp = requests.get('https://apps.wharton.upenn.edu/gsr/api/app/grid_view/', params={
+            'search_time': time
+        }, cookies={
+            'sessionid': sessionid
+        })
+        if resp.status_code == 200:
+            return resp.json()
+        else:
+            raise APIError('Remote server returned status code {}.'.format(resp.status_code))
+
+
+    def switch_format(self, gsr):
+        if "error" in gsr:
+            return gsr
+        rooms = {
+            "cid": 1,
+            "name": "Huntsman Hall",
+            "rooms": []
+        }
+
+        for time in gsr["times"]:
+            for entry in time:
+                entry["name"] = "GSR " + entry["room_number"]
+                del entry["room_number"]
+                time = {
+                    "available": entry["reserved"],
+                    "end": entry["end_time"],
+                    "start": entry["start_time"]
+                }
+                exists = False
+                for room in rooms["rooms"]:
+                    if room["name"] == entry["name"]:
+                        room["times"].append(time)
+                        exists = True
+                if not exists:
+                    del entry["booked_by_user"]
+                    del entry["building"]
+                    if "reservation_id" in entry:
+                        del entry["reservation_id"]
+                    entry["lid"] = 1
+                    entry["capacity"] = 5
+                    # entry["gid"] = null
+                    # entry["thumbnail"] = null;
+                    # entry["description"] = null
+                    entry["room_id"] = entry["id"]
+                    del entry["id"]
+                    entry["times"] = [time]
+                    del entry["reserved"]
+                    del entry["end_time"]
+                    del entry["start_time"]
+                    rooms["rooms"].append(entry)
+        return {"categories": [rooms]}
+
+
+    def get_wharton_gsrs_formatted(self, sessionid):
+        gsrs = self.get_wharton_gsrs(sessionid)
+        return self.switch_format(gsrs)
