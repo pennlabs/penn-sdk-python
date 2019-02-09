@@ -63,15 +63,22 @@ class Wharton(object):
             raise APIError("Wharton Auth Failed. Session ID is not valid.")
 
         soup = BeautifulSoup(html, "html5lib")
-        csrftoken = resp.cookies['csrftoken']
         middleware_token = soup.find("input", {'name': "csrfmiddlewaretoken"}).get('value')
+
+        csrftoken = resp.cookies['csrftoken']
         cookies2 = {'sessionid': sessionid, 'csrftoken': csrftoken}
 
-        payload = {'csrfmiddlewaretoken': middleware_token}
-        headers = {'Referer': url}
+        reservationsUrl = "{}{}".format(BASE_URL, "/reservations")
+        headers = {'Referer': reservationsUrl}
 
+        payload = {'csrfmiddlewaretoken': middleware_token}
+
+        print(csrftoken)
+        print(middleware_token)
+        print(headers)
+        print(payload)
         try:
-            resp2 = requests.post(url, cookies=cookies2, data={'csrfmiddlewaretoken': middleware_token}, headers = headers)
+            resp2 = requests.post(url, cookies=cookies2, data=payload, headers = headers)
         except resp.exceptions.HTTPError as error:
             raise APIError("Server Error: {}".format(error))
 
