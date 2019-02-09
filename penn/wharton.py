@@ -48,7 +48,6 @@ class Wharton(object):
     def delete_booking(self, sessionid, booking_id):
         """Returns a list of location IDs and names."""
         url = "{}{}{}".format(BASE_URL, "/delete/", booking_id)
-        print(url)
         cookies = dict(sessionid=sessionid)
         
         try:
@@ -64,13 +63,15 @@ class Wharton(object):
             raise APIError("Wharton Auth Failed. Session ID is not valid.")
 
         soup = BeautifulSoup(html, "html5lib")
-        print(resp.cookies)
         csrftoken = resp.cookies['csrftoken']
         middleware_token = soup.find("input", {'name': "csrfmiddlewaretoken"}).get('value')
         cookies2 = {'sessionid': sessionid, 'csrftoken': csrftoken}
 
+        payload = {'csrfmiddlewaretoken': middleware_token}
+        headers = {'Referer': url}
+
         try:
-            resp2 = requests.post(url, cookies=cookies2, data={'csrfmiddlewaretoken': middleware_token})
+            resp2 = requests.post(url, cookies=cookies2, data={'csrfmiddlewaretoken': middleware_token}, headers = headers)
         except resp.exceptions.HTTPError as error:
             raise APIError("Server Error: {}".format(error))
 
