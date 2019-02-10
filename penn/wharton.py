@@ -2,8 +2,6 @@ import requests
 
 from bs4 import BeautifulSoup
 from .base import APIError
-from flask import jsonify, request
-
 
 BASE_URL = "https://apps.wharton.upenn.edu/gsr"
 
@@ -83,7 +81,7 @@ class Wharton(object):
         return "success"
 
 
-    def get_wharton_gsrs(self, sessionid):
+    def get_wharton_gsrs(self, sessionid, request):
         time = request.args.get('date')
         if time:
             time += " 05:00"
