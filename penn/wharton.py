@@ -1,5 +1,4 @@
 import requests
-import datetime
 
 from bs4 import BeautifulSoup
 from .base import APIError
@@ -47,11 +46,11 @@ class Wharton(object):
 
     def delete_booking(self, sessionid, booking_id):
         """Returns a list of location IDs and names."""
-        url = "{}{}{}".format(BASE_URL, "/delete/", booking_id)
+        url = "{}{}{}/".format(BASE_URL, "/delete/", booking_id)
         cookies = dict(sessionid=sessionid)
-        
+
         try:
-            resp = requests.get(url, cookies=cookies)
+            resp = requests.get(url, cookies=cookies, headers={'Referer': '{}{}'.format(BASE_URL, "/reservations/")})
         except resp.exceptions.HTTPError as error:
             raise APIError("Server Error: {}".format(error))
 
@@ -62,26 +61,19 @@ class Wharton(object):
         if "https://weblogin.pennkey.upenn.edu" in html:
             raise APIError("Wharton Auth Failed. Session ID is not valid.")
 
+        resp.raise_for_status()
+
         soup = BeautifulSoup(html, "html5lib")
         middleware_token = soup.find("input", {'name': "csrfmiddlewaretoken"}).get('value')
 
         csrftoken = resp.cookies['csrftoken']
         cookies2 = {'sessionid': sessionid, 'csrftoken': csrftoken}
-
-        reservationsUrl = "{}{}".format(BASE_URL, "/reservations")
-        headers = {'Referer': reservationsUrl}
-
+        headers = {'Referer': url}
         payload = {'csrfmiddlewaretoken': middleware_token}
 
-        print(csrftoken)
-        print(middleware_token)
-        print(headers)
-        print(payload)
         try:
-            resp2 = requests.post(url, cookies=cookies2, data=payload, headers = headers)
-        except resp.exceptions.HTTPError as error:
+            resp2 = requests.post(url, cookies=cookies2, data=payload, headers=headers)
+        except resp2.exceptions.HTTPError as error:
             raise APIError("Server Error: {}".format(error))
-
-        print(resp2.content.decode("utf8"))
 
         return "success"
