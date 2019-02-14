@@ -1,5 +1,4 @@
 import requests
-import datetime
 
 from bs4 import BeautifulSoup
 from .base import APIError
@@ -19,11 +18,13 @@ class Wharton(object):
 
     def get_reservations(self, sessionid):
         """Returns a list of location IDs and names."""
-        url = "{}{}".format(BASE_URL, "/reservations")
+        url = "{}{}".format(BASE_URL, "/reservations/")
         cookies = dict(sessionid=sessionid)
-        resp = requests.get(url, cookies=cookies)
-        if "error" in resp:
-            raise APIError("Server Error: {}, {}".format(resp["error"], resp.get("error_description")))
+
+        try:
+            resp = requests.get(url, cookies=cookies)
+        except resp.exceptions.HTTPError as error:
+            raise APIError("Server Error: {}".format(error))
 
         html = resp.content.decode("utf8")
 
@@ -44,3 +45,37 @@ class Wharton(object):
             }
             reservations.append(reservation)
         return reservations
+
+    def delete_booking(self, sessionid, booking_id):
+        """Deletes a Wharton GSR Booking for a given booking and session id"""
+        url = "{}{}{}/".format(BASE_URL, "/delete/", booking_id)
+        cookies = dict(sessionid=sessionid)
+
+        try:
+            resp = requests.get(url, cookies=cookies, headers={'Referer': '{}{}'.format(BASE_URL, "/reservations/")})
+        except resp.exceptions.HTTPError as error:
+            raise APIError("Server Error: {}".format(error))
+
+        if resp.status_code == 404:
+            raise APIError("Booking could not be found on server.")
+
+        html = resp.content.decode("utf8")
+        if "https://weblogin.pennkey.upenn.edu" in html:
+            raise APIError("Wharton Auth Failed. Session ID is not valid.")
+
+        resp.raise_for_status()
+
+        soup = BeautifulSoup(html, "html5lib")
+        middleware_token = soup.find("input", {'name': "csrfmiddlewaretoken"}).get('value')
+
+        csrftoken = resp.cookies['csrftoken']
+        cookies2 = {'sessionid': sessionid, 'csrftoken': csrftoken}
+        headers = {'Referer': url}
+        payload = {'csrfmiddlewaretoken': middleware_token}
+
+        try:
+            resp2 = requests.post(url, cookies=cookies2, data=payload, headers=headers)
+        except resp2.exceptions.HTTPError as error:
+            raise APIError("Server Error: {}".format(error))
+
+        return "success"
