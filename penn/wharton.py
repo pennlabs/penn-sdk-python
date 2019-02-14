@@ -1,4 +1,5 @@
 import requests
+import datetime
 
 from bs4 import BeautifulSoup
 from .base import APIError
@@ -81,14 +82,13 @@ class Wharton(object):
         return "success"
 
 
-    def get_wharton_gsrs(self, sessionid, request):
-        time = request.args.get('date')
-        if time:
-            time += " 05:00"
+    def get_wharton_gsrs(self, sessionid, date):
+        if date:
+            date += " 05:00"
         else:
-            time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%S")
+            date = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%S")
         resp = requests.get('https://apps.wharton.upenn.edu/gsr/api/app/grid_view/', params={
-            'search_time': time
+            'search_time': date
         }, cookies={
             'sessionid': sessionid
         })
@@ -111,10 +111,13 @@ class Wharton(object):
             for entry in time:
                 entry["name"] = "GSR " + entry["room_number"]
                 del entry["room_number"]
+                start_time_str = entry["start_time"]
+                end_time = datetime.datetime.strptime(start_time_str[:-6], '%Y-%m-%dT%H:%M:%S') + datetime.timedelta(minutes=30)
+                end_time_str = end_time.strftime("%Y-%m-%dT%H:%M:%S") + "-05:00"
                 time = {
-                    "available": entry["reserved"],
-                    "end": entry["end_time"],
-                    "start": entry["start_time"]
+                    "available": not entry["reserved"],
+                    "start": entry["start_time"],
+                    "end": end_time_str,
                 }
                 exists = False
                 for room in rooms["rooms"]:
@@ -142,5 +145,5 @@ class Wharton(object):
 
 
     def get_wharton_gsrs_formatted(self, sessionid):
-        gsrs = self.get_wharton_gsrs(sessionid)
+        gsrs = self.get_wharton_gsrs(sessionid, None)
         return self.switch_format(gsrs)
