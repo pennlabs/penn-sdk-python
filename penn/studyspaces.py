@@ -238,14 +238,14 @@ class StudySpaces(object):
         resp = self._request("POST", "/1.1/space/cancel/{}".format(booking_id))
         return resp.json()
 
-    def get_reservations(self, email):
+    def get_reservations(self, email, date):
         """Gets reservations for a given email.
 
         :param email: the email of the user who's reservations are to be fetched
         :type email: str
         """
         try:
-            resp = self._request("GET", "/1.1/space/bookings?email={}".format(email))
+            resp = self._request("GET", "/1.1/space/bookings?email={}&date={}".format(email, date))
         except resp.exceptions.HTTPError as error:
             raise APIError("Server Error: {}".format(error))
         return resp.json()
