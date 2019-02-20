@@ -244,7 +244,6 @@ class StudySpaces(object):
         :param email: the email of the user who's reservations are to be fetched
         :type email: str
         """
-        
         try:
             resp = self._request("GET", "/1.1/space/bookings?email={}".format(email))
         except resp.exceptions.HTTPError as error:
@@ -257,7 +256,6 @@ class StudySpaces(object):
         :param room_ids: a room id or a list of room ids (comma separated).
         :type room_ids: string
         """
-        
         try:
             resp = self._request("GET", "/1.1/space/item/{}".format(room_ids))
             rooms = resp.json()
