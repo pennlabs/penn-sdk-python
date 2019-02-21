@@ -245,7 +245,7 @@ class StudySpaces(object):
         :type email: str
         """
         try:
-            resp = self._request("GET", "/1.1/space/bookings?email={}&date={}".format(email, date))
+            resp = self._request("GET", "/1.1/space/bookings?email={}&date={}&limit=100".format(email, date))
         except resp.exceptions.HTTPError as error:
             raise APIError("Server Error: {}".format(error))
         return resp.json()
