@@ -250,6 +250,18 @@ class StudySpaces(object):
             raise APIError("Server Error: {}".format(error))
         return resp.json()
 
+    def get_reservations_for_booking_ids(self, booking_ids):
+        """Gets booking information for a given list of booking ids.
+
+        :param booking_ids: a booking id or a list of room ids (comma separated).
+        :type booking_ids: string
+        """
+        try:
+            resp = self._request("GET", "/1.1/space/booking/{}".format(booking_ids))
+        except resp.exceptions.HTTPError as error:
+            raise APIError("Server Error: {}".format(error))
+        return resp.json()
+
     def get_room_info(self, room_ids):
         """Gets room information for a given list of ids.
 
