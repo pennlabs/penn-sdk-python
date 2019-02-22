@@ -23,7 +23,7 @@ class TestRegistrar(unittest.TestCase):
         cis = self.reg.department('cis')
         next(cis)  # Should be an iterator
         # Should have multiple pages of items
-        self.assertGreater(len(list(cis)), 20)
+        self.assertGreater(len(list(cis)), 20, str(list(cis)))
 
     def test_course(self):
         cis120 = self.reg.course('cis', '120')
@@ -32,8 +32,8 @@ class TestRegistrar(unittest.TestCase):
     def test_search(self):
         cis_search = self.reg.search({'course_id': 'cis'})
         cis_dept = self.reg.department('cis')
-        self.assertGreater(len(list(cis_dept)), 20, str(cis_dept))
-        self.assertGreaterEqual(len(list(cis_search)), 20, str(cis_search))
+        self.assertGreater(len(list(cis_dept)), 20, str(list(cis_dept)))
+        self.assertGreaterEqual(len(list(cis_search)), 20, str(list(cis_search)))
 
     def test_search_params(self):
         params = self.reg.search_params()
