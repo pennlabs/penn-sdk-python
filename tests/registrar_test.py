@@ -32,8 +32,8 @@ class TestRegistrar(unittest.TestCase):
     def test_search(self):
         cis_search = self.reg.search({'course_id': 'cis'})
         cis_dept = self.reg.department('cis')
-        self.assertGreater(len(list(cis_dept)), 20)
-        self.assertGreaterEqual(len(list(cis_search)), 20)
+        self.assertGreater(len(list(cis_dept)), 20, str(cis_dept))
+        self.assertGreaterEqual(len(list(cis_search)), 20, str(cis_search))
 
     def test_search_params(self):
         params = self.reg.search_params()
