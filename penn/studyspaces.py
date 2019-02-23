@@ -237,3 +237,47 @@ class StudySpaces(object):
         """
         resp = self._request("POST", "/1.1/space/cancel/{}".format(booking_id))
         return resp.json()
+
+    def get_reservations(self, email, date):
+        """Gets reservations for a given email.
+
+        :param email: the email of the user who's reservations are to be fetched
+        :type email: str
+        """
+        try:
+            resp = self._request("GET", "/1.1/space/bookings?email={}&date={}&limit=100".format(email, date))
+        except resp.exceptions.HTTPError as error:
+            raise APIError("Server Error: {}".format(error))
+        return resp.json()
+
+    def get_reservations_for_booking_ids(self, booking_ids):
+        """Gets booking information for a given list of booking ids.
+
+        :param booking_ids: a booking id or a list of room ids (comma separated).
+        :type booking_ids: string
+        """
+        try:
+            resp = self._request("GET", "/1.1/space/booking/{}".format(booking_ids))
+        except resp.exceptions.HTTPError as error:
+            raise APIError("Server Error: {}".format(error))
+        return resp.json()
+
+    def get_room_info(self, room_ids):
+        """Gets room information for a given list of ids.
+
+        :param room_ids: a room id or a list of room ids (comma separated).
+        :type room_ids: string
+        """
+        try:
+            resp = self._request("GET", "/1.1/space/item/{}".format(room_ids))
+            rooms = resp.json()
+            for room in rooms:
+                if not room["image"].startswith("http"):
+                    room["image"] = "https:" + room["image"]
+
+                if "description" in room:
+                    description = room["description"].replace(u'\xa0', u' ')
+                    room["description"] = BeautifulSoup(description, "html.parser").text.strip()
+        except resp.exceptions.HTTPError as error:
+            raise APIError("Server Error: {}".format(error))
+        return rooms
