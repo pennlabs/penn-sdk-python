@@ -25,6 +25,7 @@ class TestStudySpaces():
     def test_booking(self):
         buildings = self.studyspaces.get_buildings()
         rooms = self.studyspaces.get_rooms(buildings[0]["lid"])
+        room = None
         for item in rooms["categories"][0]["rooms"]:
             if item["availability"]:
                 room = item
