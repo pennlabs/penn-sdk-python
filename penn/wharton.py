@@ -115,7 +115,7 @@ class Wharton(object):
 
         return {"success": True}
 
-    def get_wharton_gsrs(self, sessionid, date):
+    def get_wharton_gsrs(self, sessionid, date=None):
         """ Make a request to retrieve Wharton GSR listings. """
         if date:
             date += " 05:00"
@@ -174,7 +174,7 @@ class Wharton(object):
                     rooms["rooms"].append(entry)
         return {"categories": [rooms]}
 
-    def get_wharton_gsrs_formatted(self, sessionid):
+    def get_wharton_gsrs_formatted(self, sessionid, date=None):
         """ Return the wharton GSR listing formatted in studyspaces format. """
-        gsrs = self.get_wharton_gsrs(sessionid, None)
+        gsrs = self.get_wharton_gsrs(sessionid, date)
         return self.switch_format(gsrs)
