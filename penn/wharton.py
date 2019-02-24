@@ -1,3 +1,4 @@
+import re
 import requests
 import datetime
 
@@ -46,6 +47,39 @@ class Wharton(object):
             reservations.append(reservation)
         return reservations
 
+    def book_reservation(self, sessionid, roomid, start, end):
+        duration = int((end - start).seconds / 60)
+        booking_url = "{}/reserve/{}/{}/?d={}".format(BASE_URL, roomid, start.strftime("%Y-%m-%dT%H:%M:%S-05:00"), duration)
+        resp = requests.get(booking_url, cookies={"sessionid": sessionid})
+        resp.raise_for_status()
+
+        csrfheader = re.search(r"csrftoken=(.*?);", resp.headers["Set-Cookie"]).group(1)
+        csrftoken = re.search(r"<input name=\"csrfmiddlewaretoken\" type=\"hidden\" value=\"(.*?)\"/>", resp.content.decode("utf8")).group(1)
+
+        start_string = start.strftime("%I:%M %p")
+        if start_string[0] == "0":
+            start_string = start_string[1:]
+
+        resp = requests.post(
+            booking_url,
+            cookies={"sessionid": sessionid, "csrftoken": csrfheader},
+            headers={"Referer": booking_url},
+            data={
+                "csrfmiddlewaretoken": csrftoken,
+                "room": roomid,
+                "start_time": start_string,
+                "end_time": end.strftime("%a %b %d %H:%M:%S %Y"),
+                "date": start.strftime("%B %d, %Y")
+            }
+        )
+        resp.raise_for_status()
+        content = resp.content.decode("utf8")
+        if "errorlist" in content:
+            error_msg = re.search(r"class=\"errorlist\"><li>(.*?)</li>", content).group(1)
+            return {"success": False, "error": error_msg}
+
+        return {"success": True}
+
     def delete_booking(self, sessionid, booking_id):
         """Deletes a Wharton GSR Booking for a given booking and session id"""
         url = "{}{}{}/".format(BASE_URL, "/delete/", booking_id)
@@ -78,7 +112,7 @@ class Wharton(object):
         except resp2.exceptions.HTTPError as error:
             raise APIError("Server Error: {}".format(error))
 
-        return "success"
+        return {"success": True}
 
     def get_wharton_gsrs(self, sessionid, date):
         if date:
