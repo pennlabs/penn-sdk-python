@@ -46,7 +46,6 @@ class Wharton(object):
             reservations.append(reservation)
         return reservations
 
-
     def delete_booking(self, sessionid, booking_id):
         """Deletes a Wharton GSR Booking for a given booking and session id"""
         url = "{}{}{}/".format(BASE_URL, "/delete/", booking_id)
@@ -81,7 +80,6 @@ class Wharton(object):
 
         return "success"
 
-
     def get_wharton_gsrs(self, sessionid, date):
         if date:
             date += " 05:00"
@@ -96,7 +94,6 @@ class Wharton(object):
             return resp.json()
         else:
             raise APIError('Remote server returned status code {}.'.format(resp.status_code))
-
 
     def switch_format(self, gsr):
         if "error" in gsr:
@@ -131,9 +128,6 @@ class Wharton(object):
                         del entry["reservation_id"]
                     entry["lid"] = 1
                     entry["capacity"] = 5
-                    # entry["gid"] = null
-                    # entry["thumbnail"] = null;
-                    # entry["description"] = null
                     entry["room_id"] = entry["id"]
                     del entry["id"]
                     entry["times"] = [time]
@@ -142,7 +136,6 @@ class Wharton(object):
                     del entry["start_time"]
                     rooms["rooms"].append(entry)
         return {"categories": [rooms]}
-
 
     def get_wharton_gsrs_formatted(self, sessionid):
         gsrs = self.get_wharton_gsrs(sessionid, None)
