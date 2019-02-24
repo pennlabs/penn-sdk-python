@@ -48,6 +48,7 @@ class Wharton(object):
         return reservations
 
     def book_reservation(self, sessionid, roomid, start, end):
+        """ Book a reservation given the session id, the room id as an integer, and the start and end time as datetimes. """
         duration = int((end - start).seconds / 60)
         booking_url = "{}/reserve/{}/{}/?d={}".format(BASE_URL, roomid, start.strftime("%Y-%m-%dT%H:%M:%S-05:00"), duration)
         resp = requests.get(booking_url, cookies={"sessionid": sessionid})
@@ -81,7 +82,7 @@ class Wharton(object):
         return {"success": True}
 
     def delete_booking(self, sessionid, booking_id):
-        """Deletes a Wharton GSR Booking for a given booking and session id"""
+        """ Deletes a Wharton GSR Booking for a given booking and session id. """
         url = "{}{}{}/".format(BASE_URL, "/delete/", booking_id)
         cookies = dict(sessionid=sessionid)
 
@@ -115,6 +116,7 @@ class Wharton(object):
         return {"success": True}
 
     def get_wharton_gsrs(self, sessionid, date):
+        """ Make a request to retrieve Wharton GSR listings. """
         if date:
             date += " 05:00"
         else:
@@ -130,6 +132,7 @@ class Wharton(object):
             raise APIError('Remote server returned status code {}.'.format(resp.status_code))
 
     def switch_format(self, gsr):
+        """ Convert the Wharton GSR format into the studyspaces API format. """
         if "error" in gsr:
             return gsr
         rooms = {
@@ -172,5 +175,6 @@ class Wharton(object):
         return {"categories": [rooms]}
 
     def get_wharton_gsrs_formatted(self, sessionid):
+        """ Return the wharton GSR listing formatted in studyspaces format. """
         gsrs = self.get_wharton_gsrs(sessionid, None)
         return self.switch_format(gsrs)
