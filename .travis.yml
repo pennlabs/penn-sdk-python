@@ -7,8 +7,8 @@ python:
 install:
   - pip install flake8 -r requirements.txt
 script:
-  - flake8 --max-line-length=150 --exclude=venv,docs,build --ignore=F401,F403,F405 .
-  - nosetests
+  - flake8 .
+  - nosetests --processes=-1 --process-timeout=600
 jobs:
   include:
     - stage: deploy
