@@ -135,7 +135,7 @@ class Wharton(object):
         """ Convert the Wharton GSR format into the studyspaces API format. """
         if "error" in gsr:
             return gsr
-        rooms = {
+        categories = {
             "cid": 1,
             "name": "Huntsman Hall",
             "rooms": []
@@ -143,7 +143,7 @@ class Wharton(object):
 
         for time in gsr["times"]:
             for entry in time:
-                entry["name"] = "GSR " + entry["room_number"]
+                entry["name"] = entry["room_number"]
                 del entry["room_number"]
                 start_time_str = entry["start_time"]
                 end_time = datetime.datetime.strptime(start_time_str[:-6], '%Y-%m-%dT%H:%M:%S') + datetime.timedelta(minutes=30)
@@ -154,7 +154,7 @@ class Wharton(object):
                     "end": end_time_str,
                 }
                 exists = False
-                for room in rooms["rooms"]:
+                for room in categories["rooms"]:
                     if room["name"] == entry["name"]:
                         room["times"].append(time)
                         exists = True
@@ -164,15 +164,16 @@ class Wharton(object):
                     if "reservation_id" in entry:
                         del entry["reservation_id"]
                     entry["lid"] = 1
+                    entry["gid"] = 1
                     entry["capacity"] = 5
-                    entry["room_id"] = entry["id"]
+                    entry["room_id"] = int(entry["id"])
                     del entry["id"]
                     entry["times"] = [time]
                     del entry["reserved"]
                     del entry["end_time"]
                     del entry["start_time"]
-                    rooms["rooms"].append(entry)
-        return {"categories": [rooms]}
+                    categories["rooms"].append(entry)
+        return {"categories": categories, "rooms": categories["rooms"]}
 
     def get_wharton_gsrs_formatted(self, sessionid, date=None):
         """ Return the wharton GSR listing formatted in studyspaces format. """
