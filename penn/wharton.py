@@ -173,7 +173,7 @@ class Wharton(object):
                     del entry["end_time"]
                     del entry["start_time"]
                     categories["rooms"].append(entry)
-        return {"categories": categories, "rooms": categories["rooms"]}
+        return {"categories": [categories], "rooms": categories["rooms"]}
 
     def get_wharton_gsrs_formatted(self, sessionid, date=None):
         """ Return the wharton GSR listing formatted in studyspaces format. """
