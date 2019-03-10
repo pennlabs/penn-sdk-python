@@ -118,7 +118,12 @@ class Wharton(object):
     def get_wharton_gsrs(self, sessionid, date=None):
         """ Make a request to retrieve Wharton GSR listings. """
         if date:
-            date += " 05:00"
+            if date == "2019-03-10":
+                print("yes")
+                date += " 07:00"
+            else:
+                print("no")
+                date += " 04:00"
         else:
             date = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%S")
         resp = requests.get('https://apps.wharton.upenn.edu/gsr/api/app/grid_view/', params={
