@@ -1,6 +1,7 @@
 import re
 import requests
 import datetime
+import pytz
 
 from bs4 import BeautifulSoup
 from .base import APIError
@@ -50,7 +51,8 @@ class Wharton(object):
     def book_reservation(self, sessionid, roomid, start, end):
         """ Book a reservation given the session id, the room id as an integer, and the start and end time as datetimes. """
         duration = int((end - start).seconds / 60)
-        booking_url = "{}/reserve/{}/{}/?d={}".format(BASE_URL, roomid, start.strftime("%Y-%m-%dT%H:%M:%S-04:00"), duration)
+        format = "%Y-%m-%dT%H:%M:%S-{}".format(self.get_dst_gmt_timezone())
+        booking_url = "{}/reserve/{}/{}/?d={}".format(BASE_URL, roomid, start.strftime(format), duration)
         resp = requests.get(booking_url, cookies={"sessionid": sessionid})
         resp.raise_for_status()
 
@@ -118,12 +120,7 @@ class Wharton(object):
     def get_wharton_gsrs(self, sessionid, date=None):
         """ Make a request to retrieve Wharton GSR listings. """
         if date:
-            if date == "2019-03-10":
-                print("yes")
-                date += " 07:00"
-            else:
-                print("no")
-                date += " 04:00"
+            date += " {}".format(self.get_dst_gmt_timezone())
         else:
             date = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%S")
         resp = requests.get('https://apps.wharton.upenn.edu/gsr/api/app/grid_view/', params={
@@ -152,7 +149,7 @@ class Wharton(object):
                 del entry["room_number"]
                 start_time_str = entry["start_time"]
                 end_time = datetime.datetime.strptime(start_time_str[:-6], '%Y-%m-%dT%H:%M:%S') + datetime.timedelta(minutes=30)
-                end_time_str = end_time.strftime("%Y-%m-%dT%H:%M:%S") + "-04:00"
+                end_time_str = end_time.strftime("%Y-%m-%dT%H:%M:%S") + "-{}".format(self.get_dst_gmt_timezone())
                 time = {
                     "available": not entry["reserved"],
                     "start": entry["start_time"],
@@ -184,3 +181,12 @@ class Wharton(object):
         """ Return the wharton GSR listing formatted in studyspaces format. """
         gsrs = self.get_wharton_gsrs(sessionid, date)
         return self.switch_format(gsrs)
+
+    def get_dst_gmt_timezone(self):
+        now = datetime.datetime.utcnow()
+        localtime = pytz.timezone("US/Eastern")
+        localtime.localize(now)
+        if bool(now.dst()):
+            return "05:00"
+        else:
+            return "04:00"
