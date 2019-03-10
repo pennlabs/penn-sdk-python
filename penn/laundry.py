@@ -5,7 +5,7 @@ import pkg_resources
 from bs4 import BeautifulSoup
 
 LAUNDRY_DOMAIN = os.environ.get("LAUNDRY_DOMAIN", "suds.kite.upenn.edu")
-ALL_URL = 'http://{}/?location='.format(LAUNDRY_DOMAIN)
+ALL_URL = 'http://{}/'.format(LAUNDRY_DOMAIN)
 USAGE_BASE_URL = 'https://www.laundryalert.com/cgi-bin/penn6389/LMRoomUsage?CallingPage=LMRoom&Password=penn6389&Halls='
 
 
@@ -82,38 +82,61 @@ class Laundry(object):
         :type hall: int
         """
         if hall not in self.hall_to_link:
-            return None  # change to to empty json idk
-        page = requests.get(self.hall_to_link[hall], timeout=60)
+            return None
+
+        return self.parse_halls([hall])[0]
+
+    def parse_halls(self, lhall):
+        """Return list of names, hall numbers, and the washers/dryers available for a list of halls.
+
+        :param halls:
+            The IDs of the halls to retrieve data for.
+        :type halls: list(int)
+        """
+        lmachines = []
+        page = requests.get(ALL_URL)
         soup = BeautifulSoup(page.content, 'html.parser')
         soup.prettify()
-        washers = {"open": 0, "running": 0, "out_of_order": 0, "offline": 0, "time_remaining": []}
-        dryers = {"open": 0, "running": 0, "out_of_order": 0, "offline": 0, "time_remaining": []}
+        for hall in lhall:
+            if hall not in self.id_to_hall:
+                lmachines.append(None)
+            else:
+                hall = self.id_to_hall[hall]
+                washers = {"open": 0, "running": 0, "out_of_order": 0, "offline": 0, "time_remaining": []}
+                dryers = {"open": 0, "running": 0, "out_of_order": 0, "offline": 0, "time_remaining": []}
+                found_hall = False
+                detailed = []
 
-        detailed = []
+                rows = soup.find_all('tr')
+                for row in rows:
+                    cols = row.find_all('td')
+                    if len(cols) == 1 and len(cols[0].find_all('center')) == 1 and \
+                       len(cols[0].find_all('center')[0].find_all('h2')) == 1:  # Title element
+                        if(cols[0].find_all('center')[0].find_all('h2')[0].find_all('a')[0].getText() == hall):  # Check if found correct hall
+                            found_hall = True
+                        else:
+                            found_hall = False
+                    elif len(cols) == 5 and cols[2]['class'][0] == 'status' and found_hall:  # Content element for relevant hall
+                        machine_type = cols[1].getText()
+                        if machine_type == "Washer":
+                            washers = Laundry.update_machine_object(cols, washers)
+                        elif machine_type == "Dryer":
+                            dryers = Laundry.update_machine_object(cols, dryers)
+                        if machine_type in ["Washer", "Dryer"]:
+                            try:
+                                time = int(cols[3].getText().split(" ")[0])
+                            except ValueError:
+                                time = 0
+                            detailed.append({
+                                "id": int(cols[0].getText().split(" ")[1][1:]),
+                                "type": cols[1].getText().lower(),
+                                "status": cols[2].getText(),
+                                "time_remaining": time
+                            })
 
-        rows = soup.find_all('tr')
-        for row in rows:
-            cols = row.find_all('td')
-            if len(cols) > 1:
-                machine_type = cols[1].getText()
-                if machine_type == "Washer":
-                    washers = Laundry.update_machine_object(cols, washers)
-                elif machine_type == "Dryer":
-                    dryers = Laundry.update_machine_object(cols, dryers)
-                if machine_type in ["Washer", "Dryer"]:
-                    try:
-                        time = int(cols[3].getText().split(" ")[0])
-                    except ValueError:
-                        time = 0
-                    detailed.append({
-                        "id": int(cols[0].getText().split(" ")[1][1:]),
-                        "type": cols[1].getText().lower(),
-                        "status": cols[2].getText(),
-                        "time_remaining": time
-                    })
-
-        machines = {"washers": washers, "dryers": dryers, "details": detailed}
-        return machines
+                machines = {"washers": washers, "dryers": dryers, "details": detailed}
+                lmachines.append(machines)
+        return lmachines
 
     def all_status(self):
         """Return names, hall numbers, and the washers/dryers available for all
@@ -121,11 +144,10 @@ class Laundry(object):
 
         >>> all_laundry = l.all_status()
         """
-        laundry_rooms = {}
-        for room in self.hall_to_link:
-            laundry_rooms[room] = self.parse_a_hall(room)
+        hall_names = list(self.id_to_hall)
+        hall_values = self.parse_halls(hall_names)
 
-        return laundry_rooms
+        return {k: v for k, v in zip(hall_names, hall_values)}
 
     def hall_status(self, hall_id):
         """Return the status of each specific washer/dryer in a particular
@@ -149,35 +171,3 @@ class Laundry(object):
             'hall_name': hall_name,
             'location': location
         }
-
-    def machine_usage(self, hall_no):
-        """Returns the average usage of laundry machines every hour
-        for a given hall.
-
-        The usages are returned in a dictionary, with the key being
-        the day of the week, and the value being an array listing the usages
-        per hour.
-
-        :param hall_no:
-             integer corresponding to the id number for the hall. Thus number
-             is returned as part of the all_status call.
-
-        >>> english_house = l.machine_usage(2)
-        """
-
-        try:
-            num = int(hall_no)
-        except ValueError:
-            raise ValueError("Room Number must be integer")
-        r = requests.get(USAGE_BASE_URL + str(num), timeout=60)
-        parsed = BeautifulSoup(r.text, 'html5lib')
-        usage_table = parsed.find_all('table', width='504px')[0]
-        rows = usage_table.find_all('tr')
-        usages = {}
-        for i, row in enumerate(rows):
-            day = []
-            hours = row.find_all('td')
-            for hour in hours:
-                day.append(self.busy_dict[str(hour['class'][0])])
-            usages[self.days[i]] = day
-        return usages
