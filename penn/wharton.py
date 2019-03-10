@@ -50,7 +50,7 @@ class Wharton(object):
     def book_reservation(self, sessionid, roomid, start, end):
         """ Book a reservation given the session id, the room id as an integer, and the start and end time as datetimes. """
         duration = int((end - start).seconds / 60)
-        booking_url = "{}/reserve/{}/{}/?d={}".format(BASE_URL, roomid, start.strftime("%Y-%m-%dT%H:%M:%S-04:00"), duration)
+        booking_url = "{}/reserve/{}/{}/?d={}".format(BASE_URL, roomid, start.strftime("%Y-%m-%dT%H:%M:%S-05:00"), duration)
         resp = requests.get(booking_url, cookies={"sessionid": sessionid})
         resp.raise_for_status()
 
@@ -118,7 +118,7 @@ class Wharton(object):
     def get_wharton_gsrs(self, sessionid, date=None):
         """ Make a request to retrieve Wharton GSR listings. """
         if date:
-            date += " 04:00"
+            date += " 05:00"
         else:
             date = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%S")
         resp = requests.get('https://apps.wharton.upenn.edu/gsr/api/app/grid_view/', params={
@@ -147,7 +147,7 @@ class Wharton(object):
                 del entry["room_number"]
                 start_time_str = entry["start_time"]
                 end_time = datetime.datetime.strptime(start_time_str[:-6], '%Y-%m-%dT%H:%M:%S') + datetime.timedelta(minutes=30)
-                end_time_str = end_time.strftime("%Y-%m-%dT%H:%M:%S") + "-04:00"
+                end_time_str = end_time.strftime("%Y-%m-%dT%H:%M:%S") + "-05:00"
                 time = {
                     "available": not entry["reserved"],
                     "start": entry["start_time"],
