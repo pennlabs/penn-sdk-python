@@ -45,6 +45,7 @@ class StudySpaces(object):
 
         self.expiration = datetime.datetime.now() + datetime.timedelta(seconds=resp["expires_in"])
         self.token = resp["access_token"]
+        print(self.token)
 
     def _request(self, *args, **kwargs):
         """Make a signed request to the libcal API."""
