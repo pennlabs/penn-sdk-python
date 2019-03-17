@@ -2,7 +2,7 @@ import requests
 import datetime
 
 
-BASE_URL = "https://www.google.com/calendar/ical/pennalmanac@gmail.com/public/basic.ics"
+BASE_URL = "https://www.stanza.co/api/schedules/almanacacademiccalendar/"
 
 
 class Calendar(object):
@@ -20,25 +20,29 @@ class Calendar(object):
             - End date 'end'
         """
         events = []
-        r = requests.get(BASE_URL).text
-        lines = r.split("\r\n")
-        d = {}
-        for line in lines:
-            if line == "BEGIN:VEVENT":
-                d = {}
-            elif line[:7] == "DTSTART":
-                raw_date = line.split(":")[1]
-                start_date = datetime.datetime.strptime(raw_date, '%Y%m%d').date()
-                d['start'] = start_date.strftime('%Y-%m-%d')
-            elif line[:5] == "DTEND":
-                raw_date = line.split(":")[1]
-                end_date = datetime.datetime.strptime(raw_date, '%Y%m%d').date()
-                d['end'] = end_date.strftime('%Y-%m-%d')
-            elif line[:7] == "SUMMARY":
-                name = line.split(":")[1]
-                d['name'] = str(name).strip()
-            elif line == "END:VEVENT":
-                events.append(d)
+        for term in ["fall", "summer", "spring"]:
+            url = "{}{}{}term.ics".format(BASE_URL, datetime.datetime.now().year, term)
+            resp = requests.get(url)
+            resp.raise_for_status()
+            r = resp.text
+            lines = r.split("\n")
+            d = {}
+            for line in lines:
+                if line == "BEGIN:VEVENT":
+                    d = {}
+                elif line.startswith("DTSTART"):
+                    raw_date = line.split(":")[1]
+                    start_date = datetime.datetime.strptime(raw_date, '%Y%m%d').date()
+                    d['start'] = start_date.strftime('%Y-%m-%d')
+                elif line.startswith("DTEND"):
+                    raw_date = line.split(":")[1]
+                    end_date = datetime.datetime.strptime(raw_date, '%Y%m%d').date()
+                    d['end'] = end_date.strftime('%Y-%m-%d')
+                elif line.startswith("SUMMARY"):
+                    name = line.split(":")[1]
+                    d['name'] = str(name).strip()
+                elif line == "END:VEVENT":
+                    events.append(d)
 
         events.sort(key=lambda d: d['start'])
         return events
