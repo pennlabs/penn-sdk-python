@@ -150,6 +150,25 @@ class Laundry(object):
             'location': location
         }
 
+    def check_is_working(self):
+        """ Returns True if the wash alert web interface seems to be
+        working properly, or False otherwise.
+
+        >>> l.check_is_working()
+        """
+        try:
+            r = requests.post(USAGE_BASE_URL, timeout=60, data={
+                "locationid": "5faec7e9-a4aa-47c2-a514-950c03fac460",
+                "email": "pennappslabs@gmail.com",
+                "washers": 0,
+                "dryers": 0,
+                "locationalert": "OK"
+            })
+            r.raise_for_status()
+            return "The transaction log for database 'QuantumCoin' is full due to 'LOG_BACKUP'." not in r.text
+        except requests.exceptions.HTTPError:
+            return False
+
     def machine_usage(self, hall_no):
         """Returns the average usage of laundry machines every hour
         for a given hall.
