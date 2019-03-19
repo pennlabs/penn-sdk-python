@@ -157,7 +157,7 @@ class Laundry(object):
         >>> l.check_is_working()
         """
         try:
-            r = requests.post(ALL_URL, timeout=60, data={
+            r = requests.post("http://{}/".format(LAUNDRY_DOMAIN), timeout=60, data={
                 "locationid": "5faec7e9-a4aa-47c2-a514-950c03fac460",
                 "email": "pennappslabs@gmail.com",
                 "washers": 0,
