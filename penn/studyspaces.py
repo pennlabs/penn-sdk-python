@@ -249,7 +249,7 @@ class StudySpaces(object):
             resp = self._request("GET", "/1.1/space/bookings?email={}&date={}&limit=100".format(email, date), timeout=timeout)
         except resp.exceptions.HTTPError as error:
             raise APIError("Server Error: {}".format(error))
-        except requests.exceptions.ConnectTimeout as error:
+        except requests.exceptions.ConnectTimeout:
             raise APIError("Timeout Error")
         return resp.json()
 
