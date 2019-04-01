@@ -239,16 +239,18 @@ class StudySpaces(object):
         resp = self._request("POST", "/1.1/space/cancel/{}".format(booking_id))
         return resp.json()
 
-    def get_reservations(self, email, date):
+    def get_reservations(self, email, date, timeout=None):
         """Gets reservations for a given email.
 
         :param email: the email of the user who's reservations are to be fetched
         :type email: str
         """
         try:
-            resp = self._request("GET", "/1.1/space/bookings?email={}&date={}&limit=100".format(email, date))
+            resp = self._request("GET", "/1.1/space/bookings?email={}&date={}&limit=100".format(email, date), timeout=timeout)
         except resp.exceptions.HTTPError as error:
             raise APIError("Server Error: {}".format(error))
+        except requests.exceptions.ConnectTimeout as error:
+            raise APIError("Timeout Error")
         return resp.json()
 
     def get_reservations_for_booking_ids(self, booking_ids):
