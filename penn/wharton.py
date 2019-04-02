@@ -18,15 +18,17 @@ class Wharton(object):
       >>> s = Wharton()
     """
 
-    def get_reservations(self, sessionid):
+    def get_reservations(self, sessionid, timeout=None):
         """Returns a list of location IDs and names."""
         url = "{}{}".format(BASE_URL, "/reservations/")
         cookies = dict(sessionid=sessionid)
 
         try:
-            resp = requests.get(url, cookies=cookies)
+            resp = requests.get(url, timeout=timeout, cookies=cookies)
         except resp.exceptions.HTTPError as error:
             raise APIError("Server Error: {}".format(error))
+        except requests.exceptions.ConnectTimeout:
+            raise APIError("Timeout Error")
 
         html = resp.content.decode("utf8")
 
