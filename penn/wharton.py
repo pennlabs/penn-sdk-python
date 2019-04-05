@@ -25,7 +25,7 @@ class Wharton(object):
 
         try:
             resp = requests.get(url, timeout=timeout, cookies=cookies)
-        except resp.exceptions.HTTPError as error:
+        except requests.exceptions.HTTPError as error:
             raise APIError("Server Error: {}".format(error))
         except requests.exceptions.ConnectTimeout:
             raise APIError("Timeout Error")
