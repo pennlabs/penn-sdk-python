@@ -49,7 +49,9 @@ class Fitness(object):
     def get_usage(self):
         """Get fitness locations and their current usage."""
 
-        resp = requests.get(FITNESS_URL, timeout=30)
+        resp = requests.get(FITNESS_URL, headers={
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36"
+        }, timeout=30)
         resp.raise_for_status()
 
         soup = BeautifulSoup(resp.text, "html5lib")
