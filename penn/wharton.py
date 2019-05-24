@@ -18,15 +18,17 @@ class Wharton(object):
       >>> s = Wharton()
     """
 
-    def get_reservations(self, sessionid):
+    def get_reservations(self, sessionid, timeout=None):
         """Returns a list of location IDs and names."""
         url = "{}{}".format(BASE_URL, "/reservations/")
         cookies = dict(sessionid=sessionid)
 
         try:
-            resp = requests.get(url, cookies=cookies)
-        except resp.exceptions.HTTPError as error:
+            resp = requests.get(url, timeout=timeout, cookies=cookies)
+        except requests.exceptions.HTTPError as error:
             raise APIError("Server Error: {}".format(error))
+        except requests.exceptions.ConnectTimeout:
+            raise APIError("Timeout Error")
 
         html = resp.content.decode("utf8")
 
@@ -54,6 +56,10 @@ class Wharton(object):
         format = "%Y-%m-%dT%H:%M:%S-{}".format(self.get_dst_gmt_timezone())
         booking_url = "{}/reserve/{}/{}/?d={}".format(BASE_URL, roomid, start.strftime(format), duration)
         resp = requests.get(booking_url, cookies={"sessionid": sessionid})
+
+        if resp.status_code == 403:
+            return {"success": False, "error": "Your account does not have permission to book Wharton GSRs!"}
+
         resp.raise_for_status()
 
         csrfheader = re.search(r"csrftoken=(.*?);", resp.headers["Set-Cookie"]).group(1)
