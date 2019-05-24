@@ -30,7 +30,7 @@ class TestDining(unittest.TestCase):
     def test_dining_venue_normalization(self):
         data = self.din.venues()
         self.assertTrue(isinstance(
-            data["result_data"]["document"]["venue"][0]["dateHours"], list))
+            data["result_data"]["document"]["venue"][2]["dateHours"], list))
 
     def test_weekly_normalization_unit(self):
         json_data = open("tests/menu_data.json").read()
