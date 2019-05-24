@@ -170,6 +170,8 @@ class Dining(WrapperBase):
                 for dh in venue["dateHours"]:
                     if isinstance(dh.get("meal"), dict):
                         dh["meal"] = [dh["meal"]]
+            else:
+                venue["dateHours"] = []
         return response
 
     def menu_daily(self, building_id):
