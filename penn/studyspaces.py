@@ -138,32 +138,33 @@ class StudySpaces(object):
             items = category["items"]
             items = ",".join([str(x) for x in items])
             resp = self._request("GET", "/1.1/space/item/{}?{}".format(items, range_str))
-            for room in resp.json():
-                if room["id"] in ROOM_BLACKLIST:
-                    continue
-                # prepend protocol to urls
-                if "image" in room and room["image"]:
-                    if not room["image"].startswith("http"):
-                        room["image"] = "https:" + room["image"]
-                # convert html descriptions to text
-                if "description" in room:
-                    description = room["description"].replace(u'\xa0', u' ')
-                    room["description"] = BeautifulSoup(description, "html.parser").text.strip()
-                # remove extra fields
-                if "formid" in room:
-                    del room["formid"]
-                # enforce date filter
-                # API returns dates outside of the range, fix this manually
-                if start_datetime:
-                    out_times = []
-                    for time in room["availability"]:
-                        parsed_start = datetime.datetime.strptime(time["from"][:-6], "%Y-%m-%dT%H:%M:%S")
-                        if parsed_start >= start_datetime:
-                            out_times.append(time)
-                    room["availability"] = out_times
-                cat_out["rooms"].append(room)
-            if cat_out["rooms"]:
-                output["categories"].append(cat_out)
+            if resp.ok:
+                for room in resp.json():
+                    if room["id"] in ROOM_BLACKLIST:
+                        continue
+                    # prepend protocol to urls
+                    if "image" in room and room["image"]:
+                        if not room["image"].startswith("http"):
+                            room["image"] = "https:" + room["image"]
+                    # convert html descriptions to text
+                    if "description" in room:
+                        description = room["description"].replace(u'\xa0', u' ')
+                        room["description"] = BeautifulSoup(description, "html.parser").text.strip()
+                    # remove extra fields
+                    if "formid" in room:
+                        del room["formid"]
+                    # enforce date filter
+                    # API returns dates outside of the range, fix this manually
+                    if start_datetime:
+                        out_times = []
+                        for time in room["availability"]:
+                            parsed_start = datetime.datetime.strptime(time["from"][:-6], "%Y-%m-%dT%H:%M:%S")
+                            if parsed_start >= start_datetime:
+                                out_times.append(time)
+                        room["availability"] = out_times
+                    cat_out["rooms"].append(room)
+                if cat_out["rooms"]:
+                    output["categories"].append(cat_out)
         return output
 
     def book_room(self, item, start, end, fname, lname, email, nickname, custom={}, test=False):
