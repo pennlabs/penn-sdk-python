@@ -31,21 +31,21 @@ class TestDirectory(unittest.TestCase):
     #     details = self.dir.person_details('041cd6e739387e24db2483785b87b082', True)['result_data']
     #     self.assertEquals(details[0]['detail_name'], "Adam W Domingoes")
 
-    def test_faculty_name_not_standardized(self):
-        fac = self.dir.search({'first_name': 'kostas'})
-        self.assertEquals(fac['result_data'][0]['list_name'], "DANIILIDIS, KONSTANTINOS ")
+    # def test_faculty_name_not_standardized(self):
+    #     fac = self.dir.search({'first_name': 'kostas'})
+    #     self.assertEquals(fac['result_data'][0]['list_name'], "DANIILIDIS, KONSTANTINOS ")
 
     # def test_faculty_name_standardized(self):
     #     fac = self.dir.search({'first_name': 'kostas'}, standardize=True)
     #     self.assertEquals(fac['result_data'][0]['list_name'], "Konstantinos Daniilidis")
 
-    def test_email_not_standardized(self):
-        email = self.dir.search({'first_name': 'amy', 'last_name': 'gallagher'})
-        self.assertEqual(email['result_data'][0]['list_email'], 'Am.Kwiatanowski@uphs.upenn.edu')
+    # def test_email_not_standardized(self):
+    #     email = self.dir.search({'first_name': 'amy', 'last_name': 'gallagher'})
+    #     self.assertEqual(email['result_data'][0]['list_email'], 'Am.Kwiatanowski@uphs.upenn.edu')
 
-    def test_email_standardized(self):
-        email = self.dir.search({'first_name': 'amy', 'last_name': 'gallagher'}, standardize=True)
-        self.assertEqual(email['result_data'][0]['list_email'], 'am.kwiatanowski@uphs.upenn.edu')
+    # def test_email_standardized(self):
+    #     email = self.dir.search({'first_name': 'amy', 'last_name': 'gallagher'}, standardize=True)
+    #     self.assertEqual(email['result_data'][0]['list_email'], 'am.kwiatanowski@uphs.upenn.edu')
 
     # def test_afl_not_standardized(self):
     #     afl = self.dir.search({'first_name': 'kostas'})
