@@ -155,7 +155,7 @@ class Wharton(object):
                 del entry["room_number"]
                 start_time_str = entry["start_time"]
                 end_time = datetime.datetime.strptime(start_time_str[:-6], '%Y-%m-%dT%H:%M:%S') + datetime.timedelta(minutes=30)
-                end_time_str = end_time.strftime("%Y-%m-%dT%H:%M:%S") + "-{}".format(self.get_dst_gmt_timezone())
+                end_time_str = end_time.strftime("%Y-%m-%dT%H:%M:%S") + start_time_str[-6:]
                 time = {
                     "available": not entry["reserved"],
                     "start": entry["start_time"],
