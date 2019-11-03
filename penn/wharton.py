@@ -189,10 +189,8 @@ class Wharton(object):
         return self.switch_format(gsrs)
 
     def get_dst_gmt_timezone(self):
-        now = datetime.datetime.utcnow()
-        localtime = pytz.timezone("US/Eastern")
-        localtime.localize(now)
-        if bool(now.dst()):
-            return "05:00"
-        else:
+        now = datetime.datetime.now(tz=pytz.timezone("US/Eastern"))
+        if now.timetuple().tm_isdst:
             return "04:00"
+        else:
+            return "05:00"
