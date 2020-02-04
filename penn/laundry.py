@@ -4,8 +4,8 @@ import requests
 import pkg_resources
 from bs4 import BeautifulSoup
 
-LAUNDRY_DOMAIN = os.environ.get("LAUNDRY_DOMAIN", "suds.kite.upenn.edu")
-ALL_URL = 'http://{}/?location='.format(LAUNDRY_DOMAIN)
+LAUNDRY_URL = os.environ.get("LAUNDRY_URL", "http://suds.kite.upenn.edu")
+ALL_URL = '{}/?location='.format(LAUNDRY_URL)
 USAGE_BASE_URL = 'https://www.laundryalert.com/cgi-bin/penn6389/LMRoomUsage?CallingPage=LMRoom&Password=penn6389&Halls='
 
 
@@ -157,7 +157,7 @@ class Laundry(object):
         >>> l.check_is_working()
         """
         try:
-            r = requests.post("http://{}/".format(LAUNDRY_DOMAIN), timeout=60, data={
+            r = requests.post("{}/".format(LAUNDRY_URL), timeout=60, data={
                 "locationid": "5faec7e9-a4aa-47c2-a514-950c03fac460",
                 "email": "pennappslabs@gmail.com",
                 "washers": 0,
