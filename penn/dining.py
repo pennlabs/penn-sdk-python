@@ -28,21 +28,21 @@ VENUE_NAMES = {
 
 def normalize_weekly(data):
     """Normalization for dining menu data"""
-    if "tblMenu" not in data["result_data"]["Document"]:
-        data["result_data"]["Document"]["tblMenu"] = []
-    if isinstance(data["result_data"]["Document"]["tblMenu"], dict):
-        data["result_data"]["Document"]["tblMenu"] = [data["result_data"]["Document"]["tblMenu"]]
-    for day in data["result_data"]["Document"]["tblMenu"]:
-        if "tblDayPart" not in day:
+    if "menus" not in data["result_data"]["weekly_menu"]:
+        data["result_data"]["weekly_menu"]["menus"] = []
+    if isinstance(data["result_data"]["weekly_menu"]["menus"], dict):
+        data["result_data"]["weekly_menu"]["menus"] = [data["result_data"]["weekly_menu"]["menus"]]
+    for day in data["result_data"]["weekly_menu"]["menus"]:
+        if "meals" not in day:
             continue
-        if isinstance(day["tblDayPart"], dict):
-            day["tblDayPart"] = [day["tblDayPart"]]
-        for meal in day["tblDayPart"]:
-            if isinstance(meal["tblStation"], dict):
-                meal["tblStation"] = [meal["tblStation"]]
-            for station in meal["tblStation"]:
-                if isinstance(station["tblItem"], dict):
-                    station["tblItem"] = [station["tblItem"]]
+        if isinstance(day["meals"], dict):
+            day["meals"] = [day["meals"]]
+        for meal in day["meals"]:
+            if isinstance(meal["stations"], dict):
+                meal["stations"] = [meal["stations"]]
+            for station in meal["stations"]:
+                if isinstance(station["station_items"], dict):
+                    station["station_items"] = [station["station_items"]]
     return data
 
 
@@ -57,28 +57,19 @@ def get_meals(v2_response, building_id):
             items = []
             for item_id in station["items"]:
                 item = result_data["items"][item_id]
+                print item
                 new_item = {}
-                new_item["txtTitle"] = item["label"]
-                new_item["txtPrice"] = ""
-                new_item["txtNutritionInfo"] = ""
-                new_item["txtDescription"] = item["description"]
-                new_item["tblSide"] = ""
-                new_item["tblFarmToFork"] = ""
-                attrs = [{"description": item["cor_icon"][attr]} for attr in item["cor_icon"]]
-                if len(attrs) == 1:
-                    new_item["tblAttributes"] = {"txtAttribute": attrs[0]}
-                elif len(attrs) > 1:
-                    new_item["tblAttributes"] = {"txtAttribute": attrs}
-                else:
-                    new_item["tblAttributes"] = ""
+                new_item["dish_title"] = item["label"]
+                new_item["dish_description"] = item["description"]
+                attrs = [item["cor_icon"][attr] for attr in item["cor_icon"]]
+                new_item["item_attrs"] = attrs
                 if isinstance(item["options"], list):
                     item["options"] = {}
                 if "values" in item["options"]:
-                    for side in item["options"]["values"]:
-                        new_item["tblSide"] = {"txtSideName": side["label"]}
+                    new_item["side_items"] = [side["label"] for side in item["options"]["values"]]
                 items.append(new_item)
-            stations.append({"tblItem": items, "txtStationDescription": station["label"]})
-        meals.append({"tblStation": stations, "txtDayPartDescription": meal["label"]})
+            stations.append({"station_items": items, "station_description": station["label"]})
+        meals.append({"stations": stations, "meal_name": meal["label"]})
     return meals
 
 
@@ -184,13 +175,13 @@ class Dining(WrapperBase):
         """
         today = str(datetime.date.today())
         v2_response = DiningV2(self.bearer, self.token).menu(building_id, today)
-        response = {'result_data': {'Document': {}}}
-        response["result_data"]["Document"]["menudate"] = datetime.datetime.strptime(today, '%Y-%m-%d').strftime('%-m/%d/%Y')
+        response = {'result_data': {'weekly_menu': {}}}
+        response["result_data"]["weekly_menu"]["menudate"] = datetime.datetime.strptime(today, '%Y-%m-%d').strftime('%-m/%d/%Y')
         if building_id in VENUE_NAMES:
-            response["result_data"]["Document"]["location"] = VENUE_NAMES[building_id]
+            response["result_data"]["weekly_menu"]["location"] = VENUE_NAMES[building_id]
         else:
-            response["result_data"]["Document"]["location"] = v2_response["result_data"]["days"][0]["cafes"][building_id]["name"]
-        response["result_data"]["Document"]["tblMenu"] = {"tblDayPart": get_meals(v2_response, building_id)}
+            response["result_data"]["weekly_menu"]["location"] = v2_response["result_data"]["days"][0]["cafes"][building_id]["name"]
+        response["result_data"]["weekly_menu"]["menus"] = {"meals": get_meals(v2_response, building_id)}
         return response
 
     def menu_weekly(self, building_id):
@@ -203,16 +194,16 @@ class Dining(WrapperBase):
         >>> commons_week = din.menu_weekly("593")
         """
         din = DiningV2(self.bearer, self.token)
-        response = {'result_data': {'Document': {}}}
+        response = {'result_data': {'weekly_menu': {}}}
         days = []
         for i in range(7):
             date = str(datetime.date.today() + datetime.timedelta(days=i))
             v2_response = din.menu(building_id, date)
             if building_id in VENUE_NAMES:
-                response["result_data"]["Document"]["location"] = VENUE_NAMES[building_id]
+                response["result_data"]["weekly_menu"]["location"] = VENUE_NAMES[building_id]
             else:
-                response["result_data"]["Document"]["location"] = v2_response["result_data"]["days"][0]["cafes"][building_id]["name"]
+                response["result_data"]["weekly_menu"]["location"] = v2_response["result_data"]["days"][0]["cafes"][building_id]["name"]
             formatted_date = datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%-m/%d/%Y')
-            days.append({"tblDayPart": get_meals(v2_response, building_id), "menudate": formatted_date})
-        response["result_data"]["Document"]["tblMenu"] = days
+            days.append({"meals": get_meals(v2_response, building_id), "menudate": formatted_date})
+        response["result_data"]["weekly_menu"]["menus"] = days
         return normalize_weekly(response)

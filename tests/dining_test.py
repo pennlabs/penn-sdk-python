@@ -25,7 +25,7 @@ class TestDining(unittest.TestCase):
     def test_dining_normalization(self):
         data = self.din.menu_daily("593")
         self.assertTrue(isinstance(
-            data["result_data"]["Document"]["tblMenu"]["tblDayPart"], list))
+            data["result_data"]["weekly_menu"]["menus"]["meals"], list))
 
     def test_dining_venue_normalization(self):
         data = self.din.venues()
@@ -37,21 +37,21 @@ class TestDining(unittest.TestCase):
         data = json.loads(json_data)
 
         self.assertTrue(isinstance(
-            data["result_data"]["Document"]["tblMenu"][0]["tblDayPart"]["tblStation"][6]["tblItem"], dict))
+            data["result_data"]["weekly_menu"]["menus"][0]["meals"]["stations"][6]["station_items"], dict))
 
         self.assertTrue(isinstance(
-            data["result_data"]["Document"]["tblMenu"][5]["tblDayPart"][2]["tblStation"], dict))
+            data["result_data"]["weekly_menu"]["menus"][5]["meals"][2]["stations"], dict))
 
         new_data = dining.normalize_weekly(data)
 
         self.assertTrue(isinstance(
-            new_data["result_data"]["Document"]["tblMenu"][0]["tblDayPart"][0]["tblStation"][6]["tblItem"], list))
+            new_data["result_data"]["weekly_menu"]["menus"][0]["meals"][0]["stations"][6]["station_items"], list))
 
         self.assertTrue(isinstance(
-            new_data["result_data"]["Document"]["tblMenu"][5]["tblDayPart"][2]["tblStation"], list))
+            new_data["result_data"]["weekly_menu"]["menus"][5]["meals"][2]["stations"], list))
 
         self.assertTrue(isinstance(
-            new_data["result_data"]["Document"]["tblMenu"][0]["tblDayPart"], list))
+            new_data["result_data"]["weekly_menu"]["menus"][0]["meals"], list))
 
 
 class TestDiningV2(unittest.TestCase):
