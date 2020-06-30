@@ -19,6 +19,6 @@ class TestFitness(unittest.TestCase):
             self.assertTrue("updated" in item)
             self.assertTrue("percent" in item)
 
-    def test_schedule(self):
-        schedule = self.fitness.get_schedule()
-        self.assertTrue(len(schedule) > 0)
+    # def test_schedule(self):
+    #     schedule = self.fitness.get_schedule()
+    #     self.assertTrue(len(schedule) > 0)
