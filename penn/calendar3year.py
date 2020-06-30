@@ -31,11 +31,11 @@ class Calendar(object):
                 if line == "BEGIN:VEVENT":
                     d = {}
                 elif line.startswith("DTSTART"):
-                    raw_date = line.split(":")[1]
+                    raw_date = line.split(":")[1][0:8]
                     start_date = datetime.datetime.strptime(raw_date, '%Y%m%d').date()
                     d['start'] = start_date.strftime('%Y-%m-%d')
                 elif line.startswith("DTEND"):
-                    raw_date = line.split(":")[1]
+                    raw_date = line.split(":")[1][0:8]
                     end_date = datetime.datetime.strptime(raw_date, '%Y%m%d').date()
                     d['end'] = end_date.strftime('%Y-%m-%d')
                 elif line.startswith("SUMMARY"):
